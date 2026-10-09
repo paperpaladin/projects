@@ -14,14 +14,14 @@
   },
   "commitq": {
     "blurb": "Multi-repo commit gate and GUI",
-    "commits": 6,
+    "commits": 7,
     "done": 5,
     "group": "supply chain",
     "invariant": "No commit is ever created with a date other than now",
     "oracle": "Throwaway repos in a temp directory",
     "shortcuts": 0,
-    "src": 1002,
-    "test": 326,
+    "src": 1015,
+    "test": 352,
     "tests": "61 passed, 0 failed",
     "todo": 11
   },
