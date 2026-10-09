@@ -3,6 +3,7 @@
 #
 #   cq            status
 #   cq t          today: stalest repo first, next planned step in each
+#   cq r [days]   what was committed recently, and the command to check it
 #   cq v [repo]   run test suites
 #   cq c R MSG... test, then commit R with MSG (quote it or just let it run on)
 #   cq h [weeks]  heatmap
@@ -25,6 +26,7 @@ case "$cmd" in
   status|st|"")  exec python3 "$CQ" status "$@" ;;
   a|all)         exec python3 "$CQ" status --tests "$@" ;;
   t|today)       exec python3 "$CQ" today "$@" ;;
+  r|review)      exec python3 "$CQ" review "$@" ;;
   v|verify)      exec python3 "$CQ" verify "$@" ;;
   q|queue)       exec python3 "$CQ" queue "$@" ;;
   h|heat|heatmap)

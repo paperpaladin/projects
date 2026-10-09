@@ -14,15 +14,28 @@
   },
   "commitq": {
     "blurb": "Multi-repo commit gate and GUI",
-    "commits": 7,
-    "done": 5,
+    "commits": 11,
+    "done": 8,
     "group": "supply chain",
     "invariant": "No commit is ever created with a date other than now",
     "oracle": "Throwaway repos in a temp directory",
     "shortcuts": 0,
-    "src": 1015,
-    "test": 352,
-    "tests": "61 passed, 0 failed",
+    "src": 1161,
+    "test": 579,
+    "tests": "94 passed, 0 failed",
+    "todo": 8
+  },
+  "derx": {
+    "blurb": "DER reader and X.509 printer",
+    "commits": 13,
+    "done": 11,
+    "group": "formats",
+    "invariant": "Every element matches asn1parse byte for byte, or is refused with a message",
+    "oracle": "openssl asn1parse and x509, as a diff",
+    "shortcuts": 3,
+    "src": 1339,
+    "test": 1138,
+    "tests": "216 passed, 0 failed, 0 skipped",
     "todo": 11
   },
   "dwarfdump": {
@@ -40,16 +53,16 @@
   },
   "inflate": {
     "blurb": "DEFLATE / gzip codec",
-    "commits": 20,
-    "done": 20,
+    "commits": 21,
+    "done": 21,
     "group": "formats",
     "invariant": "gzip accepts all we emit; we decode all it emits",
     "oracle": "gzip -d accepts our output, both directions",
-    "shortcuts": 8,
-    "src": 786,
-    "test": 381,
-    "tests": "159 passed, 0 failed",
-    "todo": 10
+    "shortcuts": 6,
+    "src": 807,
+    "test": 421,
+    "tests": "162 passed, 0 failed",
+    "todo": 9
   },
   "jail": {
     "blurb": "Landlock sandbox",
@@ -92,16 +105,16 @@
   },
   "psh": {
     "blurb": "POSIX shell subset",
-    "commits": 20,
-    "done": 19,
+    "commits": 21,
+    "done": 20,
     "group": "toolchain",
     "invariant": "Identical stdout and status to dash on every corpus script",
     "oracle": "dash: stdout AND exit status",
-    "shortcuts": 5,
-    "src": 1958,
-    "test": 613,
+    "shortcuts": 7,
+    "src": 2203,
+    "test": 711,
     "tests": "185 agree, 0 disagree, 0 skipped",
-    "todo": 11
+    "todo": 10
   },
   "rx": {
     "blurb": "Linear-time regex engine",
@@ -115,6 +128,19 @@
     "test": 187,
     "tests": "3000 agree, 0 disagree, 0 skipped  (seed=0)",
     "todo": 11
+  },
+  "seccompc": {
+    "blurb": "seccomp-BPF policy compiler",
+    "commits": 13,
+    "done": 10,
+    "group": "systems",
+    "invariant": "A syscall the policy did not permit never runs, by any entry point",
+    "oracle": "The kernel, plus an i386 probe driving the 32-bit bypass",
+    "shortcuts": 6,
+    "src": 1031,
+    "test": 1009,
+    "tests": "125 passed, 0 failed, 1 skipped",
+    "todo": 8
   },
   "slab": {
     "blurb": "LD_PRELOAD malloc replacement",
@@ -194,6 +220,19 @@
     "tests": "43 passed, 0 failed",
     "todo": 9
   },
+  "tzf": {
+    "blurb": "TZif timezone file reader",
+    "commits": 7,
+    "done": 5,
+    "group": "formats",
+    "invariant": "Every instant answered agrees with both readers; malformed input is refused",
+    "oracle": "zdump and Python's zoneinfo must both agree",
+    "shortcuts": 4,
+    "src": 973,
+    "test": 892,
+    "tests": "34 passed, 0 failed",
+    "todo": 8
+  },
   "unrepro": {
     "blurb": "Build-reproducibility differ",
     "commits": 30,
@@ -209,7 +248,7 @@
   },
   "vtparse": {
     "blurb": "VT500 parser and wcwidth",
-    "commits": 18,
+    "commits": 19,
     "done": 9,
     "group": "formats",
     "invariant": "Never allocates, never reads past its byte, matches the table",
@@ -235,7 +274,7 @@
   },
   "wasmi": {
     "blurb": "WebAssembly interpreter",
-    "commits": 28,
+    "commits": 29,
     "done": 25,
     "group": "toolchain",
     "invariant": "A malformed module is rejected or traps, never corrupts the host",

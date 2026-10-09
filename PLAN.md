@@ -116,6 +116,16 @@ Ranked by how little this repo controls them, most independent first:
       counts that `repos.json` already measures, which means it drifts by
       design -- it was eight commits and two thousand lines out when this repo
       was created. Either generate that table or cut the numbers from it.
+- [ ] 08 a `cq`-visible list of repos that are members but undescribed
+      why: a new project becomes a member the moment it has a PLAN.md, and from
+      that moment this repo's suite is red until someone writes four sentences
+      of editorial text for it in `repos.json`. That is the correct behaviour
+      and a bad experience: the suite says "every member repo is in
+      repos.json: got ['derx', 'seccompc', 'tzf']" and does not say what to do
+      about it. `cq` should name them and print the four field names, because
+      the gap is always the same gap and the fix is always the same fix.
+      Blocked on nothing; it is the friction that turned up the first time
+      three projects arrived at once.
 - [ ] 07 a `cq`-visible staleness warning when `repos.json` is behind `git`
       why: the suite catches it, but only when run. `cq` already prints a
       nudge when nothing was committed today; the document being behind the
