@@ -1,0 +1,32 @@
+# The eighteen are independent repositories, each with its own history. This
+# repo is what sits above them: the index, the working instructions, the `cq`
+# wrapper and the portfolio generator. Those were tracked by nothing at all
+# until this file existed.
+#
+# Listed by name rather than matched by a pattern, deliberately. A pattern like
+# "*/" would silently swallow a nineteenth repo the day it appeared, and the
+# failure mode of that is a project nobody notices is unversioned -- which is
+# the exact situation this repo was created to end.
+cc/
+commitq/
+dwarfdump/
+inflate/
+jail/
+lnk/
+prof/
+psh/
+rx/
+slab/
+sqlr/
+srcdiff/
+tarx/
+trace/
+unrepro/
+vtparse/
+walkv/
+wasmi/
+
+# Not one of the eighteen: an upstream Android fork kept here for convenience.
+notally-molly/
+
+__pycache__/

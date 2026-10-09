@@ -1,0 +1,650 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Portfolio</title>
+<style>
+@page { size: A4; margin: 14mm 15mm 16mm; }
+:root{
+  --paper:#ffffff; --panel:#f4f6f6; --sunk:#eaeeee;
+  --ink:#121c22; --mid:#4a5a63; --soft:#7d8c94;
+  --rule:#ccd5d6; --firm:#aebabc;
+  --accent:#0a6b6b;        /* type and rules only */
+  --s1:#0e8f85;            /* data fill 1 -- validated */
+  --s2:#a1551d;            /* data fill 2 -- validated */
+  --f-disp:"Noto Serif Condensed","Noto Serif",serif;
+  --f-body:"Noto Serif",Georgia,serif;
+  --f-mono:"Hack","DejaVu Sans Mono",monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--paper);color:var(--ink)}
+body{font:10.2pt/1.52 var(--f-body);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+h1,h2,h3,h4{font-family:var(--f-disp);font-weight:700;margin:0;text-wrap:balance}
+code{font-family:var(--f-mono);font-size:.84em;background:var(--sunk);
+  padding:.06em .3em;border-radius:2px}
+p{margin:0 0 .62em}
+.sheet{page-break-after:always}
+.sheet:last-child{page-break-after:auto}
+.flow{page-break-after:auto}
+h2.sec,.grp h2{page-break-after:avoid;break-after:avoid}
+figure{page-break-inside:avoid}
+.stand{page-break-after:avoid;break-after:avoid}
+
+/* ---------- cover ---------- */
+.cover{display:flex;flex-direction:column;justify-content:center;min-height:252mm}
+.eyebrow{font:600 7.6pt/1 var(--f-mono);letter-spacing:.2em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:9mm}
+.cover h1{font-size:40pt;line-height:.98;letter-spacing:-.018em;max-width:20ch}
+.cover .lede{font-size:12.4pt;line-height:1.46;color:var(--mid);max-width:58ch;
+  margin-top:7mm}
+.cover .lede b{color:var(--ink);font-weight:700}
+.who{font:700 15pt var(--f-disp);margin-top:12mm}
+.who.placeholder{color:var(--s2);font-family:var(--f-mono);font-size:9pt;font-weight:400}
+.hdl{font:9pt var(--f-mono);color:var(--soft);margin-top:1mm}
+.tiles{display:flex;gap:4mm;margin-top:11mm;flex-wrap:wrap}
+.tile{flex:1 1 0;min-width:28mm;border:1px solid var(--rule);border-radius:3px;
+  padding:3.4mm 3.6mm;background:var(--panel)}
+.tile .v{font:700 19pt/1 var(--f-disp);color:var(--accent);
+  font-variant-numeric:tabular-nums}
+.tile .k{font:7.2pt/1.3 var(--f-mono);letter-spacing:.09em;text-transform:uppercase;
+  color:var(--soft);margin-top:1.6mm}
+
+/* ---------- sections ---------- */
+h2.sec{font-size:19pt;letter-spacing:-.012em;padding-bottom:2.4mm;
+  border-bottom:1.6pt solid var(--ink);margin-bottom:5mm}
+.stand{font-size:11pt;line-height:1.5;color:var(--mid);max-width:62ch;margin-bottom:6mm}
+.stand b{color:var(--ink)}
+figure{margin:0 0 6mm}
+figcaption{font:7.8pt/1.46 var(--f-mono);color:var(--soft);margin-top:2.4mm;max-width:86%}
+figcaption b{color:var(--mid);font-weight:700}
+.cap{font:7.8pt/1.42 var(--f-mono);color:var(--soft);margin-top:2.2mm}
+.fig,.map,.orc{width:100%;height:auto;display:block}
+.bl{font:7.4pt var(--f-mono);fill:var(--ink)}
+.bv{font:7.2pt var(--f-mono);fill:var(--mid)}
+.b1{fill:var(--s1)} .b2{fill:var(--s2)}
+.legend{display:flex;gap:6mm;font:7.8pt var(--f-mono);color:var(--mid);margin-top:2mm}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:2mm}
+.cap{fill:var(--soft);font:7.6pt var(--f-mono)}
+
+/* oracle strip */
+.ob{fill:var(--accent)} .ot{font:700 8.4pt var(--f-mono);fill:#fff}
+.oo{fill:none;stroke:var(--firm);stroke-width:1}
+.oot{font:8.2pt var(--f-body);fill:var(--ink)}
+.oa{stroke:var(--firm);stroke-width:1.1;fill:none}
+.oc{font:6.6pt var(--f-mono);fill:var(--soft)}
+
+/* composition map */
+.mb{fill:var(--panel);stroke:var(--firm);stroke-width:1}
+.mb2{fill:var(--sunk);stroke:var(--accent);stroke-width:1.1}
+.mt{font:700 8.6pt var(--f-mono);fill:var(--ink)}
+.ml{font:6.6pt var(--f-mono);fill:var(--soft);letter-spacing:.14em}
+.lane{stroke:var(--rule);stroke-width:.6;fill:none}
+.ar,.ar2,.ar3,.ar4{stroke:var(--s2);stroke-width:1.1;fill:none}
+.ar3,.ar4{stroke:var(--accent);stroke-dasharray:3 2}
+.an{font:6.8pt var(--f-mono);fill:var(--soft)}
+
+/* ---------- repo cards ---------- */
+.grp{margin-bottom:7mm;page-break-inside:avoid}
+.grp h2{font-size:13.6pt;color:var(--accent)}
+.gb{font:8.4pt var(--f-mono);color:var(--soft);margin:.8mm 0 4mm}
+.card{border:1px solid var(--rule);border-left:2.4pt solid var(--accent);
+  border-radius:3px;padding:3.6mm 4mm;margin-bottom:3.4mm;background:var(--paper);
+  page-break-inside:avoid}
+.ch{display:flex;align-items:baseline;gap:3mm;flex-wrap:wrap;margin-bottom:2.4mm}
+.ch h3{font-size:12.6pt;font-family:var(--f-mono);letter-spacing:-.01em}
+.cb{font-size:9.6pt;color:var(--mid)}
+.cn{margin-left:auto;font:7.4pt var(--f-mono);color:var(--soft);
+  font-variant-numeric:tabular-nums}
+.card dl{display:grid;grid-template-columns:27mm 1fr;gap:1.1mm 3mm;margin:2.6mm 0 0}
+.card dt{font:600 7.2pt var(--f-mono);letter-spacing:.08em;text-transform:uppercase;
+  color:var(--soft);padding-top:.5mm}
+.card dd{margin:0;font-size:9.4pt;color:var(--mid)}
+.card dd.res{font-family:var(--f-mono);font-size:8.4pt;color:var(--accent)}
+.prog{display:inline-block;width:26mm;height:4px;background:var(--sunk);
+  border-radius:2px;margin-left:2mm;vertical-align:middle;overflow:hidden}
+.prog span{display:block;height:100%;background:var(--s1)}
+
+/* ---------- bugs ---------- */
+.bug{border-top:1px solid var(--rule);padding:2.6mm 0;page-break-inside:avoid}
+.bh{display:flex;gap:2.6mm;align-items:baseline;margin-bottom:.8mm}
+.brepo{font:700 7.6pt var(--f-mono);color:var(--accent);min-width:19mm}
+.bt{font:700 10pt var(--f-disp)}
+.bug p{margin:0;font-size:9.2pt;color:var(--mid)}
+.note{border:1px solid var(--s2);border-left-width:2.4pt;background:#fbf4ee;
+  padding:3mm 3.6mm;margin:5mm 0;page-break-inside:avoid}
+.note .k{font:600 7.4pt var(--f-mono);letter-spacing:.1em;text-transform:uppercase;
+  color:var(--s2);display:block;margin-bottom:1.4mm}
+.note p{font-size:9.4pt;margin:0 0 .5em}
+.quiet{border:1px solid var(--firm);background:var(--panel);padding:3mm 3.6mm;
+  margin:5mm 0;page-break-inside:avoid}
+.quiet .k{font:600 7.4pt var(--f-mono);letter-spacing:.1em;text-transform:uppercase;
+  color:var(--accent);display:block;margin-bottom:1.4mm}
+.quiet p{font-size:9.4pt;margin:0 0 .5em}
+table{width:100%;border-collapse:collapse;font-size:8.8pt;margin:3mm 0}
+th{text-align:left;font:600 7.2pt var(--f-mono);letter-spacing:.08em;
+  text-transform:uppercase;color:var(--soft);border-bottom:1px solid var(--firm);
+  padding:1.6mm 2mm}
+td{padding:1.5mm 2mm;border-bottom:1px solid var(--rule);color:var(--mid)}
+td:first-child{font-family:var(--f-mono);color:var(--ink);font-size:8.4pt}
+.foot{font:7.8pt/1.5 var(--f-mono);color:var(--soft);border-top:1px solid var(--rule);
+  padding-top:3mm;margin-top:7mm}
+</style></head><body>
+
+<!-- ============ cover ============ -->
+<section class="sheet cover">
+  <p class="eyebrow">Systems engineering portfolio &middot; Linux / FOSS</p>
+  <h1>Eighteen programs, and something outside each one that decides if it is right.</h1>
+  <p class="lede">Every project here is built against an <b>external oracle</b> &mdash; gcc
+  and clang, the Linux kernel, <code>dash</code>, GNU tar, readelf, SQLite, Python's
+  own regex engine. Not one of them is the judge of its own correctness. That
+  constraint is the whole method, and it is why
+  <b>10 of the 18 defects recorded here were in the test harness rather than
+  in the code</b>.</p>
+  <div class="who placeholder">[ your name &mdash; rebuild with NAME="..." to set it ]</div>
+  
+  <div class="tiles">
+    <div class="tile"><div class="v">18</div><div class="k">repositories</div></div>
+    <div class="tile"><div class="v">272</div><div class="k">commits</div></div>
+    <div class="tile"><div class="v">18,703</div><div class="k">lines of source</div></div>
+    <div class="tile"><div class="v">8,770</div><div class="k">lines of tests</div></div>
+    <div class="tile"><div class="v">18/18</div><div class="k">suites green</div></div>
+  </div>
+  <p class="cap" style="margin-top:7mm">Every figure in this document is generated from the
+  repositories themselves: commit counts from <code>git</code>, line counts from the files,
+  test counts from running each suite. Nothing is transcribed by hand.</p>
+</section>
+
+<!-- ============ method ============ -->
+<section class="sheet">
+  <h2 class="sec">The method</h2>
+  <p class="stand">A test you wrote, checking code you wrote, against a number you
+  worked out yourself, proves that you were consistent. It does not prove you were
+  right. <b>Every project here is measured against an authority it does not
+  control.</b></p>
+
+  <figure>
+    <svg class="map" viewBox="0 0 760 268" role="img" aria-label="How the eighteen repositories compose"><text x="0" y="39" class="ml">TOOLCHAIN</text><rect x="78" y="22" width="66" height="26" rx="3" class="mb"/><text x="111.0" y="39.5" class="mt" text-anchor="middle">cc</text><rect x="214" y="22" width="66" height="26" rx="3" class="mb"/><text x="247.0" y="39.5" class="mt" text-anchor="middle">lnk</text><rect x="296" y="22" width="74" height="26" rx="3" class="mb"/><text x="333.0" y="39.5" class="mt" text-anchor="middle">wasmi</text><rect x="386" y="22" width="66" height="26" rx="3" class="mb"/><text x="419.0" y="39.5" class="mt" text-anchor="middle">psh</text><path d="M148 35 H210" class="ar"/><path d="M204 31 L210 35 L204 39" class="ar"/><text x="179.0" y="17" class="an" text-anchor="middle">links output of</text><path d="M0 74 H760" class="lane"/><text x="0" y="113" class="ml">FORMATS</text><rect x="78" y="96" width="78" height="26" rx="3" class="mb"/><text x="117.0" y="113.5" class="mt" text-anchor="middle">inflate</text><rect x="226" y="96" width="66" height="26" rx="3" class="mb"/><text x="259.0" y="113.5" class="mt" text-anchor="middle">tarx</text><rect x="308" y="96" width="66" height="26" rx="3" class="mb"/><text x="341.0" y="113.5" class="mt" text-anchor="middle">sqlr</text><rect x="390" y="96" width="78" height="26" rx="3" class="mb"/><text x="429.0" y="113.5" class="mt" text-anchor="middle">vtparse</text><rect x="484" y="96" width="92" height="26" rx="3" class="mb"/><text x="530.0" y="113.5" class="mt" text-anchor="middle">dwarfdump</text><path d="M160 109 H222" class="ar"/><path d="M216 105 L222 109 L216 113" class="ar"/><text x="191.0" y="91" class="an" text-anchor="middle">compresses for</text><text x="584" y="113" class="an">&#8594; prof unwinds with this</text><path d="M0 148 H760" class="lane"/><text x="0" y="187" class="ml">SYSTEMS</text><rect x="78" y="170" width="72" height="26" rx="3" class="mb"/><text x="114.0" y="187.5" class="mt" text-anchor="middle">walkv</text><rect x="166" y="170" width="66" height="26" rx="3" class="mb"/><text x="199.0" y="187.5" class="mt" text-anchor="middle">slab</text><rect x="248" y="170" width="66" height="26" rx="3" class="mb"/><text x="281.0" y="187.5" class="mt" text-anchor="middle">jail</text><rect x="330" y="170" width="60" height="26" rx="3" class="mb"/><text x="360.0" y="187.5" class="mt" text-anchor="middle">rx</text><rect x="406" y="170" width="70" height="26" rx="3" class="mb"/><text x="441.0" y="187.5" class="mt" text-anchor="middle">trace</text><rect x="492" y="170" width="66" height="26" rx="3" class="mb"/><text x="525.0" y="187.5" class="mt" text-anchor="middle">prof</text><path d="M0 214 H760" class="lane"/><text x="0" y="253" class="ml">PROCESS</text><rect x="78" y="236" width="92" height="26" rx="3" class="mb2"/><text x="124.0" y="253.5" class="mt" text-anchor="middle">unrepro</text><rect x="186" y="236" width="88" height="26" rx="3" class="mb2"/><text x="230.0" y="253.5" class="mt" text-anchor="middle">srcdiff</text><rect x="290" y="236" width="92" height="26" rx="3" class="mb2"/><text x="336.0" y="253.5" class="mt" text-anchor="middle">commitq</text></svg>
+    <figcaption>How the eighteen compose. Each arrow is a dependency recorded in a
+    PLAN.md. The three process tools in the bottom lane act on all the others:
+    <b>unrepro</b> found a real reproducibility defect in eight of the eighteen,
+    <b>commitq</b> gates every commit in all of them, and <b>srcdiff</b> audits
+    published artifacts against the repositories they claim to come from.</figcaption>
+  </figure>
+
+  <div class="quiet"><span class="k">Why this matters more than it sounds</span>
+  <p>The first run of almost every harness in this project passed. The useful
+  question is never &ldquo;do my tests pass&rdquo; but <b>&ldquo;have I watched this
+  harness fail?&rdquo;</b> Where that question got asked, it usually turned out the
+  answer was no &mdash; and the suite had been reporting success because it was
+  silently doing nothing.</p></div>
+
+  <figure>
+    <svg class="fig" viewBox="0 0 740 56" role="img"
+ aria-label="10 of 18 recorded defects were in the test harness">
+ <rect x="0" y="12" width="327.1" height="22" rx="3" class="b2"/>
+ <rect x="331.1" y="12" width="408.9" height="22" rx="3" class="b1"/>
+ <text x="0" y="8" class="bv">in the code &mdash; 8</text>
+ <text x="331.1" y="8" class="bv">in the thing meant to test the code &mdash; 10</text>
+ <text x="0" y="50" class="cap">Defects recorded in commit messages and READMEs across all
+ eighteen repositories. Counted once per root cause.</text>
+</svg>
+  </figure>
+
+</section>
+
+<section class="sheet">
+  <h2 class="sec">Scale</h2>
+  <figure>
+    <svg class="fig" viewBox="0 0 740 396" role="img" aria-label="Commits per repository"><text x="84" y="12" class="bl" text-anchor="end">unrepro</text><rect x="92" y="0" width="592.0" height="15" rx="3" class="b1"/><text x="691.0" y="12" class="bv">30</text><text x="84" y="34" class="bl" text-anchor="end">wasmi</text><rect x="92" y="22" width="552.5" height="15" rx="3" class="b1"/><text x="651.5" y="34" class="bv">28</text><text x="84" y="56" class="bl" text-anchor="end">psh</text><rect x="92" y="44" width="394.7" height="15" rx="3" class="b1"/><text x="493.7" y="56" class="bv">20</text><text x="84" y="78" class="bl" text-anchor="end">inflate</text><rect x="92" y="66" width="374.9" height="15" rx="3" class="b1"/><text x="473.9" y="78" class="bv">19</text><text x="84" y="100" class="bl" text-anchor="end">jail</text><rect x="92" y="88" width="374.9" height="15" rx="3" class="b1"/><text x="473.9" y="100" class="bv">19</text><text x="84" y="122" class="bl" text-anchor="end">lnk</text><rect x="92" y="110" width="374.9" height="15" rx="3" class="b1"/><text x="473.9" y="122" class="bv">19</text><text x="84" y="144" class="bl" text-anchor="end">prof</text><rect x="92" y="132" width="374.9" height="15" rx="3" class="b1"/><text x="473.9" y="144" class="bv">19</text><text x="84" y="166" class="bl" text-anchor="end">dwarfdump</text><rect x="92" y="154" width="355.2" height="15" rx="3" class="b1"/><text x="454.2" y="166" class="bv">18</text><text x="84" y="188" class="bl" text-anchor="end">vtparse</text><rect x="92" y="176" width="355.2" height="15" rx="3" class="b1"/><text x="454.2" y="188" class="bv">18</text><text x="84" y="210" class="bl" text-anchor="end">slab</text><rect x="92" y="198" width="335.5" height="15" rx="3" class="b1"/><text x="434.5" y="210" class="bv">17</text><text x="84" y="232" class="bl" text-anchor="end">tarx</text><rect x="92" y="220" width="335.5" height="15" rx="3" class="b1"/><text x="434.5" y="232" class="bv">17</text><text x="84" y="254" class="bl" text-anchor="end">sqlr</text><rect x="92" y="242" width="315.7" height="15" rx="3" class="b1"/><text x="414.7" y="254" class="bv">16</text><text x="84" y="276" class="bl" text-anchor="end">cc</text><rect x="92" y="264" width="197.3" height="15" rx="3" class="b1"/><text x="296.3" y="276" class="bv">10</text><text x="84" y="298" class="bl" text-anchor="end">commitq</text><rect x="92" y="286" width="98.7" height="15" rx="3" class="b1"/><text x="197.7" y="298" class="bv">5</text><text x="84" y="320" class="bl" text-anchor="end">rx</text><rect x="92" y="308" width="98.7" height="15" rx="3" class="b1"/><text x="197.7" y="320" class="bv">5</text><text x="84" y="342" class="bl" text-anchor="end">walkv</text><rect x="92" y="330" width="98.7" height="15" rx="3" class="b1"/><text x="197.7" y="342" class="bv">5</text><text x="84" y="364" class="bl" text-anchor="end">srcdiff</text><rect x="92" y="352" width="78.9" height="15" rx="3" class="b1"/><text x="177.9" y="364" class="bv">4</text><text x="84" y="386" class="bl" text-anchor="end">trace</text><rect x="92" y="374" width="59.2" height="15" rx="3" class="b1"/><text x="158.2" y="386" class="bv">3</text></svg>
+    <figcaption>Commits per repository. Granularity is deliberate: every commit builds,
+    verified by removing build artifacts and rebuilding each one in turn.</figcaption>
+  </figure>
+</section>
+
+<!-- ============ loc ============ -->
+<section class="sheet">
+  <h2 class="sec">Source against tests</h2>
+  <p class="stand">8,770 lines of tests to 18,703 of source. The ratio is the point:
+  in several of these the harness <b>is</b> the project, and the program under test is
+  scaffolding for it.</p>
+  <figure>
+    <svg class="fig" viewBox="0 0 740 522" role="img" aria-label="Source and test lines per repository"><text x="84" y="10" class="bl" text-anchor="end">vtparse</text><rect x="92" y="0" width="562.0" height="9" rx="2.5" class="b1"/><rect x="92" y="11" width="259.6" height="9" rx="2.5" class="b2"/><text x="661.0" y="11" class="bv">2,260 / 1,044</text><text x="84" y="39" class="bl" text-anchor="end">cc</text><rect x="92" y="29" width="560.3" height="9" rx="2.5" class="b1"/><rect x="92" y="40" width="85.0" height="9" rx="2.5" class="b2"/><text x="659.3" y="40" class="bv">2,253 / 342</text><text x="84" y="68" class="bl" text-anchor="end">psh</text><rect x="92" y="58" width="486.9" height="9" rx="2.5" class="b1"/><rect x="92" y="69" width="152.4" height="9" rx="2.5" class="b2"/><text x="585.9" y="69" class="bv">1,958 / 613</text><text x="84" y="97" class="bl" text-anchor="end">dwarfdump</text><rect x="92" y="87" width="455.3" height="9" rx="2.5" class="b1"/><rect x="92" y="98" width="118.4" height="9" rx="2.5" class="b2"/><text x="554.3" y="98" class="bv">1,831 / 476</text><text x="84" y="126" class="bl" text-anchor="end">wasmi</text><rect x="92" y="116" width="265.8" height="9" rx="2.5" class="b1"/><rect x="92" y="127" width="263.1" height="9" rx="2.5" class="b2"/><text x="364.8" y="127" class="bv">1,069 / 1,058</text><text x="84" y="155" class="bl" text-anchor="end">sqlr</text><rect x="92" y="145" width="312.3" height="9" rx="2.5" class="b1"/><rect x="92" y="156" width="175.8" height="9" rx="2.5" class="b2"/><text x="411.3" y="156" class="bv">1,256 / 707</text><text x="84" y="184" class="bl" text-anchor="end">tarx</text><rect x="92" y="174" width="293.7" height="9" rx="2.5" class="b1"/><rect x="92" y="185" width="106.9" height="9" rx="2.5" class="b2"/><text x="392.7" y="185" class="bv">1,181 / 430</text><text x="84" y="213" class="bl" text-anchor="end">slab</text><rect x="92" y="203" width="165.9" height="9" rx="2.5" class="b1"/><rect x="92" y="214" width="233.5" height="9" rx="2.5" class="b2"/><text x="332.5" y="214" class="bv">667 / 939</text><text x="84" y="242" class="bl" text-anchor="end">unrepro</text><rect x="92" y="232" width="236.2" height="9" rx="2.5" class="b1"/><rect x="92" y="243" width="108.4" height="9" rx="2.5" class="b2"/><text x="335.2" y="243" class="bv">950 / 436</text><text x="84" y="271" class="bl" text-anchor="end">commitq</text><rect x="92" y="261" width="246.4" height="9" rx="2.5" class="b1"/><rect x="92" y="272" width="75.3" height="9" rx="2.5" class="b2"/><text x="345.4" y="272" class="bv">991 / 303</text><text x="84" y="300" class="bl" text-anchor="end">lnk</text><rect x="92" y="290" width="212.6" height="9" rx="2.5" class="b1"/><rect x="92" y="301" width="87.8" height="9" rx="2.5" class="b2"/><text x="311.6" y="301" class="bv">855 / 353</text><text x="84" y="329" class="bl" text-anchor="end">inflate</text><rect x="92" y="319" width="183.3" height="9" rx="2.5" class="b1"/><rect x="92" y="330" width="92.5" height="9" rx="2.5" class="b2"/><text x="282.3" y="330" class="bv">737 / 372</text><text x="84" y="358" class="bl" text-anchor="end">prof</text><rect x="92" y="348" width="187.0" height="9" rx="2.5" class="b1"/><rect x="92" y="359" width="63.7" height="9" rx="2.5" class="b2"/><text x="286.0" y="359" class="bv">752 / 256</text><text x="84" y="387" class="bl" text-anchor="end">srcdiff</text><rect x="92" y="377" width="117.6" height="9" rx="2.5" class="b1"/><rect x="92" y="388" width="95.2" height="9" rx="2.5" class="b2"/><text x="216.6" y="388" class="bv">473 / 383</text><text x="84" y="416" class="bl" text-anchor="end">jail</text><rect x="92" y="406" width="95.5" height="9" rx="2.5" class="b1"/><rect x="92" y="417" width="99.0" height="9" rx="2.5" class="b2"/><text x="198.0" y="417" class="bv">384 / 398</text><text x="84" y="445" class="bl" text-anchor="end">rx</text><rect x="92" y="435" width="101.2" height="9" rx="2.5" class="b1"/><rect x="92" y="446" width="46.5" height="9" rx="2.5" class="b2"/><text x="200.2" y="446" class="bv">407 / 187</text><text x="84" y="474" class="bl" text-anchor="end">trace</text><rect x="92" y="464" width="87.3" height="9" rx="2.5" class="b1"/><rect x="92" y="475" width="57.2" height="9" rx="2.5" class="b2"/><text x="186.3" y="475" class="bv">351 / 230</text><text x="84" y="503" class="bl" text-anchor="end">walkv</text><rect x="92" y="493" width="81.6" height="9" rx="2.5" class="b1"/><rect x="92" y="504" width="60.4" height="9" rx="2.5" class="b2"/><text x="180.6" y="504" class="bv">328 / 243</text></svg>
+    <div class="legend"><span><i style="background:#0e8f85"></i>source</span>
+      <span><i style="background:#a1551d"></i>tests</span></div>
+    <figcaption>Lines of source and lines of test per repository, sorted by total.
+    Labels read source / tests.</figcaption>
+  </figure>
+
+  <div class="note"><span class="k">A number worth distrusting</span>
+  <p>Test <em>counts</em> are not comparable between these repos and are deliberately
+  not charted together. <code>wasmi</code>'s 11,833 are generated arithmetic cases;
+  <code>jail</code>'s 50 are hand-written assertions against kernel behaviour, and each
+  one took longer to get right than a thousand of the former. Plotting them on one
+  axis would imply a comparison that does not exist.</p></div>
+
+  <table>
+    <thead><tr><th>repo</th><th>what the suite actually reports</th><th>plan</th></tr></thead>
+    <tbody><tr><td>cc</td><td>168 passed, 0 failed</td><td>7/22</td></tr><tr><td>commitq</td><td>57 passed, 0 failed</td><td>5/16</td></tr><tr><td>dwarfdump</td><td>65 passed, 0 failed</td><td>16/27</td></tr><tr><td>inflate</td><td>159 passed, 0 failed</td><td>19/30</td></tr><tr><td>jail</td><td>60 passed, 0 failed, 0 skipped</td><td>12/23</td></tr><tr><td>lnk</td><td>29 passed, 0 failed</td><td>18/31</td></tr><tr><td>prof</td><td>15 passed, 0 failed, 0 skipped</td><td>18/30</td></tr><tr><td>psh</td><td>185 agree, 0 disagree, 0 skipped</td><td>19/30</td></tr><tr><td>rx</td><td>3000 agree, 0 disagree, 0 skipped  (seed=0)</td><td>5/16</td></tr><tr><td>slab</td><td>30 passed, 0 failed</td><td>17/29</td></tr><tr><td>sqlr</td><td>114 agree, 0 disagree</td><td>17/28</td></tr><tr><td>srcdiff</td><td>25 passed, 0 failed</td><td>6/17</td></tr><tr><td>tarx</td><td>118 passed, 0 failed</td><td>7/19</td></tr><tr><td>trace</td><td>23 passed, 0 failed</td><td>9/19</td></tr><tr><td>unrepro</td><td>101 passed, 0 failed</td><td>12/24</td></tr><tr><td>vtparse</td><td>98 passed, 0 failed</td><td>9/20</td></tr><tr><td>walkv</td><td>163 scenarios checked, 0 failed</td><td>9/18</td></tr><tr><td>wasmi</td><td>11833 passed, 0 failed</td><td>25/35</td></tr></tbody>
+  </table>
+</section>
+
+<!-- ============ repos ============ -->
+<section class="sheet">
+  <h2 class="sec">The repositories</h2>
+  <p class="stand">Grouped by what kind of thing they have to survive. Each card names
+  the authority that decides whether it is correct, and the one property that, if
+  violated, means the project failed.</p>
+  <section class="grp"><h2>Toolchain</h2><p class="gb">Programs that build or run other programs.</p><article class="card">
+  <header class="ch">
+    <h3>wasmi</h3>
+    <span class="cb">WebAssembly interpreter</span>
+    <span class="cn">28 commits &middot; 1,069 lines &middot; 1,058 test lines</span>
+  </header>
+  <svg class="orc" viewBox="0 0 560 34" role="img"
+ aria-label="wasmi is checked against Expectations computed independently in Python">
+ <rect x="1" y="7" width="118" height="21" rx="3" class="ob"/>
+ <text x="60" y="21.5" class="ot" text-anchor="middle">wasmi</text>
+ <path d="M126 17.5 H170" class="oa"/>
+ <path d="M164 13.5 L170 17.5 L164 21.5" class="oa"/>
+ <rect x="178" y="3" width="381" height="28" rx="3" class="oo"/>
+ <text x="188" y="21" class="oot">Expectations computed independently in Python</text>
+</svg>
+  <dl>
+    <dt>Hard invariant</dt><dd>A malformed module is rejected or traps, never corrupts the host</dd>
+    <dt>Result</dt><dd class="res">11833 passed, 0 failed</dd>
+    <dt>Plan</dt><dd>25 done, 10 queued
+      <span class="prog"><span style="width:71%"></span></span></dd>
+  </dl>
+</article><article class="card">
+  <header class="ch">
+    <h3>psh</h3>
+    <span class="cb">POSIX shell subset</span>
+    <span class="cn">20 commits &middot; 1,958 lines &middot; 613 test lines</span>
+  </header>
+  <svg class="orc" viewBox="0 0 560 34" role="img"
+ aria-label="psh is checked against dash: stdout AND exit status">
+ <rect x="1" y="7" width="118" height="21" rx="3" class="ob"/>
+ <text x="60" y="21.5" class="ot" text-anchor="middle">psh</text>
+ <path d="M126 17.5 H170" class="oa"/>
+ <path d="M164 13.5 L170 17.5 L164 21.5" class="oa"/>
+ <rect x="178" y="3" width="381" height="28" rx="3" class="oo"/>
+ <text x="188" y="21" class="oot">dash: stdout AND exit status</text>
+</svg>
+  <dl>
+    <dt>Hard invariant</dt><dd>Identical stdout and status to dash on every corpus script</dd>
+    <dt>Result</dt><dd class="res">185 agree, 0 disagree, 0 skipped</dd>
+    <dt>Plan</dt><dd>19 done, 11 queued
+      <span class="prog"><span style="width:63%"></span></span></dd>
+  </dl>
+</article><article class="card">
+  <header class="ch">
+    <h3>lnk</h3>
+    <span class="cb">Static ELF linker</span>
+    <span class="cn">19 commits &middot; 855 lines &middot; 353 test lines</span>
+  </header>
+  <svg class="orc" viewBox="0 0 560 34" role="img"
+ aria-label="lnk is checked against The kernel runs the binary, or it does not">
+ <rect x="1" y="7" width="118" height="21" rx="3" class="ob"/>
+ <text x="60" y="21.5" class="ot" text-anchor="middle">lnk</text>
+ <path d="M126 17.5 H170" class="oa"/>
+ <path d="M164 13.5 L170 17.5 L164 21.5" class="oa"/>
+ <rect x="178" y="3" width="381" height="28" rx="3" class="oo"/>
+ <text x="188" y="21" class="oot">The kernel runs the binary, or it does not</text>
+</svg>
+  <dl>
+    <dt>Hard invariant</dt><dd>Every executable emitted runs, or we refused to emit it</dd>
+    <dt>Result</dt><dd class="res">29 passed, 0 failed</dd>
+    <dt>Plan</dt><dd>18 done, 13 queued
+      <span class="prog"><span style="width:58%"></span></span></dd>
+  </dl>
+</article><article class="card">
+  <header class="ch">
+    <h3>cc</h3>
+    <span class="cb">C compiler for x86-64</span>
+    <span class="cn">10 commits &middot; 2,253 lines &middot; 342 test lines</span>
+  </header>
+  <svg class="orc" viewBox="0 0 560 34" role="img"
+ aria-label="cc is checked against gcc AND clang must agree on every case">
+ <rect x="1" y="7" width="118" height="21" rx="3" class="ob"/>
+ <text x="60" y="21.5" class="ot" text-anchor="middle">cc</text>
+ <path d="M126 17.5 H170" class="oa"/>
+ <path d="M164 13.5 L170 17.5 L164 21.5" class="oa"/>
+ <rect x="178" y="3" width="381" height="28" rx="3" class="oo"/>
+ <text x="188" y="21" class="oot">gcc AND clang must agree on every case</text>
+</svg>
+  <dl>
+    <dt>Hard invariant</dt><dd>Self-host fixpoint: cmp cc2 cc3</dd>
+    <dt>Result</dt><dd class="res">168 passed, 0 failed</dd>
+    <dt>Plan</dt><dd>7 done, 15 queued
+      <span class="prog"><span style="width:31%"></span></span></dd>
+  </dl>
+</article></section><section class="grp"><h2>Formats &amp; parsers</h2><p class="gb">Programs that read a specification exactly.</p><article class="card">
+  <header class="ch">
+    <h3>inflate</h3>
+    <span class="cb">DEFLATE / gzip codec</span>
+    <span class="cn">19 commits &middot; 737 lines &middot; 372 test lines</span>
+  </header>
+  <svg class="orc" viewBox="0 0 560 34" role="img"
+ aria-label="inflate is checked against gzip -d accepts our output, both directions">
+ <rect x="1" y="7" width="118" height="21" rx="3" class="ob"/>
+ <text x="60" y="21.5" class="ot" text-anchor="middle">inflate</text>
+ <path d="M126 17.5 H170" class="oa"/>
+ <path d="M164 13.5 L170 17.5 L164 21.5" class="oa"/>
+ <rect x="178" y="3" width="381" height="28" rx="3" class="oo"/>
+ <text x="188" y="21" class="oot">gzip -d accepts our output, both directions</text>
+</svg>
+  <dl>
+    <dt>Hard invariant</dt><dd>gzip accepts all we emit; we decode all it emits</dd>
+    <dt>Result</dt><dd class="res">159 passed, 0 failed</dd>
+    <dt>Plan</dt><dd>19 done, 11 queued
+      <span class="prog"><span style="width:63%"></span></span></dd>
+  </dl>
+</article><article class="card">
+  <header class="ch">
+    <h3>dwarfdump</h3>
+    <span class="cb">DWARF debug-info parser</span>
+    <span class="cn">18 commits &middot; 1,831 lines &middot; 476 test lines</span>
+  </header>
+  <svg class="orc" viewBox="0 0 560 34" role="img"
+ aria-label="dwarfdump is checked against readelf --debug-dump">
+ <rect x="1" y="7" width="118" height="21" rx="3" class="ob"/>
+ <text x="60" y="21.5" class="ot" text-anchor="middle">dwarfdump</text>
+ <path d="M126 17.5 H170" class="oa"/>
+ <path d="M164 13.5 L170 17.5 L164 21.5" class="oa"/>
+ <rect x="178" y="3" width="381" height="28" rx="3" class="oo"/>
+ <text x="188" y="21" class="oot">readelf --debug-dump</text>
+</svg>
+  <dl>
+    <dt>Hard invariant</dt><dd>Every fact printed agrees with readelf</dd>
+    <dt>Result</dt><dd class="res">65 passed, 0 failed</dd>
+    <dt>Plan</dt><dd>16 done, 11 queued
+      <span class="prog"><span style="width:59%"></span></span></dd>
+  </dl>
+</article><article class="card">
+  <header class="ch">
+    <h3>vtparse</h3>
+    <span class="cb">VT500 parser and wcwidth</span>
+    <span class="cn">18 commits &middot; 2,260 lines &middot; 1,044 test lines</span>
+  </header>
+  <svg class="orc" viewBox="0 0 560 34" role="img"
+ aria-label="vtparse is checked against The published DEC state table, all 3584 pairs">
+ <rect x="1" y="7" width="118" height="21" rx="3" class="ob"/>
+ <text x="60" y="21.5" class="ot" text-anchor="middle">vtparse</text>
+ <path d="M126 17.5 H170" class="oa"/>
+ <path d="M164 13.5 L170 17.5 L164 21.5" class="oa"/>
+ <rect x="178" y="3" width="381" height="28" rx="3" class="oo"/>
+ <text x="188" y="21" class="oot">The published DEC state table, all 3584 pairs</text>
+</svg>
+  <dl>
+    <dt>Hard invariant</dt><dd>Never allocates, never reads past its byte, matches the table</dd>
+    <dt>Result</dt><dd class="res">98 passed, 0 failed</dd>
+    <dt>Plan</dt><dd>9 done, 11 queued
+      <span class="prog"><span style="width:45%"></span></span></dd>
+  </dl>
+</article><article class="card">
+  <header class="ch">
+    <h3>tarx</h3>
+    <span class="cb">tar reader and writer</span>
+    <span class="cn">17 commits &middot; 1,181 lines &middot; 430 test lines</span>
+  </header>
+  <svg class="orc" viewBox="0 0 560 34" role="img"
+ aria-label="tarx is checked against GNU tar, bidirectional interop">
+ <rect x="1" y="7" width="118" height="21" rx="3" class="ob"/>
+ <text x="60" y="21.5" class="ot" text-anchor="middle">tarx</text>
+ <path d="M126 17.5 H170" class="oa"/>
+ <path d="M164 13.5 L170 17.5 L164 21.5" class="oa"/>
+ <rect x="178" y="3" width="381" height="28" rx="3" class="oo"/>
+ <text x="188" y="21" class="oot">GNU tar, bidirectional interop</text>
+</svg>
+  <dl>
+    <dt>Hard invariant</dt><dd>GNU tar agrees both ways, and no member escapes the destination</dd>
+    <dt>Result</dt><dd class="res">118 passed, 0 failed</dd>
+    <dt>Plan</dt><dd>7 done, 12 queued
+      <span class="prog"><span style="width:36%"></span></span></dd>
+  </dl>
+</article><article class="card">
+  <header class="ch">
+    <h3>sqlr</h3>
+    <span class="cb">SQLite file-format reader</span>
+    <span class="cn">16 commits &middot; 1,256 lines &middot; 707 test lines</span>
+  </header>
+  <svg class="orc" viewBox="0 0 560 34" role="img"
+ aria-label="sqlr is checked against libsqlite3 itself">
+ <rect x="1" y="7" width="118" height="21" rx="3" class="ob"/>
+ <text x="60" y="21.5" class="ot" text-anchor="middle">sqlr</text>
+ <path d="M126 17.5 H170" class="oa"/>
+ <path d="M164 13.5 L170 17.5 L164 21.5" class="oa"/>
+ <rect x="178" y="3" width="381" height="28" rx="3" class="oo"/>
+ <text x="188" y="21" class="oot">libsqlite3 itself</text>
+</svg>
+  <dl>
+    <dt>Hard invariant</dt><dd>Byte-identical output to SQLite; malformed input errors, never crashes</dd>
+    <dt>Result</dt><dd class="res">114 agree, 0 disagree</dd>
+    <dt>Plan</dt><dd>17 done, 11 queued
+      <span class="prog"><span style="width:60%"></span></span></dd>
+  </dl>
+</article></section><section class="grp"><h2>Systems</h2><p class="gb">Programs that must survive the machine misbehaving.</p><article class="card">
+  <header class="ch">
+    <h3>jail</h3>
+    <span class="cb">Landlock sandbox</span>
+    <span class="cn">19 commits &middot; 384 lines &middot; 398 test lines</span>
+  </header>
+  <svg class="orc" viewBox="0 0 560 34" role="img"
+ aria-label="jail is checked against The kernel: denied means EACCES, verified">
+ <rect x="1" y="7" width="118" height="21" rx="3" class="ob"/>
+ <text x="60" y="21.5" class="ot" text-anchor="middle">jail</text>
+ <path d="M126 17.5 H170" class="oa"/>
+ <path d="M164 13.5 L170 17.5 L164 21.5" class="oa"/>
+ <rect x="178" y="3" width="381" height="28" rx="3" class="oo"/>
+ <text x="188" y="21" class="oot">The kernel: denied means EACCES, verified</text>
+</svg>
+  <dl>
+    <dt>Hard invariant</dt><dd>An ungranted path is never reachable; the child cannot relax itself</dd>
+    <dt>Result</dt><dd class="res">60 passed, 0 failed, 0 skipped</dd>
+    <dt>Plan</dt><dd>12 done, 11 queued
+      <span class="prog"><span style="width:52%"></span></span></dd>
+  </dl>
+</article><article class="card">
+  <header class="ch">
+    <h3>slab</h3>
+    <span class="cb">LD_PRELOAD malloc replacement</span>
+    <span class="cn">17 commits &middot; 667 lines &middot; 939 test lines</span>
+  </header>
+  <svg class="orc" viewBox="0 0 560 34" role="img"
+ aria-label="slab is checked against Real programs must produce identical output">
+ <rect x="1" y="7" width="118" height="21" rx="3" class="ob"/>
+ <text x="60" y="21.5" class="ot" text-anchor="middle">slab</text>
+ <path d="M126 17.5 H170" class="oa"/>
+ <path d="M164 13.5 L170 17.5 L164 21.5" class="oa"/>
+ <rect x="178" y="3" width="381" height="28" rx="3" class="oo"/>
+ <text x="188" y="21" class="oot">Real programs must produce identical output</text>
+</svg>
+  <dl>
+    <dt>Hard invariant</dt><dd>Two live allocations never overlap; every pointer aligned</dd>
+    <dt>Result</dt><dd class="res">30 passed, 0 failed</dd>
+    <dt>Plan</dt><dd>17 done, 12 queued
+      <span class="prog"><span style="width:58%"></span></span></dd>
+  </dl>
+</article><article class="card">
+  <header class="ch">
+    <h3>rx</h3>
+    <span class="cb">Linear-time regex engine</span>
+    <span class="cn">5 commits &middot; 407 lines &middot; 187 test lines</span>
+  </header>
+  <svg class="orc" viewBox="0 0 560 34" role="img"
+ aria-label="rx is checked against Python's re module">
+ <rect x="1" y="7" width="118" height="21" rx="3" class="ob"/>
+ <text x="60" y="21.5" class="ot" text-anchor="middle">rx</text>
+ <path d="M126 17.5 H170" class="oa"/>
+ <path d="M164 13.5 L170 17.5 L164 21.5" class="oa"/>
+ <rect x="178" y="3" width="381" height="28" rx="3" class="oo"/>
+ <text x="188" y="21" class="oot">Python's re module</text>
+</svg>
+  <dl>
+    <dt>Hard invariant</dt><dd>A pc enters a thread list at most once per input position</dd>
+    <dt>Result</dt><dd class="res">3000 agree, 0 disagree, 0 skipped  (seed=0)</dd>
+    <dt>Plan</dt><dd>5 done, 11 queued
+      <span class="prog"><span style="width:31%"></span></span></dd>
+  </dl>
+</article><article class="card">
+  <header class="ch">
+    <h3>walkv</h3>
+    <span class="cb">Write-ahead-log key-value store</span>
+    <span class="cn">5 commits &middot; 328 lines &middot; 243 test lines</span>
+  </header>
+  <svg class="orc" viewBox="0 0 560 34" role="img"
+ aria-label="walkv is checked against A crash injected at every I/O boundary">
+ <rect x="1" y="7" width="118" height="21" rx="3" class="ob"/>
+ <text x="60" y="21.5" class="ot" text-anchor="middle">walkv</text>
+ <path d="M126 17.5 H170" class="oa"/>
+ <path d="M164 13.5 L170 17.5 L164 21.5" class="oa"/>
+ <rect x="178" y="3" width="381" height="28" rx="3" class="oo"/>
+ <text x="188" y="21" class="oot">A crash injected at every I/O boundary</text>
+</svg>
+  <dl>
+    <dt>Hard invariant</dt><dd>Recovered state is a prefix with no holes</dd>
+    <dt>Result</dt><dd class="res">163 scenarios checked, 0 failed</dd>
+    <dt>Plan</dt><dd>9 done, 9 queued
+      <span class="prog"><span style="width:50%"></span></span></dd>
+  </dl>
+</article></section><section class="grp"><h2>Observability</h2><p class="gb">Programs that watch other programs without disturbing them.</p><article class="card">
+  <header class="ch">
+    <h3>prof</h3>
+    <span class="cb">Sampling CPU profiler</span>
+    <span class="cn">19 commits &middot; 752 lines &middot; 256 test lines</span>
+  </header>
+  <svg class="orc" viewBox="0 0 560 34" role="img"
+ aria-label="prof is checked against A planted hot loop with known 10:1 ratios">
+ <rect x="1" y="7" width="118" height="21" rx="3" class="ob"/>
+ <text x="60" y="21.5" class="ot" text-anchor="middle">prof</text>
+ <path d="M126 17.5 H170" class="oa"/>
+ <path d="M164 13.5 L170 17.5 L164 21.5" class="oa"/>
+ <rect x="178" y="3" width="381" height="28" rx="3" class="oo"/>
+ <text x="188" y="21" class="oot">A planted hot loop with known 10:1 ratios</text>
+</svg>
+  <dl>
+    <dt>Hard invariant</dt><dd>Profiling does not change the profiled program</dd>
+    <dt>Result</dt><dd class="res">15 passed, 0 failed, 0 skipped</dd>
+    <dt>Plan</dt><dd>18 done, 12 queued
+      <span class="prog"><span style="width:60%"></span></span></dd>
+  </dl>
+</article><article class="card">
+  <header class="ch">
+    <h3>trace</h3>
+    <span class="cb">ptrace syscall tracer</span>
+    <span class="cn">3 commits &middot; 351 lines &middot; 230 test lines</span>
+  </header>
+  <svg class="orc" viewBox="0 0 560 34" role="img"
+ aria-label="trace is checked against strace -c and strace -f -c">
+ <rect x="1" y="7" width="118" height="21" rx="3" class="ob"/>
+ <text x="60" y="21.5" class="ot" text-anchor="middle">trace</text>
+ <path d="M126 17.5 H170" class="oa"/>
+ <path d="M164 13.5 L170 17.5 L164 21.5" class="oa"/>
+ <rect x="178" y="3" width="381" height="28" rx="3" class="oo"/>
+ <text x="188" y="21" class="oot">strace -c and strace -f -c</text>
+</svg>
+  <dl>
+    <dt>Hard invariant</dt><dd>Tracing does not change the traced program</dd>
+    <dt>Result</dt><dd class="res">23 passed, 0 failed</dd>
+    <dt>Plan</dt><dd>9 done, 10 queued
+      <span class="prog"><span style="width:47%"></span></span></dd>
+  </dl>
+</article></section><section class="grp"><h2>Supply chain &amp; process</h2><p class="gb">Programs that check the other programs.</p><article class="card">
+  <header class="ch">
+    <h3>unrepro</h3>
+    <span class="cb">Build-reproducibility differ</span>
+    <span class="cn">30 commits &middot; 950 lines &middot; 436 test lines</span>
+  </header>
+  <svg class="orc" viewBox="0 0 560 34" role="img"
+ aria-label="unrepro is checked against Planted causes, each asserting its diagnosis">
+ <rect x="1" y="7" width="118" height="21" rx="3" class="ob"/>
+ <text x="60" y="21.5" class="ot" text-anchor="middle">unrepro</text>
+ <path d="M126 17.5 H170" class="oa"/>
+ <path d="M164 13.5 L170 17.5 L164 21.5" class="oa"/>
+ <rect x="178" y="3" width="381" height="28" rx="3" class="oo"/>
+ <text x="188" y="21" class="oot">Planted causes, each asserting its diagnosis</text>
+</svg>
+  <dl>
+    <dt>Hard invariant</dt><dd>Never report clean on a build that is not reproducible</dd>
+    <dt>Result</dt><dd class="res">101 passed, 0 failed</dd>
+    <dt>Plan</dt><dd>12 done, 12 queued
+      <span class="prog"><span style="width:50%"></span></span></dd>
+  </dl>
+</article><article class="card">
+  <header class="ch">
+    <h3>commitq</h3>
+    <span class="cb">Multi-repo commit gate and GUI</span>
+    <span class="cn">5 commits &middot; 991 lines &middot; 303 test lines</span>
+  </header>
+  <svg class="orc" viewBox="0 0 560 34" role="img"
+ aria-label="commitq is checked against Throwaway repos in a temp directory">
+ <rect x="1" y="7" width="118" height="21" rx="3" class="ob"/>
+ <text x="60" y="21.5" class="ot" text-anchor="middle">commitq</text>
+ <path d="M126 17.5 H170" class="oa"/>
+ <path d="M164 13.5 L170 17.5 L164 21.5" class="oa"/>
+ <rect x="178" y="3" width="381" height="28" rx="3" class="oo"/>
+ <text x="188" y="21" class="oot">Throwaway repos in a temp directory</text>
+</svg>
+  <dl>
+    <dt>Hard invariant</dt><dd>No commit is ever created with a date other than now</dd>
+    <dt>Result</dt><dd class="res">57 passed, 0 failed</dd>
+    <dt>Plan</dt><dd>5 done, 11 queued
+      <span class="prog"><span style="width:31%"></span></span></dd>
+  </dl>
+</article><article class="card">
+  <header class="ch">
+    <h3>srcdiff</h3>
+    <span class="cb">Supply-chain artifact auditor</span>
+    <span class="cn">4 commits &middot; 473 lines &middot; 383 test lines</span>
+  </header>
+  <svg class="orc" viewBox="0 0 560 34" role="img"
+ aria-label="srcdiff is checked against Real xz upstream artifacts">
+ <rect x="1" y="7" width="118" height="21" rx="3" class="ob"/>
+ <text x="60" y="21.5" class="ot" text-anchor="middle">srcdiff</text>
+ <path d="M126 17.5 H170" class="oa"/>
+ <path d="M164 13.5 L170 17.5 L164 21.5" class="oa"/>
+ <rect x="178" y="3" width="381" height="28" rx="3" class="oo"/>
+ <text x="188" y="21" class="oot">Real xz upstream artifacts</text>
+</svg>
+  <dl>
+    <dt>Hard invariant</dt><dd>No false negatives in HIGH, few enough FPs to stay visible</dd>
+    <dt>Result</dt><dd class="res">25 passed, 0 failed</dd>
+    <dt>Plan</dt><dd>6 done, 11 queued
+      <span class="prog"><span style="width:35%"></span></span></dd>
+  </dl>
+</article></section>
+</section>
+
+<!-- ============ bugs ============ -->
+<section class="sheet">
+  <h2 class="sec">What went wrong in the harness</h2>
+  <p class="stand">These are the defects worth reading. In each case the code looked
+  fine, the suite was green, and <b>the thing that was broken was the thing meant to
+  find breakage.</b></p>
+  <div class="bug"><div class="bh"><span class="brepo">inflate</span><span class="bt"><code>make test-asan</code> could not fail</span></div><p>Reject tests assert exit code exactly 1; AddressSanitizer also exits 1. Found by deleting the classic <code>dist &gt; o-&gt;n</code> bounds check and watching 146 tests pass while ASan printed a heap overflow to stderr. Fixing the exit code revealed that every malformed input had also been leaking 192KB, invisible for the same reason.</p></div><div class="bug"><div class="bh"><span class="brepo">walkv</span><span class="bt">Half the crash matrix never crashed</span></div><p>In torn-write mode the <code>fsync</code> boundary called the injection hook and discarded its return value, so every fsync scenario ran to completion and reported a perfect result.</p></div><div class="bug"><div class="bh"><span class="brepo">walkv</span><span class="bt">Four planted defects, only one caught</span></div><p>Mutation testing showed the matrix crashed, recovered, verified and then <em>stopped</em> &mdash; nothing ever wrote after a recovery, so a subtly wrong recovery was unobservable. Adding that one scenario took the suite from 83 to 163 and the defect now fails 20 of them.</p></div><div class="bug"><div class="bh"><span class="brepo">tarx</span><span class="bt">Every symlink assertion was vacuous</span></div><p><code>diff -r</code> dereferences symbolic links, so the comparisons silently compared targets instead of links, and a dangling link aborted the diff outright.</p></div><div class="bug"><div class="bh"><span class="brepo">srcdiff</span><span class="bt">Sixteen false positives on a clean release</span></div><p>Against the genuine xz-5.4.5 tarball and its git tag, every HIGH finding was wrong &mdash; and each was an <code>m4/*.m4</code> file absent from git, the exact shape of the attack it exists to find. The real signal would have been one line in seventeen.</p></div><div class="bug"><div class="bh"><span class="brepo">dwarfdump</span><span class="bt">ASan's exit code collided with &ldquo;malformed input&rdquo;</span></div><p>Both are 1, so the robustness sweeps would have scored a genuine heap overflow as a clean diagnostic.</p></div><div class="bug"><div class="bh"><span class="brepo">unrepro</span><span class="bt">Reported REPRODUCIBLE because <code>make</code> did nothing</span></div><p>Pointed at four sibling repos it compared zero outputs and called them clean. Zero outputs is now <em>inconclusive</em>.</p></div><div class="bug"><div class="bh"><span class="brepo">commitq</span><span class="bt">The commit gate was not gating 12 of 18 repos</span></div><p>The test command was a hardcoded table of six names; everything else returned success, so two thirds of the project could be committed without running anything.</p></div><div class="bug"><div class="bh"><span class="brepo">slab</span><span class="bt">gcc deleted the oracle</span></div><p>At <code>-O2</code> gcc knows what <code>calloc</code> promises, so it proved the zero-checking loop could not observe a non-zero byte and removed it. An allocator that never zeroed anything passed cleanly.</p></div><div class="bug"><div class="bh"><span class="brepo">cc</span><span class="bt">Five hand-computed expectations were wrong</span></div><p>Each cost a detour through &ldquo;is this a codegen bug?&rdquo; The compiler was right every time. <code>t/addcase.sh</code> now takes the expected value from gcc and refuses the case if clang disagrees.</p></div>
+</section>
+
+<section class="sheet">
+  <h2 class="sec">What went wrong in the code</h2>
+  <p class="stand">Found by the oracles, never by re-reading the source. Each of these
+  produced plausible output and passed every check that existed at the time.</p>
+  <div class="bug"><div class="bh"><span class="brepo">rx</span><span class="bt">The linear-time guarantee was quietly broken</span></div><p>Injecting a start thread at every input position collided with the generation marks &mdash; and that dedup <em>is</em> the guarantee. The one bug that destroyed the project's only interesting property.</p></div><div class="bug"><div class="bh"><span class="brepo">lnk</span><span class="bt">A binary the kernel refused to run</span></div><p>File offset and virtual address were aligned independently. <code>BASE 0x400000</code> is divisible by every power of two up to 4MB, so they stayed in step by arithmetic luck until an 8MB-aligned array broke the congruence. The fix made the whole class unemittable rather than merely fixed.</p></div><div class="bug"><div class="bh"><span class="brepo">jail</span><span class="bt">A perfect sandbox applied to the wrong process</span></div><p>The rule-installing loop reused the argument parser's index, so <code>jail</code> built a flawless ruleset and then exec'd <code>--ro</code>. Every internal invariant held; only a real program reporting a real errno could see it.</p></div><div class="bug"><div class="bh"><span class="brepo">dwarfdump</span><span class="bt">Strings resolved to different real strings</span></div><p>clang emits <code>DW_AT_name</code> as <code>strx1</code> before declaring <code>str_offsets_base</code> on the same DIE. Every lookup succeeded, no error, no marker &mdash; the second unit was simply named <code>main.c</code> where readelf said <code>lib.c</code>.</p></div><div class="bug"><div class="bh"><span class="brepo">trace</span><span class="bt">A SIGTERM death reported as exit 0</span></div><p>After passing a signal through, the tracee was already running, so the next <code>PTRACE_SYSCALL</code> hit <code>ESRCH</code>. Reintroduced once by a later refactor and caught again immediately by the same test.</p></div><div class="bug"><div class="bh"><span class="brepo">prof</span><span class="bt">A race against the dynamic loader</span></div><p>A one-shot <code>/proc/PID/maps</code> snapshot raced <code>ld.so</code>, truncating libc frames non-deterministically.</p></div><div class="bug"><div class="bh"><span class="brepo">sqlr</span><span class="bt">A closing paren ended the column list</span></div><p>Depth was decremented and tested in the same iteration, so the <code>)</code> of <code>VARCHAR(10,2)</code> looked like the end of the CREATE statement. <code>SELECT *</code> returned one column of four, with no error.</p></div><div class="bug"><div class="bh"><span class="brepo">srcdiff</span><span class="bt">A funding link parsed as a repository</span></div><p><code>github.com/sponsors/hynek</code> resolved to owner <em>sponsors</em>. No offline test could reach it: the bug was in metadata resolution, and the tests all covered the comparison.</p></div>
+
+  <div class="quiet"><span class="k">How this is kept honest</span>
+  <p><b>Every commit builds.</b> Verified by checking out each one in turn, deleting
+  build artifacts so a stale binary cannot fake a pass, and rebuilding.</p>
+  <p><b>All eighteen build reproducibly.</b> Proven by <code>unrepro</code>, one of the
+  eighteen, which found that eight of its siblings were not &mdash; <code>-g</code> writes
+  the compiler's working directory into DWARF <code>.debug_line_str</code>. Every repo
+  compiling with <code>-g</code> was affected and every repo without it was already clean,
+  which is independent confirmation of the cause rather than a plausible guess.</p>
+  <p><b>No commit can be gated by a suite that does not run.</b> <code>commitq</code> runs
+  each repo's tests against the working tree before committing and refuses when they
+  fail &mdash; or when a repo has no discoverable suite at all, which was a real bug it
+  had for two thirds of the project.</p>
+  <p>71 deliberate shortcuts are marked <code>shortcut:</code> in the source, each naming
+  its own ceiling and the upgrade path. 230 planned steps are done and 204 remain,
+  ordered, each recording why it is next.</p></div>
+
+  <p class="foot">Generated from the repositories by <code>.portfolio/build.py</code>.
+  Data-fill colours validated against the paper surface with the dataviz palette checker:
+  worst CVD &Delta;E 12.6, normal-vision &Delta;E 21.0, all six checks pass.</p>
+</section>
+</body></html>

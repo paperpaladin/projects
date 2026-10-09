@@ -1,0 +1,54 @@
+#!/bin/sh
+# cq -- short wrapper around commitq, so the common moves are two keystrokes.
+#
+#   cq            status
+#   cq t          today: stalest repo first, next planned step in each
+#   cq v [repo]   run test suites
+#   cq c R MSG... test, then commit R with MSG (quote it or just let it run on)
+#   cq h [weeks]  heatmap
+#   cq q          the full plan queue
+#   cq s R        propose a commit split for R
+#   cq gui        start the localhost GUI
+#   cq id N E     rewrite the placeholder author to name N, email E
+#
+# Install:  ln -s "$PWD/cq" ~/.local/bin/cq
+set -eu
+
+HERE=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+CQ="$HERE/commitq/commitq.py"
+[ -f "$CQ" ] || { echo "cq: cannot find $CQ" >&2; exit 1; }
+
+cmd=${1:-status}
+[ $# -gt 0 ] && shift
+
+case "$cmd" in
+  status|st|"")  exec python3 "$CQ" status "$@" ;;
+  a|all)         exec python3 "$CQ" status --tests "$@" ;;
+  t|today)       exec python3 "$CQ" today "$@" ;;
+  v|verify)      exec python3 "$CQ" verify "$@" ;;
+  q|queue)       exec python3 "$CQ" queue "$@" ;;
+  h|heat|heatmap)
+    weeks=${1:-20}
+    exec python3 "$CQ" heatmap --weeks "$weeks" ;;
+  c|commit)
+    repo=${1:?usage: cq c REPO MESSAGE...}
+    shift
+    [ $# -gt 0 ] || { echo "cq: a commit needs a message" >&2; exit 2; }
+    # Everything after the repo name is the message, so you can skip the quotes
+    # for a one-liner. Multi-paragraph messages still want a real quoted string.
+    exec python3 "$CQ" commit "$repo" -m "$*" ;;
+  s|split)
+    repo=${1:?usage: cq s REPO}
+    exec python3 "$CQ" split "$repo" --write ;;
+  gui|serve)
+    exec python3 "$HERE/commitq/serve.py" "$@" ;;
+  id|identity)
+    name=${1:?usage: cq id "Your Name" you@example.com}
+    email=${2:?usage: cq id "Your Name" you@example.com}
+    exec python3 "$CQ" identity --name "$name" --email "$email" --yes ;;
+  -h|--help|help)
+    sed -n '2,20p' "$0" | sed 's/^# \{0,1\}//' ;;
+  *)
+    echo "cq: unknown command '$cmd' (try: cq help)" >&2
+    exit 2 ;;
+esac
