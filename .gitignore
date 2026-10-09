@@ -3,10 +3,17 @@
 # wrapper and the portfolio generator. Those were tracked by nothing at all
 # until this file existed.
 #
-# Listed by name rather than matched by a pattern, deliberately. A pattern like
-# "*/" would silently swallow a nineteenth repo the day it appeared, and the
-# failure mode of that is a project nobody notices is unversioned -- which is
-# the exact situation this repo was created to end.
+# Listed by name, with every sibling repo named as it appears. The reasoning
+# behind that was wrong in a way worth recording: the plan was that a pattern
+# like "*/" would silently swallow a nineteenth project the day it appeared, so
+# naming them would force the question. What actually happened on the first new
+# repo is the opposite and worse -- `git add -A` recorded derx and sockv as
+# gitlinks, a bare commit SHA with no submodule config, which is useless to a
+# clone and says nothing about the project.
+#
+# So the list stays, and t/test_portfolio.py now asserts that this repo holds no
+# gitlink at all. Forgetting to add a new sibling here is now a failing test
+# rather than a broken commit.
 cc/
 commitq/
 dwarfdump/
@@ -25,6 +32,11 @@ unrepro/
 vtparse/
 walkv/
 wasmi/
+
+derx/
+seccompc/
+sockv/
+tzf/
 
 # Not one of the eighteen: an upstream Android fork kept here for convenience.
 notally-molly/

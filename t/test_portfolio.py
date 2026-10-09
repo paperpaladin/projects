@@ -137,6 +137,24 @@ for name in sorted(DATA):
            not t.startswith("FAILING") and t != "NO SUITE", t)
 
 
+# This repo must never contain a gitlink. The sibling projects are independent
+# repositories that happen to live next to this one, and `git add -A` records
+# such a directory as mode 160000 -- a bare commit SHA with no submodule
+# config, useless to a clone and describing nothing. It happened on the first
+# new sibling, so it is a test rather than a note: forgetting to add a project
+# to .gitignore now fails here instead of producing a broken commit.
+links = [l.split("\t", 1)[1] for l in
+         sh("git", "ls-files", "-s", cwd=ROOT).stdout.splitlines()
+         if l.startswith("160000")]
+check("no sibling repo is committed as a gitlink", sorted(links), [])
+
+# And every sibling repo must actually be ignored, which is the other half: the
+# check above passes trivially if nothing has been staged yet.
+unignored = [d.name for d in sorted(ROOT.iterdir())
+             if d.is_dir() and (d / ".git").exists() and d != ROOT
+             and not sh("git", "check-ignore", "-q", d.name, cwd=ROOT).returncode == 0]
+check("every sibling repo is gitignored", unignored, [])
+
 # ============================================ the extractor, on throwaway repos
 
 with tempfile.TemporaryDirectory() as tmp:
