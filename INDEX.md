@@ -229,9 +229,10 @@ About this directory, not the eighteen; each of those has its own list.
   Three layout bugs -- clipped arrow labels, annotations past the viewBox edge,
   a caption describing arrows that no longer existed -- were found by rendering
   the document and looking at it, and would be found the same way again.
-- **`render.sh` can leave a half-finished PDF.** Headless chromium exits 0 on
-  some failures, so a crashed render is not distinguishable from a finished one
-  without comparing timestamps.
+- **Nothing checks the PDF's typography or geometry.** `render.sh` now refuses
+  to leave a PDF that is missing or older than the page it came from, and the
+  suite reads the figures back out with `pdftotext`, but no check looks at
+  where anything sits on the page or which fonts were embedded.
 - **A full regeneration takes minutes**, because it runs all eighteen suites.
   `--keep-test-counts` makes it instant by inheriting the previous counts
   instead of measuring them, which is right for the test suite and wrong

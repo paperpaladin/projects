@@ -174,6 +174,59 @@ else:
            PDF.stat().st_mtime >= (PORTFOLIO / "portfolio.html").stat().st_mtime - 1,
            "re-run .portfolio/render.sh")
 
+# render.sh must refuse to leave a PDF older than the page it came from.
+#
+# chromium exits 0 on some failures and render.sh swallows its chatter with
+# `|| true`, so a render that produced nothing looked exactly like one that
+# worked. Driven with a stub chromium on PATH that exits 0 and writes nothing,
+# in a copy of .portfolio so no real file is disturbed -- running it against
+# the real directory would leave portfolio.html newer than the PDF and turn
+# the assertions above red for a reason that is this test's fault.
+with tempfile.TemporaryDirectory() as tmp:
+    stage = Path(tmp) / "p"
+    stage.mkdir()
+    for f in ("render.sh", "build.py", "repos.json", "portfolio.html"):
+        (stage / f).write_bytes((PORTFOLIO / f).read_bytes())
+    (stage / "render.sh").chmod(0o755)
+
+    bind = Path(tmp) / "bin"
+    bind.mkdir()
+    (bind / "chromium").write_text("#!/bin/sh" + chr(10) + "exit 0" + chr(10))
+    (bind / "chromium").chmod(0o755)
+    env = dict(os.environ, PATH="%s:%s" % (bind, os.environ["PATH"]))
+
+    # No PDF at all: the first of the two refusals.
+    r = subprocess.run(["./render.sh"], cwd=stage, env=env,
+                       capture_output=True, text=True, timeout=300)
+    check("render.sh fails when chromium writes no PDF", r.returncode, 1)
+    truthy("and says chromium wrote nothing", "wrote no portfolio.pdf" in r.stderr,
+           r.stderr[:200])
+
+    # A PDF that exists but predates the page: the failure that actually
+    # happens, because the previous render left one behind.
+    (stage / "portfolio.pdf").write_bytes(b"stale")
+    os.utime(stage / "portfolio.pdf", (1, 1))
+    r = subprocess.run(["./render.sh"], cwd=stage, env=env,
+                       capture_output=True, text=True, timeout=300)
+    check("render.sh fails on a PDF older than the page", r.returncode, 1)
+    truthy("and says the PDF is the previous one",
+           "older than portfolio.html" in r.stderr, r.stderr[:200])
+
+    # And it must still succeed when chromium does its job, or the check is
+    # just a way of never rendering anything.
+    writer = "\n".join([
+        "#!/bin/sh",
+        "for a in \"$@\"; do",
+        "  case $a in --print-to-pdf=*) printf PDF > \"${a#--print-to-pdf=}\";; esac",
+        "done",
+        "",
+    ])
+    (bind / "chromium").write_text(writer)
+    (bind / "chromium").chmod(0o755)
+    r = subprocess.run(["./render.sh"], cwd=stage, env=env,
+                       capture_output=True, text=True, timeout=300)
+    check("render.sh succeeds when a PDF is written", r.returncode, 0)
+
 # This repo must never contain a gitlink. The sibling projects are independent
 # repositories that happen to live next to this one, and `git add -A` records
 # such a directory as mode 160000 -- a bare commit SHA with no submodule

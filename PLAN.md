@@ -97,10 +97,21 @@ Ranked by how little this repo controls them, most independent first:
       a planted commit count of 999, because "999" occurs inside some other
       figure on the page. It matches "N commits" now, which `pdftotext` keeps
       contiguous, and that fails on the same plant.
-- [ ] 03 make `render.sh` itself refuse to leave a PDF older than its HTML
+- [x] 03 make `render.sh` itself refuse to leave a PDF older than its HTML
       why: the suite now catches it (item 02), but only when run. chromium
       exits 0 on some failures, so the person who ran `render.sh` and saw no
       error is the one who should be told, at the moment it happened.
+      done: two refusals -- no PDF at all, and a PDF older than the page --
+      driven with a stub `chromium` on PATH that exits 0 and writes nothing.
+      Run against a copy of `.portfolio`, because running it against the real
+      directory leaves `portfolio.html` newer than the PDF and turns item 02's
+      assertions red for a reason that is the test's own fault.
+      Five assertions, and a third stub that DOES write a PDF, because a
+      refusal with nothing proving the success path is just a way of never
+      rendering anything. Removing the no-PDF check is caught only by the
+      assertion on the message, not the one on the exit status: with the file
+      missing, `-ot` is false and `ls` fails under `set -e`, so the status is
+      still 1 and only the wording says what went wrong. 116 to 121.
 - [ ] 04 verify the embedded fonts are the three intended faces
       why: the README says the fonts were confirmed by reading the font table
       out of the finished PDF, and that confirmation lives in shell history. If
