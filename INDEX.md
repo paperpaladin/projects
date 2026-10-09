@@ -1,15 +1,13 @@
 # projects
 
-Eighteen repositories, 270 commits, ~18,700 lines of source and ~8,700 of tests.
+Thirty-five repositories. Every one is a working program with an **external
+oracle** -- something outside the author's control that decides whether the code
+is right. Pure C or standard-library Python throughout; no frameworks, no package
+managers, no dependency beyond `zlib`. Every repo has `make test` and it passes.
+Every commit builds, verified by removing build artifacts and rebuilding each one.
 
-Every one is a working program with an **external oracle** -- something outside the
-author's control that decides whether the code is right. Pure C or
-standard-library Python throughout; no frameworks, no package managers, no
-dependency beyond `zlib`. Every repo has `make test` and it passes. Every commit
-builds, verified by removing build artifacts and rebuilding each one.
-
-All 18 produce **reproducible builds**, verified by `unrepro` -- one of the
-eighteen.
+All of them produce **reproducible builds**, verified by `unrepro` -- one of the
+thirty-five.
 
 ## Start here
 
@@ -33,21 +31,38 @@ public and scraped.
 | [cc](cc/) | C | C compiler for x86-64 | gcc **and** clang must agree | 168 / 166 diff |
 | [lnk](lnk/) | C | static ELF linker | the kernel runs it, or it doesn't | 29 |
 | [wasmi](wasmi/) | C | WebAssembly interpreter | expectations computed in Python | **11,833** |
-| [psh](psh/) | C | POSIX shell subset | `dash`, stdout **and** exit status | **185 agree** |
+| [psh](psh/) | C | POSIX shell subset | `dash`, stdout **and** exit status | **207 agree** |
 | [rx](rx/) | C | linear-time regex engine | Python's `re` | **15,500 cases** |
-| [inflate](inflate/) | C | DEFLATE/gzip codec | `gzip -d` accepts our output | 159 |
+| [inflate](inflate/) | C | DEFLATE/gzip codec | `gzip -d` accepts our output | 162 |
 | [tarx](tarx/) | C | tar reader/writer | GNU `tar`, bidirectional | 118 |
 | [sqlr](sqlr/) | C | SQLite file-format reader | libsqlite3 itself | 114 agree |
 | [vtparse](vtparse/) | C | VT500 parser + wcwidth | published table, **3584/3584** | 98 |
-| [unrepro](unrepro/) | Py | build-reproducibility differ | planted causes, 7/7 diagnosed | 99 |
-| [dwarfdump](dwarfdump/) | C | DWARF debug-info parser | `readelf` | 65 |
-| [jail](jail/) | C | Landlock sandbox | the kernel -- denied means EACCES | 60 |
-| [commitq](commitq/) | Py | multi-repo commit gate + GUI | throwaway repos in a tempdir | 42 |
-| [walkv](walkv/) | C | WAL key-value store | crash at every I/O boundary | 163 scenarios |
-| [slab](slab/) | C | LD_PRELOAD malloc replacement | real programs, identical output | 30 |
-| [trace](trace/) | C | ptrace syscall tracer, follows children | `strace -c` / `strace -f -c` | 23 |
+| [unrepro](unrepro/) | Py | build-reproducibility differ | planted causes, 7/7 diagnosed | 101 |
+| [dwarfdump](dwarfdump/) | C | DWARF debug-info parser | `readelf` | 85 |
+| [jail](jail/) | C | Landlock sandbox | the kernel -- denied means EACCES | 77 |
+| [commitq](commitq/) | Py | multi-repo commit gate + GUI | throwaway repos in a tempdir | 94 |
+| [walkv](walkv/) | C | WAL key-value store | crash at every I/O boundary | 216 scenarios |
+| [slab](slab/) | C | LD_PRELOAD malloc replacement | real programs, identical output | 31 |
+| [trace](trace/) | C | ptrace syscall tracer, follows children | `strace -c` / `strace -f -c` | 43 |
 | [srcdiff](srcdiff/) | Py | finds shipped code absent from the repo | **real xz artifacts** + live PyPI | 25 |
 | [prof](prof/) | C | sampling profiler | a planted hot loop, known 10:1 ratios | 15 |
+| [cmark](cmark/) | C | CommonMark parser | the spec's own spec.json | **652/652** |
+| [tomlc](tomlc/) | C | TOML 1.0.0 parser | toml-test + stdlib tomllib | **709/709** |
+| [utf8n](utf8n/) | C | Unicode normalisation | NormalizationTest.txt | **806,840 assertions** |
+| [sha2](sha2/) | C | SHA-2, HMAC, PBKDF2 | NIST CAVP vectors | 2561 vectors |
+| [pngc](pngc/) | C | PNG decoder | PngSuite | 162 + 14 refused |
+| [jsonc](jsonc/) | C | RFC 8259 JSON parser | JSONTestSuite | 95/95, 188/188 |
+| [bigint](bigint/) | C | Arbitrary-precision integers | Python's native int | 7.3M fuzz cases |
+| [mydiff](mydiff/) | C | Myers diff and patch | GNU diff AND GNU patch | 995 |
+| [httpd](httpd/) | C | HTTP/1.1 static server | curl + RFC 9112 | 226 |
+| [corex](corex/) | C | ELF core dump reader | gdb, value by value | 71 |
+| [derx](derx/) | C | ASN.1 DER / X.509 reader | openssl asn1parse | 10,822 elements |
+| [seccompc](seccompc/) | C | seccomp policy compiler | the kernel | 125 |
+| [sockv](sockv/) | C | socket lister via netlink | the kernel | 82 |
+| [tzf](tzf/) | C | TZif reader, RFC 8536 | zoneinfo | 34 |
+| [gitobj](gitobj/) | C | git object database reader/writer | the object name is its own SHA-1 | 322 |
+| [zipc](zipc/) | C | ZIP reader/writer | Info-ZIP `unzip`/`zip`, bidirectional | 55 |
+| [xmlc](xmlc/) | C | XML 1.0 well-formedness checker | W3C conformance suite, 2585 cases | 83 |
 
 Worth running once each:
 

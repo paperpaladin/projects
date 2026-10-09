@@ -1,6 +1,6 @@
 # projects/ -- working instructions
 
-Eighteen independent repositories, one method. Read this before touching anything;
+Thirty-five independent repositories, one method. Read this before touching anything;
 read `INDEX.md` for what each repo is, and the repo's own `PLAN.md` for what comes
 next in it.
 
@@ -11,7 +11,7 @@ clang, the Linux kernel, `dash`, GNU tar, `readelf`, SQLite, Python's `re`. A te
 you wrote, checking code you wrote, against a number you worked out yourself,
 proves only that you were consistent.
 
-That is not decoration. Ten of the eighteen defects recorded here were in the test
+That is not decoration. Most of the defects recorded here were in the test
 harness rather than in the code: a suite that passed because it was silently doing
 nothing. When adding anything, the question is not "do the tests pass" but **"have
 I watched this harness fail?"**
@@ -22,7 +22,7 @@ authority exists for it, say so in the README rather than inventing one.
 ## How to work here
 
 ```sh
-./cq            # status across all 18
+./cq            # status across all 35
 ./cq t          # what to work on: stalest repo first, next planned item in each
 ./cq c REPO "message"    # runs that repo's tests, commits only if green
 ./cq a          # status + run every suite (slow: wasmi alone is ~3 min)
@@ -35,13 +35,13 @@ exists for deliberately committing a known-red state (bisecting, recording a
 reproducer); it should be a decision, never a habit.
 
 Pick work from the repo's `PLAN.md`. The unchecked `- [ ]` items are ordered, and
-each one records *why* it is next. 204 of them are queued.
+each one records *why* it is next. 349 of them are queued.
 
 `.portfolio/` renders the whole thing as a PDF, and every number in it comes from
 `repos.json`, which is **generated, not written**:
 
 ```sh
-python3 .portfolio/extract.py > .portfolio/repos.json   # runs all 18 suites, minutes
+python3 .portfolio/extract.py > .portfolio/repos.json   # runs all 35 suites, ~15 min
 NAME="..." GITHUB="..." .portfolio/render.sh            # build.py, then chromium
 ```
 
@@ -73,15 +73,16 @@ starts claiming last week's numbers -- it had drifted by 38 values once, because
    mistake once: see the stash on `notally-molly`, which downgraded typographic
    apostrophes and ellipses in thirty languages of Android UI text, where the
    ellipsis character is correct and `...` is wrong.
-4. **All 18 must stay reproducible.** Any new C repo needs
+4. **All 35 must stay reproducible.** Any new C repo needs
    `-ffile-prefix-map=$(CURDIR)=.` in `CFLAGS`, or `-g` writes the build directory
    into DWARF `.debug_line_str`. Check with
    `python3 unrepro/unrepro.py check ../REPO --cmd 'make -B'` on a clean tree.
 5. **Minimalism.** No frameworks, no test libraries, no abstraction before the
    second use case, fewest files. Standard library only in Python; no dependency
    beyond zlib in C. Mark a deliberate shortcut with a `shortcut:` comment naming
-   its ceiling and upgrade path. There are 102 of these; `./cq` has no counter for
-   them, `grep -ro 'shortcut:' --include='*.c' --include='*.py'` does.
+   its ceiling and upgrade path. There are 170 of these; `./cq` has no counter for
+   them, and `grep -r` will lie to you here (see the gotcha below). Use:
+   `find . -name '*.c' -o -name '*.py' | xargs grep -ho 'shortcut:' | wc -l`
 
 ## House conventions
 
@@ -98,6 +99,12 @@ including the ones that were in the harness. Multi-paragraph is normal here.
 
 ## Gotchas discovered the hard way
 
+- **`grep -r` silently skips every repo.** The shell used here replaces `grep`
+  with a ugrep wrapper that passes `--ignore-files`, so it honours `.gitignore` --
+  and this directory's `.gitignore` lists all 39 repo directories by name. The
+  result is not an error, it is a confident `0`. Counting shortcut comments this
+  way returns 3 instead of 170. Use `find ... -exec grep` for anything that has to
+  cross a repo boundary, and treat a suspiciously round zero as this bug first.
 - `/tmp` is **tmpfs** and does not survive a reboot. Never leave anything there.
 - `wasmi/hist/build.py` does `rmtree('.git')` and rebuilds that repo's history from
   scratch. It is the generator that produced wasmi's 28 commits. Do not run it

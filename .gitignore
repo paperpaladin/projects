@@ -14,31 +14,43 @@
 # So the list stays, and t/test_portfolio.py now asserts that this repo holds no
 # gitlink at all. Forgetting to add a new sibling here is now a failing test
 # rather than a broken commit.
+# Not one of the eighteen: an upstream Android fork kept here for convenience.
+__pycache__/
+bigint/
 cc/
+cmark/
 commitq/
+corex/
+derx/
 dwarfdump/
+ed25519/
+gitobj/
+httpd/
 inflate/
 jail/
+jsonc/
 lnk/
+mydiff/
+notally-molly/
+pngc/
 prof/
 psh/
 rx/
+seccompc/
+sha2/
 slab/
+sockv/
 sqlr/
 srcdiff/
 tarx/
+terminfo/
+tomlc/
 trace/
+tzf/
 unrepro/
+utf8n/
 vtparse/
 walkv/
 wasmi/
-
-derx/
-seccompc/
-sockv/
-tzf/
-
-# Not one of the eighteen: an upstream Android fork kept here for convenience.
-notally-molly/
-
-__pycache__/
+xmlc/
+zipc/

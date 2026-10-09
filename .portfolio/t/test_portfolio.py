@@ -22,8 +22,10 @@ import sys
 import tempfile
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT / ".portfolio"))
+# This file lives at .portfolio/t/, so the projects root is three levels up.
+PORTFOLIO_DIR = Path(__file__).resolve().parent.parent
+ROOT = PORTFOLIO_DIR.parent
+sys.path.insert(0, str(PORTFOLIO_DIR))
 sys.path.insert(0, str(ROOT / "commitq"))
 import extract  # noqa: E402
 

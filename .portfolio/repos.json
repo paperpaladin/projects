@@ -1,4 +1,17 @@
 {
+  "bigint": {
+    "blurb": "Arbitrary-precision integers",
+    "commits": 18,
+    "done": 17,
+    "group": "systems",
+    "invariant": "Every operation matches Python exactly, including floor division of negatives",
+    "oracle": "Python's native int, which is itself arbitrary precision",
+    "shortcuts": 5,
+    "src": 1147,
+    "test": 557,
+    "tests": "107571 agree, 0 disagree",
+    "todo": 11
+  },
   "cc": {
     "blurb": "C compiler for x86-64",
     "commits": 12,
@@ -12,9 +25,22 @@
     "tests": "168 passed, 0 failed",
     "todo": 15
   },
+  "cmark": {
+    "blurb": "CommonMark parser and HTML renderer",
+    "commits": 18,
+    "done": 18,
+    "group": "formats",
+    "invariant": "Output is byte-identical to the spec's expected HTML, nothing normalised",
+    "oracle": "The specification's own spec.json: 652 exact markdown/HTML pairs",
+    "shortcuts": 2,
+    "src": 3689,
+    "test": 210,
+    "tests": "22 passed, 0 failed",
+    "todo": 0
+  },
   "commitq": {
     "blurb": "Multi-repo commit gate and GUI",
-    "commits": 11,
+    "commits": 12,
     "done": 8,
     "group": "supply chain",
     "invariant": "No commit is ever created with a date other than now",
@@ -23,7 +49,20 @@
     "src": 1161,
     "test": 579,
     "tests": "94 passed, 0 failed",
-    "todo": 8
+    "todo": 9
+  },
+  "corex": {
+    "blurb": "ELF core dump reader",
+    "commits": 18,
+    "done": 17,
+    "group": "observability",
+    "invariant": "Every value printed agrees with gdb, or it is not printed",
+    "oracle": "gdb: registers, backtrace and mappings compared value by value",
+    "shortcuts": 2,
+    "src": 1094,
+    "test": 788,
+    "tests": "71 passed, 0 failed, 0 skipped",
+    "todo": 5
   },
   "derx": {
     "blurb": "DER reader and X.509 printer",
@@ -35,7 +74,7 @@
     "shortcuts": 3,
     "src": 1339,
     "test": 1138,
-    "tests": "216 passed, 0 failed, 0 skipped",
+    "tests": "10822 DER elements compared against openssl asn1parse",
     "todo": 11
   },
   "dwarfdump": {
@@ -49,6 +88,32 @@
     "src": 1831,
     "test": 546,
     "tests": "85 passed, 0 failed",
+    "todo": 10
+  },
+  "gitobj": {
+    "blurb": "git object database reader and writer",
+    "commits": 5,
+    "done": 4,
+    "group": "toolchain",
+    "invariant": "Every object read hashes back to its own name, loose or packed, through the whole delta chain",
+    "oracle": "The object name itself: git chose the filename, we recompute the SHA-1. Plus git verify-pack -v, field by field",
+    "shortcuts": 3,
+    "src": 857,
+    "test": 497,
+    "tests": "322 passed, 0 failed",
+    "todo": 20
+  },
+  "httpd": {
+    "blurb": "HTTP/1.1 static file server",
+    "commits": 18,
+    "done": 18,
+    "group": "systems",
+    "invariant": "No request can read a byte outside the document root",
+    "oracle": "curl as reference client, RFC 9112 for the error cases",
+    "shortcuts": 4,
+    "src": 1251,
+    "test": 1202,
+    "tests": "226 passed, 0 failed, 0 skipped",
     "todo": 10
   },
   "inflate": {
@@ -77,6 +142,19 @@
     "tests": "77 passed, 0 failed, 0 skipped",
     "todo": 9
   },
+  "jsonc": {
+    "blurb": "Strict RFC 8259 JSON parser",
+    "commits": 17,
+    "done": 17,
+    "group": "formats",
+    "invariant": "A crash can never score as a rejection; exit status outside {0,1} is a failure",
+    "oracle": "JSONTestSuite: 95 must-accept, 188 must-reject, 35 pinned choices",
+    "shortcuts": 3,
+    "src": 1112,
+    "test": 1221,
+    "tests": "363 passed, 0 failed",
+    "todo": 5
+  },
   "lnk": {
     "blurb": "Static ELF linker",
     "commits": 20,
@@ -89,6 +167,32 @@
     "test": 366,
     "tests": "29 passed, 0 failed",
     "todo": 13
+  },
+  "mydiff": {
+    "blurb": "Myers diff and patch",
+    "commits": 18,
+    "done": 13,
+    "group": "toolchain",
+    "invariant": "The loop closes both ways: our diff feeds GNU patch, GNU's diff feeds our -p",
+    "oracle": "GNU diff byte-identical, and GNU patch applies our output",
+    "shortcuts": 3,
+    "src": 1075,
+    "test": 792,
+    "tests": "995 passed, 0 failed",
+    "todo": 4
+  },
+  "pngc": {
+    "blurb": "PNG decoder, all colour types and Adam7",
+    "commits": 17,
+    "done": 17,
+    "group": "formats",
+    "invariant": "A corrupt file is refused by CRC, never rendered as a wrong image",
+    "oracle": "PngSuite: 162 images that must decode, 14 that must be refused",
+    "shortcuts": 5,
+    "src": 908,
+    "test": 907,
+    "tests": "72 passed, 0 failed",
+    "todo": 7
   },
   "prof": {
     "blurb": "Sampling CPU profiler",
@@ -105,7 +209,7 @@
   },
   "psh": {
     "blurb": "POSIX shell subset",
-    "commits": 21,
+    "commits": 22,
     "done": 20,
     "group": "toolchain",
     "invariant": "Identical stdout and status to dash on every corpus script",
@@ -113,7 +217,7 @@
     "shortcuts": 7,
     "src": 2203,
     "test": 711,
-    "tests": "185 agree, 0 disagree, 0 skipped",
+    "tests": "207 agree, 0 disagree, 0 skipped",
     "todo": 10
   },
   "rx": {
@@ -141,6 +245,19 @@
     "test": 1009,
     "tests": "125 passed, 0 failed, 1 skipped",
     "todo": 8
+  },
+  "sha2": {
+    "blurb": "SHA-2 family, HMAC and PBKDF2",
+    "commits": 18,
+    "done": 18,
+    "group": "formats",
+    "invariant": "Byte-exact against published vectors; not constant-time, and says so first",
+    "oracle": "NIST CAVP vectors, plus hashlib, coreutils and openssl agreeing",
+    "shortcuts": 2,
+    "src": 747,
+    "test": 1335,
+    "tests": "243 passed, 0 failed",
+    "todo": 5
   },
   "slab": {
     "blurb": "LD_PRELOAD malloc replacement",
@@ -207,6 +324,19 @@
     "tests": "118 passed, 0 failed",
     "todo": 12
   },
+  "tomlc": {
+    "blurb": "TOML 1.0.0 parser",
+    "commits": 18,
+    "done": 18,
+    "group": "formats",
+    "invariant": "Valid documents parse to the expected value, not merely without error",
+    "oracle": "toml-test, plus Python's stdlib tomllib",
+    "shortcuts": 3,
+    "src": 1379,
+    "test": 1267,
+    "tests": "629 passed, 0 failed",
+    "todo": 5
+  },
   "trace": {
     "blurb": "ptrace syscall tracer",
     "commits": 5,
@@ -246,6 +376,19 @@
     "tests": "101 passed, 0 failed",
     "todo": 12
   },
+  "utf8n": {
+    "blurb": "Unicode normalisation, all four forms",
+    "commits": 15,
+    "done": 7,
+    "group": "formats",
+    "invariant": "Normalising twice equals normalising once, for every form on every input",
+    "oracle": "NormalizationTest.txt from the UCD: 806,840 assertions",
+    "shortcuts": 3,
+    "src": 3421,
+    "test": 1284,
+    "tests": "UCD 18.0.0: 5982 decomp records, 6828 pool words, 422 ccc ranges, 961 composites, 1120 exclusions",
+    "todo": 10
+  },
   "vtparse": {
     "blurb": "VT500 parser and wcwidth",
     "commits": 19,
@@ -284,5 +427,31 @@
     "test": 1058,
     "tests": "11833 passed, 0 failed",
     "todo": 10
+  },
+  "xmlc": {
+    "blurb": "XML 1.0 well-formedness checker and canonicaliser",
+    "commits": 4,
+    "done": 2,
+    "group": "formats",
+    "invariant": "Acceptance is exactly the XML 1.0 Fifth Edition grammar, and no input crashes, overreads or leaks",
+    "oracle": "The W3C XML Conformance Test Suite: 2585 catalogued cases, vendored unmodified",
+    "shortcuts": 2,
+    "src": 689,
+    "test": 547,
+    "tests": "83 passed, 0 failed",
+    "todo": 16
+  },
+  "zipc": {
+    "blurb": "ZIP archive reader and writer",
+    "commits": 6,
+    "done": 1,
+    "group": "formats",
+    "invariant": "The central directory is authoritative, and no member can ever be written outside the destination",
+    "oracle": "Info-ZIP unzip 6.00 and zip 3.0, bidirectionally, across every method and flag combination",
+    "shortcuts": 3,
+    "src": 1047,
+    "test": 823,
+    "tests": "55 passed, 0 failed",
+    "todo": 16
   }
 }

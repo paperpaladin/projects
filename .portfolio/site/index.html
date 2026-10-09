@@ -1,0 +1,337 @@
+<title>Refused by Default</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,600;1,6..72,400&family=JetBrains+Mono:wght@400;500;700&display=swap">
+
+<style>
+:root{
+  --ground:#f7f7f5;
+  --panel:#edeeea;
+  --sunk:#e3e5e0;
+  --ink:#15181a;
+  --mid:#545c61;
+  --soft:#8a9196;
+  --rule:#d2d5cf;
+  --firm:#b4b9b2;
+  --slate:#2d4a53;
+  --signal:#b3261e;
+  --signal-bg:#f6e9e7;
+  --ok:#2f6b4f;
+
+  --f-disp:"Archivo","Helvetica Neue",sans-serif;
+  --f-body:"Newsreader",Georgia,serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#121517; --panel:#191e20; --sunk:#202628;
+    --ink:#e8eae7; --mid:#a3abaf; --soft:#798286;
+    --rule:#2a3134; --firm:#3c4549;
+    --slate:#7fa8ae; --signal:#e4635a; --signal-bg:#2a1a18; --ok:#5fb98b;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#121517; --panel:#191e20; --sunk:#202628;
+  --ink:#e8eae7; --mid:#a3abaf; --soft:#798286;
+  --rule:#2a3134; --firm:#3c4549;
+  --slate:#7fa8ae; --signal:#e4635a; --signal-bg:#2a1a18; --ok:#5fb98b;
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--ground);color:var(--ink);
+  font:400 17px/1.62 var(--f-body);
+}
+.wrap{max-width:62rem;margin:0 auto;padding:0 clamp(1.1rem,5vw,3rem)}
+.col{max-width:34rem}
+
+h1,h2,h3{font-family:var(--f-disp);font-weight:800;margin:0;text-wrap:balance;
+  letter-spacing:-.022em;line-height:1.04}
+p{margin:0 0 1em}
+a{color:var(--slate);text-underline-offset:.18em;text-decoration-thickness:1px}
+a:focus-visible,button:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
+code,.m{font-family:var(--f-mono);font-size:.84em}
+code{background:var(--sunk);padding:.08em .32em;border-radius:2px}
+
+.tag{font:500 .68rem/1 var(--f-mono);letter-spacing:.18em;text-transform:uppercase;
+  color:var(--soft)}
+
+/* ---------- masthead ---------- */
+header{padding:clamp(3.5rem,9vw,7rem) 0 0}
+.who{font:700 .95rem/1 var(--f-mono);letter-spacing:.04em;color:var(--ink);
+  margin-bottom:.4rem}
+.who.ph{color:var(--signal);font-weight:400;font-size:.82rem;letter-spacing:0}
+.role{font:400 .95rem/1.4 var(--f-mono);color:var(--soft);margin-bottom:clamp(2rem,5vw,3.4rem)}
+h1{font-size:clamp(2.3rem,6.4vw,4.1rem);max-width:17ch}
+h1 em{font-style:normal;color:var(--signal)}
+.sub{font-size:clamp(1.05rem,2.1vw,1.28rem);line-height:1.5;color:var(--mid);
+  max-width:40rem;margin-top:1.6rem;font-weight:300}
+.sub b{color:var(--ink);font-weight:600}
+
+/* ---------- the opening exhibit ---------- */
+.exhibit{margin:clamp(2.75rem,6vw,4.25rem) 0 0;border-top:1.5px solid var(--ink);
+  padding-top:1.6rem}
+.exhibit-head{display:flex;gap:1rem;align-items:baseline;flex-wrap:wrap;margin-bottom:1.1rem}
+.exhibit-head h2{font-size:clamp(1.3rem,2.6vw,1.72rem)}
+pre{margin:0;background:var(--panel);border:1px solid var(--rule);
+  padding:1.05rem 1.2rem;overflow-x:auto;font:400 .78rem/1.62 var(--f-mono);
+  border-radius:3px}
+pre b{color:var(--signal);font-weight:700}
+pre i{color:var(--ok);font-style:normal}
+pre u{color:var(--soft);text-decoration:none}
+.beat{display:grid;gap:1.15rem;margin-top:1.3rem}
+@media(min-width:48rem){.beat{grid-template-columns:repeat(3,1fr)}}
+.beat div{border-top:2px solid var(--signal);padding-top:.75rem}
+.beat div:nth-child(2){border-color:var(--firm)}
+.beat div:nth-child(3){border-color:var(--ok)}
+.beat .n{font:700 1.5rem/1 var(--f-disp);font-variant-numeric:tabular-nums;
+  display:block;margin-bottom:.3rem}
+.beat p{font-size:.92rem;line-height:1.5;color:var(--mid);margin:0}
+
+/* ---------- sections ---------- */
+section{padding:clamp(3.2rem,8vw,6rem) 0 0}
+.sec-h{display:flex;gap:1rem;align-items:baseline;border-bottom:1.5px solid var(--ink);
+  padding-bottom:.7rem;margin-bottom:2rem;flex-wrap:wrap}
+.sec-h h2{font-size:clamp(1.45rem,3vw,2rem)}
+.lede{font-size:1.08rem;color:var(--mid);max-width:38rem;margin-bottom:2rem;font-weight:300}
+.lede b{color:var(--ink);font-weight:600}
+
+/* ---------- cases ---------- */
+.case{border:1px solid var(--rule);background:var(--panel);border-radius:3px;
+  padding:1.5rem 1.6rem;margin-bottom:1.25rem}
+.case-h{display:flex;gap:.8rem;align-items:baseline;flex-wrap:wrap;margin-bottom:.9rem}
+.case-h h3{font-size:1.18rem;font-family:var(--f-mono);font-weight:700;letter-spacing:-.01em}
+.case-h .what{color:var(--mid);font-size:.95rem}
+.case-h .cnt{margin-left:auto;font:500 .72rem var(--f-mono);color:var(--soft);
+  font-variant-numeric:tabular-nums}
+.case p{font-size:.98rem;color:var(--mid);max-width:44rem}
+.case p b{color:var(--ink)}
+.facts{display:grid;gap:.45rem .9rem;margin:1.1rem 0 0;font-size:.9rem}
+@media(min-width:34rem){.facts{grid-template-columns:7.5rem 1fr}}
+.facts dt{font:500 .68rem/1.5 var(--f-mono);letter-spacing:.11em;text-transform:uppercase;
+  color:var(--soft);padding-top:.18rem}
+.facts dd{margin:0;color:var(--mid)}
+.facts dd.hit{color:var(--signal)}
+.facts dd.pass{color:var(--ok)}
+.facts dd b{color:inherit;font-weight:600}
+
+/* ---------- the pattern list ---------- */
+.find{border-top:1px solid var(--rule);padding:1.15rem 0;display:grid;gap:.3rem .9rem}
+@media(min-width:40rem){.find{grid-template-columns:6.5rem 1fr}}
+.find .where{font:700 .72rem/1.8 var(--f-mono);color:var(--signal)}
+.find h4{margin:0;font:600 1.02rem/1.4 var(--f-body)}
+.find p{margin:.25rem 0 0;font-size:.95rem;color:var(--mid);grid-column:-2/-1}
+@media(max-width:39.99rem){.find p{grid-column:1}}
+
+/* ---------- verify ---------- */
+.verify{background:var(--sunk);border:1px solid var(--firm);border-radius:3px;
+  padding:1.4rem 1.5rem;margin-top:1.5rem}
+.verify p{font-size:.95rem;color:var(--mid)}
+.verify pre{background:var(--ground)}
+
+.note{border-left:2.5px solid var(--signal);background:var(--signal-bg);
+  padding:1rem 1.2rem;margin:1.6rem 0;border-radius:0 3px 3px 0}
+.note p{margin:0;font-size:.96rem;color:var(--ink)}
+.note .tag{color:var(--signal);display:block;margin-bottom:.4rem}
+
+footer{margin-top:clamp(4rem,9vw,7rem);border-top:1.5px solid var(--ink);
+  padding:1.6rem 0 4.5rem;font-size:.9rem;color:var(--mid)}
+footer p{max-width:44rem}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="wrap">
+
+<header>
+  <div class="who ph">[ your name -- replace this line before publishing ]</div>
+  <div class="role">Systems and security engineering &middot; Linux, C, supply chain</div>
+  <h1>My detector was useless the first time I pointed it at a <em>real attack.</em></h1>
+  <p class="sub">I write small, unglamorous tools and then try to prove they are wrong.
+  The interesting part is never the code; it is what happens when something outside
+  my control gets a vote. <b>More than half the defects I found in this work were in
+  the tests, not the program.</b></p>
+</header>
+
+<div class="exhibit">
+  <div class="exhibit-head">
+    <span class="tag">Exhibit -- srcdiff vs. xz-utils</span>
+    <h2>Sixteen false positives, every one shaped like the attack</h2>
+  </div>
+
+  <p class="col"><code>srcdiff</code> looks for the xz-utils backdoor shape: code shipped
+  in a release tarball that was never in the repository. Every test behind that claim
+  was a four-file toy project with one planted divergence. Then I pointed it at the
+  genuine <code>xz-5.4.5</code> release against its genuine git tag.</p>
+
+<pre><b>HIGH: code in the artifact that is NOT in the repository</b>
+    m4/gettext.m4
+    m4/libtool.m4
+    m4/lib-link.m4
+    m4/ltoptions.m4
+    <u>... 12 more, every one an m4/*.m4</u>
+
+<b>16 HIGH findings, all false</b>  <u>on a release with nothing wrong with it</u></pre>
+
+  <p class="col" style="margin-top:1.15rem">Every one was an <code>m4/*.m4</code> file
+  present in the tarball and absent from git. Which is <b>exactly the shape of the
+  attack.</b> The real signal would have been one line in seventeen. That is not a
+  detector; it is noise with an extra row.</p>
+
+  <div class="note">
+    <span class="tag">Why no allowlist fixes it</span>
+    <p><code>build-to-host.m4</code> is a <b>legitimate gettext macro.</b> It ships in
+    <code>/usr/share/aclocal</code> on any machine with gettext installed. The attacker
+    did not invent a filename -- they shipped a modified copy of a real one, which is
+    why it survived review. Git contained neither version.</p>
+  </div>
+
+  <p class="col">The fix was a second oracle. Vendored build machinery comes from the
+  <b>build host</b>, not the repository, so ask the host's own canonical copy instead --
+  and let the file's in-band version marker decide what a difference means. Different
+  <code>serial</code> means a different upstream release and is expected. <b>Same serial,
+  different bytes means the file claims to be a revision it is not.</b> A file modified
+  in place does not advertise itself as a new release.</p>
+
+  <div class="beat">
+    <div><span class="n">16 -&gt; 1</span><p>False positives on a clean release, after the redesign. The survivor is a known upstream comment reflow, left in rather than normalised away.</p></div>
+    <div><span class="n">1 in 687</span><p>The one false positive is deliberately kept. A rule broad enough to absorb arbitrary comment changes would absorb an injected comment block too.</p></div>
+    <div><span class="n">caught</span><p>An injected <code>build-to-host.m4</code> with its serial intact is reported immediately. The delta between the clean and tampered runs is <b>exactly the injection and nothing else</b>, asserted rather than eyeballed.</p></div>
+  </div>
+</div>
+
+<section>
+  <div class="sec-h"><span class="tag">Three cases</span><h2>Things that must refuse</h2></div>
+  <p class="lede">Each of these is judged by something I did not write and cannot
+  influence: the kernel, GNU tar, a published conformance corpus. <b>A test I write to
+  check code I wrote proves only that I was consistent.</b></p>
+
+  <article class="case">
+    <div class="case-h"><h3>srcdiff</h3><span class="what">supply-chain artifact auditor</span>
+      <span class="cnt">473 lines &middot; 25 tests</span></div>
+    <p>Reconstructs what a published artifact <b>should</b> contain from its claimed source
+    tag and reports the delta, with findings bucketed by severity. The high bucket is
+    reserved for the xz shape: a legitimate vendored filename whose content does not match
+    the upstream it claims to be.</p>
+    <dl class="facts">
+      <dt>Oracle</dt><dd>Real upstream artifacts: the genuine xz release tarball against its genuine git tag</dd>
+      <dt>Invariant</dt><dd>No false negatives in the high buckets, <b>and</b> a false-positive rate low enough that a real finding stays visible</dd>
+      <dt>Honest limit</dt><dd class="hit">The compromised 5.6.1 tarball is unobtainable -- snapshot.debian.org carries only <code>5.6.1+really5.4.5-1</code>, Debian's revert -- so the fixtures reproduce the <i>technique</i> against a clean release: genuine macro, serial intact, one comment appended, no payload. Detection keys on provenance and never on recognising a payload, which is the only reason it generalises past this one incident. The README says exactly this.</dd>
+    </dl>
+  </article>
+
+  <article class="case">
+    <div class="case-h"><h3>jail</h3><span class="what">unprivileged Landlock sandbox</span>
+      <span class="cnt">596 lines &middot; 77 tests</span></div>
+    <p>Compiles a one-line policy into a Landlock ruleset and execs a command inside it.
+    No root, no container, no seccomp -- just the kernel's own filesystem access control.
+    <b>The oracle is the kernel: denied means a real <code>EACCES</code> from a real
+    program</b>, not an assertion about my own data structures.</p>
+    <dl class="facts">
+      <dt>Oracle</dt><dd>The kernel. Every rule is checked by running a real program and reading its errno</dd>
+      <dt>Invariant</dt><dd>A path that was not granted is never reachable, and the child cannot relax its own sandbox</dd>
+      <dt>Proof</dt><dd class="pass">The escape probe tries to clear no_new_privs and is <i>refused</i> -- the flag is one-way by design. So it builds the most permissive ruleset it can express, READ_FILE on <code>/</code>, and calls restrict_self with it. That call <i>succeeds</i>, and changes nothing: domains only ever intersect, so a permissive domain on top of a restrictive one yields the restrictive one. The read is still EACCES.</dd>
+      <dt>Caught</dt><dd class="hit">Eight assertions, zero passing, on the oracle's first execution. The ruleset was built perfectly and applied to the wrong program -- the rule loop had reused the parse loop's index, so jail exec'd a rule instead of the command.</dd>
+    </dl>
+  </article>
+
+  <article class="case">
+    <div class="case-h"><h3>tarx</h3><span class="what">tar reader and writer</span>
+      <span class="cnt">1,181 lines &middot; 118 tests</span></div>
+    <p>Full ustar plus the pax extensions, both directions. Extraction is a classic
+    path-traversal sink, so refusal is tested harder than extraction: <b>15 malicious
+    archives</b>, each asserting a nonzero exit, that nothing was written outside the
+    destination, and that a canary string never appears in any output.</p>
+    <dl class="facts">
+      <dt>Oracle</dt><dd>GNU tar, bidirectional. It must read what we write and we must read what it writes</dd>
+      <dt>Invariant</dt><dd>GNU tar agrees both ways, <b>and</b> no member can ever be written outside the destination</dd>
+      <dt>Attacks</dt><dd class="hit">Traversal via <code>..</code>, absolute paths, the ustar prefix field, escaping symlink and hard-link targets, pax <code>path=</code> and GNU <code>L</code> smuggling, and a pre-existing symlink in the destination</dd>
+      <dt>Caught</dt><dd class="hit">setuid, setgid and sticky bits were being restored from an untrusted archive. GNU tar drops them unless root; we were not.</dd>
+    </dl>
+  </article>
+</section>
+
+<section>
+  <div class="sec-h"><span class="tag">The pattern</span><h2>The harness was usually the bug</h2></div>
+  <p class="lede">Across this work the test rig was wrong far more often than the code
+  was. Each of these suites was <b>green while checking nothing</b>, and each was found
+  by deliberately breaking the thing it was supposed to catch.</p>
+
+  <div class="find"><span class="where">inflate</span>
+    <h4>The sanitizer build could not fail</h4>
+    <p>Reject tests asserted exit code exactly 1. AddressSanitizer also exits 1. Deleting
+    the classic <code>dist &gt; out</code> bounds check left 146 tests passing while ASan
+    printed a heap overflow to stderr. Fixing the exit code revealed that every malformed
+    input had also been leaking 192KB, invisible for the same reason.</p></div>
+
+  <div class="find"><span class="where">httpd</span>
+    <h4>curl was rewriting the attack</h4>
+    <p><code>curl 'http://h/%2e%2e/secret'</code> normalises the escape away and actually
+    sends <code>GET /secret</code>. Two traversal assertions were green for a request that
+    was never made. <code>--path-as-is</code> is required -- and curl does not normalise
+    when the separator is also encoded, so only some cases were affected.</p></div>
+
+  <div class="find"><span class="where">sha2</span>
+    <h4>The empty-input test cannot detect a broken length encoding</h4>
+    <p>Sabotaging the bit-length field turned 54 checks red, but the standard short-message
+    set still scored 1 of 65. The survivor is the empty message, because
+    <code>0&lt;&lt;3 == 0&lt;&lt;2</code>. The test everyone writes first is structurally
+    incapable of catching that bug.</p></div>
+
+  <div class="find"><span class="where">walkv</span>
+    <h4>Four planted defects, one caught</h4>
+    <p>The crash matrix crashed, recovered, verified and then <i>stopped</i> -- nothing
+    ever wrote after a recovery, so a subtly wrong recovery was unobservable. Adding that
+    one scenario took the suite from 83 to 163 cases and the defect now fails 20 of them.</p></div>
+
+  <div class="find"><span class="where">pngc</span>
+    <h4>The reference could not see half the data</h4>
+    <p>The low byte of every 16-bit sample was untested by any oracle. Zeroing them left
+    71 checks green, because the reference decoder hands back 8-bit pixels and literally
+    cannot represent what was under test.</p></div>
+</section>
+
+<section>
+  <div class="sec-h"><span class="tag">Verify it</span><h2>Every claim here is a command</h2></div>
+  <p class="lede">None of this asks to be taken on trust. The numbers come from suites
+  that run in seconds against tools already on your machine.</p>
+
+  <div class="verify">
+<pre><u># srcdiff against the real xz artifacts</u>
+cd srcdiff &amp;&amp; make test
+  <i>25 passed, 0 failed</i>
+
+<u># the Landlock escape attempt, against your own kernel</u>
+cd jail &amp;&amp; make test
+  <i>77 passed, 0 failed</i>
+
+<u># GNU tar reads what we write, and 15 malicious archives are refused</u>
+cd tarx &amp;&amp; make test
+  <i>118 passed, 0 failed</i>
+
+<u># and the harness mutation check: can the suite actually fail?</u>
+cd walkv &amp;&amp; make mutants
+  <i>(no defect)      216 scenarios checked, 0 failed</i>
+  <i>no-crc           caught (1 scenarios failed)</i>
+  <i>truncate-cursor  caught (20 scenarios failed)</i>
+  <b>accept-short     missed, as expected</b> <u>-- the klen check masks it: defense in depth</u>
+  <b>no-fsync         missed, as expected</b> <u>-- only a device-level test can see this</u>
+  <b>ack-before-sync  missed, as expected</b> <u>-- the same ceiling, from the other side</u></pre>
+    <p style="margin:1.1rem 0 0">Those last three lines are the point. Killing a process
+    does not lose the page cache, so <b>no process-kill harness can test durability against
+    real power loss</b> -- however thorough it looks. Removing the fsync call entirely leaves
+    every scenario green. That is asserted as a <b>known miss</b> rather than quietly left
+    out, so the limit is a measured fact instead of a caveat.</p>
+  </div>
+</section>
+
+<footer>
+  <p>There is more of this than is shown here, deliberately. Three projects I can defend
+  line by line are worth more than a list, and a portfolio that needs a scrollbar is
+  asking you to take its length as evidence.</p>
+  <p style="margin-top:.9rem;color:var(--soft);font-size:.85rem" class="m">Everything is
+  C or standard-library Python. No frameworks, no dependencies beyond zlib. Every commit
+  builds, verified by rebuilding each one from a clean checkout.</p>
+</footer>
+
+</div>
