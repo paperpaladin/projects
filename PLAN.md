@@ -85,15 +85,22 @@ Ranked by how little this repo controls them, most independent first:
       was invisible to the tool that gates every other commit here -- which is
       also why nobody noticed. The first commit has to be the one that makes
       the rest reviewable.
-- [ ] 02 assert the figures in `portfolio.pdf`, not only in `portfolio.html`
+- [x] 02 assert the figures in `portfolio.pdf`, not only in `portfolio.html`
       why: the suite checks the HTML because that is text. The PDF is what gets
       sent to anyone, and nothing currently proves the two agree -- a stale
       `portfolio.pdf` next to a fresh `portfolio.html` passes everything today.
       `pdftotext` is installed and already used by hand to spot-check it.
-- [ ] 03 make `render.sh` refuse to leave a PDF older than its HTML
-      why: the failure above is reachable by a chromium crash, and chromium
-      exits 0 on some of them. The check is a timestamp comparison; the point
-      is that a half-finished render must not look like a finished one.
+      done: four assertions, and item 03 fell out of it rather than needing
+      its own commit -- the PDF must be no older than `repos.json` or than the
+      page it was rendered from, which is the timestamp check 03 wanted. The
+      figure check had to be written twice: matching a bare number passed with
+      a planted commit count of 999, because "999" occurs inside some other
+      figure on the page. It matches "N commits" now, which `pdftotext` keeps
+      contiguous, and that fails on the same plant.
+- [ ] 03 make `render.sh` itself refuse to leave a PDF older than its HTML
+      why: the suite now catches it (item 02), but only when run. chromium
+      exits 0 on some failures, so the person who ran `render.sh` and saw no
+      error is the one who should be told, at the moment it happened.
 - [ ] 04 verify the embedded fonts are the three intended faces
       why: the README says the fonts were confirmed by reading the font table
       out of the finished PDF, and that confirmation lives in shell history. If

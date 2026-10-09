@@ -137,6 +137,43 @@ for name in sorted(DATA):
            not t.startswith("FAILING") and t != "NO SUITE", t)
 
 
+# The PDF is what actually gets sent to anyone, and until now only the HTML was
+# checked -- so a stale portfolio.pdf sitting next to a fresh portfolio.html
+# passed everything. pdftotext is the reader; it is a different program from the
+# one that wrote the file, which is the point.
+#
+# Checked more loosely than the HTML on purpose. The PDF is a typeset document:
+# a figure can be split across a line, and the text extractor reorders columns.
+# So each number is looked for as a bare string rather than in context, and the
+# assertion is that every figure is present somewhere -- which is still enough
+# to catch the two failures that matter, a PDF built from different data and a
+# PDF that was never rebuilt.
+PDF = PORTFOLIO / "portfolio.pdf"
+if not PDF.exists():
+    bad("portfolio.pdf does not exist")
+elif sh("pdftotext", "-v").returncode not in (0, 99):
+    print("SKIP pdftotext is not installed, so the PDF cannot be read")
+else:
+    text = sh("pdftotext", str(PDF), "-").stdout
+    truthy("the PDF has extractable text", len(text) > 2000, "%d chars" % len(text))
+    # "28 commits", not "28". A bare number is too weak to fail: planting a
+    # commit count of 999 passed, because "999" occurs inside some other
+    # figure on the page. pdftotext keeps the number and its unit together, so
+    # the pair is both checkable and specific.
+    missing = [n for n in sorted(DATA)
+               if "%d commits" % DATA[n]["commits"] not in text]
+    check("every repo's commit count appears in the PDF", missing, [])
+    # The PDF must be at least as new as the data it claims to show. Chromium
+    # exits 0 on some failures, so a crashed render is otherwise
+    # indistinguishable from a finished one.
+    truthy("the PDF is no older than repos.json",
+           PDF.stat().st_mtime >= REPOS_JSON.stat().st_mtime - 1,
+           "pdf %d, json %d -- re-run .portfolio/render.sh"
+           % (PDF.stat().st_mtime, REPOS_JSON.stat().st_mtime))
+    truthy("the PDF is no older than the page it was made from",
+           PDF.stat().st_mtime >= (PORTFOLIO / "portfolio.html").stat().st_mtime - 1,
+           "re-run .portfolio/render.sh")
+
 # This repo must never contain a gitlink. The sibling projects are independent
 # repositories that happen to live next to this one, and `git add -A` records
 # such a directory as mode 160000 -- a bare commit SHA with no submodule

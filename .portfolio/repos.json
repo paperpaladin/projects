@@ -22,7 +22,7 @@
     "shortcuts": 0,
     "src": 1002,
     "test": 326,
-    "tests": "57 passed, 0 failed",
+    "tests": "61 passed, 0 failed",
     "todo": 11
   },
   "dwarfdump": {
@@ -35,7 +35,7 @@
     "shortcuts": 4,
     "src": 1831,
     "test": 546,
-    "tests": "65 passed, 0 failed",
+    "tests": "85 passed, 0 failed",
     "todo": 10
   },
   "inflate": {
@@ -61,7 +61,7 @@
     "shortcuts": 3,
     "src": 596,
     "test": 475,
-    "tests": "60 passed, 0 failed, 0 skipped",
+    "tests": "77 passed, 0 failed, 0 skipped",
     "todo": 9
   },
   "lnk": {
@@ -118,16 +118,16 @@
   },
   "slab": {
     "blurb": "LD_PRELOAD malloc replacement",
-    "commits": 17,
-    "done": 17,
+    "commits": 18,
+    "done": 18,
     "group": "systems",
     "invariant": "Two live allocations never overlap; every pointer aligned",
     "oracle": "Real programs must produce identical output",
-    "shortcuts": 5,
-    "src": 667,
-    "test": 939,
-    "tests": "30 passed, 0 failed",
-    "todo": 12
+    "shortcuts": 7,
+    "src": 795,
+    "test": 999,
+    "tests": "31 passed, 0 failed",
+    "todo": 11
   },
   "sockv": {
     "blurb": "netlink socket enumerator",
@@ -191,7 +191,7 @@
     "shortcuts": 0,
     "src": 481,
     "test": 443,
-    "tests": "23 passed, 0 failed",
+    "tests": "43 passed, 0 failed",
     "todo": 9
   },
   "unrepro": {
@@ -230,7 +230,7 @@
     "shortcuts": 1,
     "src": 387,
     "test": 361,
-    "tests": "163 scenarios checked, 0 failed",
+    "tests": "216 scenarios checked, 0 failed",
     "todo": 8
   },
   "wasmi": {
