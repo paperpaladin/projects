@@ -14,14 +14,14 @@
   },
   "cc": {
     "blurb": "C compiler for x86-64",
-    "commits": 29,
+    "commits": 30,
     "done": 25,
     "group": "toolchain",
     "invariant": "Self-host fixpoint: cmp cc2 cc3",
     "oracle": "gcc AND clang must agree on every case",
     "shortcuts": 8,
     "src": 4685,
-    "test": 1646,
+    "test": 1807,
     "tests": "389 passed, 0 failed (2 suites)",
     "todo": 6
   },
