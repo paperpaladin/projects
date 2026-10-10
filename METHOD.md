@@ -19,6 +19,26 @@ I watched this harness fail?"**
 If you add a feature, add the check that an outside authority agrees. If no outside
 authority exists for it, say so in the README rather than inventing one.
 
+Four things learned by doing this repeatedly, all of them cheap to reuse:
+
+1. **A test can be true and prove nothing.** `g(300)` against `int g(char)`
+   returns 44 whether or not the call converts anything, because the callee
+   truncates into its own one-byte slot. Ask which direction of a conversion
+   the test can actually see.
+2. **A mutation test can be vacuous the same way.** One here deleted a rule
+   from the left operand while the case had the interesting type on the
+   right, produced byte-identical output, and reported a survivor.
+3. **A refusal needs an outside authority too.** `cc` grew a `refuse()` that
+   demands gcc reject the program as well, and it immediately caught `cc`
+   rejecting valid C. Its opposite, `unimpl()`, demands gcc *accept* it and
+   asserts we refuse cleanly: the failure mode of a missing feature is not a
+   missing error message, it is quietly miscompiling something that looked
+   close enough.
+4. **Some properties are invisible until the suite crosses a boundary.**
+   Internal linkage does nothing observable inside one file; a variadic
+   overflow path is unreachable from a compiler that stops at six arguments.
+   Both needed the suite to build two objects, or to let gcc make the call.
+
 ## How to work here
 
 ```sh
@@ -35,7 +55,7 @@ exists for deliberately committing a known-red state (bisecting, recording a
 reproducer); it should be a decision, never a habit.
 
 Pick work from the repo's `PLAN.md`. The unchecked `- [ ]` items are ordered, and
-each one records *why* it is next. 349 of them are queued.
+each one records *why* it is next. 343 of them are queued.
 
 `.portfolio/` renders the whole thing as a PDF, and every number in it comes from
 `repos.json`, which is **generated, not written**:
@@ -119,5 +139,13 @@ including the ones that were in the harness. Multi-paragraph is normal here.
 
 ## State
 
-270 commits, 18 repos, all suites green, all builds reproducible, every commit
+636 commits, 35 repos, all suites green, all builds reproducible, every commit
 builds. `INDEX.md` has the per-repo invariant table and where each one goes next.
+
+`cc` is where the recent work has gone and is the one repo whose README is
+worth reading in full. It has a preprocessor (hide sets, `#include`, the full
+`#if` family, `#` and `##`, variadic macros), function prototypes, `static`
+and `extern`, global initialisers with relocations, variadic definitions
+against the real SysV ABI, and bitfields. Eight real glibc headers compile
+and a program using `printf` through them runs. 291 + 64 cases, a sanitizer
+gate, and every feature mutation-tested with the survivors written down.

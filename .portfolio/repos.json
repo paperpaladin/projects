@@ -14,16 +14,16 @@
   },
   "cc": {
     "blurb": "C compiler for x86-64",
-    "commits": 12,
-    "done": 7,
+    "commits": 23,
+    "done": 19,
     "group": "toolchain",
     "invariant": "Self-host fixpoint: cmp cc2 cc3",
     "oracle": "gcc AND clang must agree on every case",
     "shortcuts": 8,
-    "src": 2253,
-    "test": 349,
-    "tests": "168 passed, 0 failed",
-    "todo": 15
+    "src": 4239,
+    "test": 1114,
+    "tests": "355 passed, 0 failed (2 suites)",
+    "todo": 11
   },
   "cmark": {
     "blurb": "CommonMark parser and HTML renderer",
@@ -100,7 +100,7 @@
     "shortcuts": 3,
     "src": 857,
     "test": 497,
-    "tests": "322 passed, 0 failed",
+    "tests": "691 passed, 0 failed",
     "todo": 20
   },
   "httpd": {
@@ -360,7 +360,7 @@
     "shortcuts": 4,
     "src": 973,
     "test": 892,
-    "tests": "34 passed, 0 failed",
+    "tests": "59 passed, 0 failed (2 suites)",
     "todo": 8
   },
   "unrepro": {

@@ -27,6 +27,7 @@ PORTFOLIO_DIR = Path(__file__).resolve().parent.parent
 ROOT = PORTFOLIO_DIR.parent
 sys.path.insert(0, str(PORTFOLIO_DIR))
 sys.path.insert(0, str(ROOT / "commitq"))
+import commitq  # noqa: E402
 import extract  # noqa: E402
 
 PORTFOLIO = ROOT / ".portfolio"
@@ -323,6 +324,43 @@ truthy("the output it produces is the output that is checked in",
 
 bogus = sh(sys.executable, str(PORTFOLIO / "extract.py"), "--nope", cwd=ROOT)
 check("an unknown flag is refused", bogus.returncode, 1)
+
+# ---------------------------------------------------------------------------
+# A repo whose `make test` runs more than one suite prints more than one
+# summary. Taking the last line reports only the last suite, which is not a
+# wrong number so much as a number about something smaller than it looks.
+# cc was recorded as "64 passed" while actually running 291 + 64.
+_orig_run_tests = commitq.run_tests
+
+
+def _fake_tests(output, ok_flag=True, found=True):
+    commitq.run_tests = lambda repo: (ok_flag, output, found)
+
+
+try:
+    _fake_tests("ok a\n291 passed, 0 failed\nok b\n64 passed, 0 failed\n")
+    check("two suites are summed, not truncated to the last",
+          extract.suite_summary(ROOT / "cc", None),
+          "355 passed, 0 failed (2 suites)")
+
+    _fake_tests("ok a\n12 passed, 0 failed\n")
+    check("one suite is reported unchanged",
+          extract.suite_summary(ROOT / "cc", None),
+          "12 passed, 0 failed")
+
+    # A suite that reports in its own words is left alone rather than being
+    # forced into a shape it never used.
+    _fake_tests("1234 agree, 0 disagree\n")
+    check("a non-standard summary is carried through",
+          extract.suite_summary(ROOT / "bigint", None),
+          "1234 agree, 0 disagree")
+
+    _fake_tests("5 passed, 1 failed\n9 passed, 0 failed\n", ok_flag=False)
+    check("a failure across two suites still says FAILING",
+          extract.suite_summary(ROOT / "cc", None),
+          "FAILING: 14 passed, 1 failed (2 suites)")
+finally:
+    commitq.run_tests = _orig_run_tests
 
 
 print("\n%d passed, %d failed" % (passed, failed))

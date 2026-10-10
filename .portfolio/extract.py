@@ -39,6 +39,7 @@ backstop is t/test_portfolio.py, which refuses to accept a FAILING or NO SUITE
 string in a document meant to be published.
 """
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -110,8 +111,20 @@ def suite_summary(repo, keep=None):
     ok, out, found = commitq.run_tests(repo)
     if not found:
         return "NO SUITE"
-    tail = [l.strip() for l in out.splitlines() if l.strip()]
-    summary = tail[-1] if tail else "(no output)"
+    lines = [l.strip() for l in out.splitlines() if l.strip()]
+
+    # A repo whose `make test` runs more than one suite prints more than one
+    # summary, and taking the last line silently reports only the last suite.
+    # cc was recorded as "64 passed" while actually running 291 + 64: not a
+    # wrong number, a number about a smaller thing than it appeared to
+    # describe. Every "N passed, M failed" line is summed instead.
+    summaries = [l for l in lines if re.fullmatch(r"\d+ passed, \d+ failed", l)]
+    if len(summaries) > 1:
+        passed = sum(int(l.split()[0]) for l in summaries)
+        failed = sum(int(l.split()[2]) for l in summaries)
+        summary = "%d passed, %d failed (%d suites)" % (passed, failed, len(summaries))
+    else:
+        summary = lines[-1] if lines else "(no output)"
     return summary if ok else "FAILING: " + summary
 
 

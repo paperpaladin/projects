@@ -20,7 +20,7 @@ cd /home/x/projects
 ```
 
 Every commit currently carries a placeholder author so nothing had to guess at
-yours. `cq id` rewrites all 270 and fixes each repo's config. Safe now; don't do
+yours. `cq id` rewrites all 636 and fixes each repo's config. Safe now; don't do
 it after pushing. Use the `users.noreply.github.com` address -- commit emails are
 public and scraped.
 
@@ -28,7 +28,7 @@ public and scraped.
 
 | repo | lang | what it is | the oracle | tests |
 |---|---|---|---|---|
-| [cc](cc/) | C | C compiler for x86-64 | gcc **and** clang must agree | 168 / 166 diff |
+| [cc](cc/) | C | C compiler for x86-64, with preprocessor | gcc **and** clang must agree | **291** + 64 cpp |
 | [lnk](lnk/) | C | static ELF linker | the kernel runs it, or it doesn't | 29 |
 | [wasmi](wasmi/) | C | WebAssembly interpreter | expectations computed in Python | **11,833** |
 | [psh](psh/) | C | POSIX shell subset | `dash`, stdout **and** exit status | **207 agree** |
