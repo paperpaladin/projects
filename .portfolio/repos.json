@@ -170,14 +170,14 @@
   },
   "mydiff": {
     "blurb": "Myers diff and patch",
-    "commits": 18,
+    "commits": 19,
     "done": 13,
     "group": "toolchain",
     "invariant": "The loop closes both ways: our diff feeds GNU patch, GNU's diff feeds our -p",
     "oracle": "GNU diff byte-identical, and GNU patch applies our output",
     "shortcuts": 3,
-    "src": 1075,
-    "test": 792,
+    "src": 1099,
+    "test": 813,
     "tests": "995 passed, 0 failed",
     "todo": 4
   },
