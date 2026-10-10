@@ -24,11 +24,24 @@ yours. `cq id` rewrites all 636 and fixes each repo's config. Safe now; don't do
 it after pushing. Use the `users.noreply.github.com` address -- commit emails are
 public and scraped.
 
+## Start with cc
+
+`cc` is a C compiler that compiles itself. `make self-host` builds it with
+itself, builds it again with the result, and checks the two binaries are
+byte-identical -- then runs the whole suite against the stage-2 compiler,
+because the fixpoint proves the compiler is *stable* and not that it is
+*correct*. The first time `cmp cc2 cc3` came out green, the stage-2 compiler
+still failed 15 cases.
+
+It has a preprocessor with the hide-set rules, function prototypes, bitfields,
+variadic functions checked against glibc's own `va_arg`, and it compiles
+`<stdio.h>` and friends out of `/usr/include`.
+
 ## The repos
 
 | repo | lang | what it is | the oracle | tests |
 |---|---|---|---|---|
-| [cc](cc/) | C | C compiler for x86-64, with preprocessor | gcc **and** clang must agree | **291** + 64 cpp |
+| [cc](cc/) | C | C compiler for x86-64, **self-hosting** | gcc **and** clang, and itself | **302** + 64 cpp |
 | [lnk](lnk/) | C | static ELF linker | the kernel runs it, or it doesn't | 29 |
 | [wasmi](wasmi/) | C | WebAssembly interpreter | expectations computed in Python | **11,833** |
 | [psh](psh/) | C | POSIX shell subset | `dash`, stdout **and** exit status | **207 agree** |

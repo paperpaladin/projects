@@ -142,10 +142,15 @@ including the ones that were in the harness. Multi-paragraph is normal here.
 636 commits, 35 repos, all suites green, all builds reproducible, every commit
 builds. `INDEX.md` has the per-repo invariant table and where each one goes next.
 
-`cc` is where the recent work has gone and is the one repo whose README is
+`cc` compiles itself: `make self-host` builds it with itself twice and
+asserts the two binaries are byte-identical AND that the stage-2 compiler
+passes the whole suite. The second half is not ceremony -- at the first green
+`cmp cc2 cc3` the stage-2 compiler failed 15 cases, because a compiler that
+miscompiles itself consistently reaches a fixpoint without complaint.
+
+It is where the recent work has gone and is the one repo whose README is
 worth reading in full. It has a preprocessor (hide sets, `#include`, the full
 `#if` family, `#` and `##`, variadic macros), function prototypes, `static`
 and `extern`, global initialisers with relocations, variadic definitions
 against the real SysV ABI, and bitfields. Eight real glibc headers compile
-and a program using `printf` through them runs. 291 + 64 cases, a sanitizer
-gate, and every feature mutation-tested with the survivors written down.
+and a program using `printf` through them runs. 302 + 64 cases, a sanitizer gate, a self-host gate, and every feature mutation-tested with the survivors written down.
