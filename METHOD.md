@@ -153,4 +153,5 @@ worth reading in full. It has a preprocessor (hide sets, `#include`, the full
 `#if` family, `#` and `##`, variadic macros), function prototypes, `static`
 and `extern`, global initialisers with relocations, variadic definitions
 against the real SysV ABI, and bitfields. Eight real glibc headers compile
-and a program using `printf` through them runs. 302 + 64 cases, a sanitizer gate, a self-host gate, and every feature mutation-tested with the survivors written down.
+and a program using `printf` through them runs. Milestone 1 of its PLAN is
+complete. 325 + 64 cases, a sanitizer gate, a self-host gate, a differential fuzzer, and every feature mutation-tested with the survivors written down.

@@ -41,7 +41,7 @@ variadic functions checked against glibc's own `va_arg`, and it compiles
 
 | repo | lang | what it is | the oracle | tests |
 |---|---|---|---|---|
-| [cc](cc/) | C | C compiler for x86-64, **self-hosting** | gcc **and** clang, and itself | **302** + 64 cpp |
+| [cc](cc/) | C | C compiler for x86-64, **self-hosting** | gcc **and** clang, and itself | **325** + 64 cpp |
 | [lnk](lnk/) | C | static ELF linker | the kernel runs it, or it doesn't | 29 |
 | [wasmi](wasmi/) | C | WebAssembly interpreter | expectations computed in Python | **11,833** |
 | [psh](psh/) | C | POSIX shell subset | `dash`, stdout **and** exit status | **207 agree** |
