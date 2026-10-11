@@ -100,7 +100,7 @@
     "shortcuts": 3,
     "src": 857,
     "test": 497,
-    "tests": "904 passed, 0 failed",
+    "tests": "980 passed, 0 failed",
     "todo": 20
   },
   "httpd": {
@@ -323,6 +323,19 @@
     "test": 450,
     "tests": "118 passed, 0 failed",
     "todo": 12
+  },
+  "tlp": {
+    "blurb": "metamorphic SQL logic-bug finder",
+    "commits": 3,
+    "done": 7,
+    "group": "formats",
+    "invariant": "Every disagreement reported is a real one, and a run that finds nothing is distinguishable from a run that tested nothing",
+    "oracle": "A relation SQLite must satisfy with itself, so no second engine is needed; plus planted bugs proving the oracles can fail",
+    "shortcuts": 0,
+    "src": 690,
+    "test": 330,
+    "tests": "36 passed, 0 failed",
+    "todo": 3
   },
   "tomlc": {
     "blurb": "TOML 1.0.0 parser",

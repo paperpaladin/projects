@@ -1,13 +1,13 @@
 # projects
 
-Thirty-five repositories. Every one is a working program with an **external
+Thirty-six repositories. Every one is a working program with an **external
 oracle** -- something outside the author's control that decides whether the code
 is right. Pure C or standard-library Python throughout; no frameworks, no package
 managers, no dependency beyond `zlib`. Every repo has `make test` and it passes.
 Every commit builds, verified by removing build artifacts and rebuilding each one.
 
 All of them produce **reproducible builds**, verified by `unrepro` -- one of the
-thirty-five.
+thirty-six.
 
 ## Start here
 
@@ -76,6 +76,7 @@ variadic functions checked against glibc's own `va_arg`, and it compiles
 | [gitobj](gitobj/) | C | git object database reader/writer | the object name is its own SHA-1 | 322 |
 | [zipc](zipc/) | C | ZIP reader/writer | Info-ZIP `unzip`/`zip`, bidirectional | 55 |
 | [xmlc](xmlc/) | C | XML 1.0 well-formedness checker | W3C conformance suite, 2585 cases | 83 |
+| [tlp](tlp/) | Py | metamorphic SQL logic-bug finder | a relation SQLite must satisfy with **itself** | 36 |
 
 Worth running once each:
 
