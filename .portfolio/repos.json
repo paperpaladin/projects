@@ -326,16 +326,16 @@
   },
   "tlp": {
     "blurb": "metamorphic SQL logic-bug finder",
-    "commits": 3,
-    "done": 7,
+    "commits": 4,
+    "done": 8,
     "group": "formats",
     "invariant": "Every disagreement reported is a real one, and a run that finds nothing is distinguishable from a run that tested nothing",
     "oracle": "A relation SQLite must satisfy with itself, so no second engine is needed; plus planted bugs proving the oracles can fail",
     "shortcuts": 0,
-    "src": 690,
-    "test": 330,
-    "tests": "36 passed, 0 failed",
-    "todo": 3
+    "src": 923,
+    "test": 439,
+    "tests": "48 passed, 0 failed",
+    "todo": 2
   },
   "tomlc": {
     "blurb": "TOML 1.0.0 parser",
