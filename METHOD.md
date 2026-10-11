@@ -1,6 +1,6 @@
 # projects/ -- working instructions
 
-Thirty-five independent repositories, one method. Read this before touching anything;
+Thirty-eight independent repositories, one method. Read this before touching anything;
 read `INDEX.md` for what each repo is, and the repo's own `PLAN.md` for what comes
 next in it.
 
@@ -42,7 +42,7 @@ Four things learned by doing this repeatedly, all of them cheap to reuse:
 ## How to work here
 
 ```sh
-./cq            # status across all 35
+./cq            # status across all 38
 ./cq t          # what to work on: stalest repo first, next planned item in each
 ./cq c REPO "message"    # runs that repo's tests, commits only if green
 ./cq a          # status + run every suite (slow: wasmi alone is ~3 min)
@@ -55,13 +55,27 @@ exists for deliberately committing a known-red state (bisecting, recording a
 reproducer); it should be a decision, never a habit.
 
 Pick work from the repo's `PLAN.md`. The unchecked `- [ ]` items are ordered, and
-each one records *why* it is next. 343 of them are queued.
+each one records *why* it is next. 346 of them are queued.
+
+**Membership is having a `PLAN.md`.** That is the rule `extract.py` uses and the
+one `commitq`'s gateability guard asserts against, so a directory with a `.git`
+and no `PLAN.md` is outside the set -- `notally-molly` is an unrelated Android
+fork and stays out.
+
+Two repos were invisible for exactly that reason until they were given one:
+`ed25519` and `terminfo`, both built in sessions that were interrupted. Both
+build, both pass their suites against external oracles, and both are
+**unfinished** -- `ed25519` has no signing function and `terminfo` does not
+read the string table. Their READMEs say so first. The lesson is that the
+membership rule is silent: a repo with no `PLAN.md` is not reported as missing,
+it simply does not appear, so `cq t` never offers work on it and the portfolio
+never counts it.
 
 `.portfolio/` renders the whole thing as a PDF, and every number in it comes from
 `repos.json`, which is **generated, not written**:
 
 ```sh
-python3 .portfolio/extract.py > .portfolio/repos.json   # runs all 35 suites, ~15 min
+python3 .portfolio/extract.py > .portfolio/repos.json   # runs all 38 suites, ~30 min
 NAME="..." GITHUB="..." .portfolio/render.sh            # build.py, then chromium
 ```
 
@@ -93,7 +107,7 @@ starts claiming last week's numbers -- it had drifted by 38 values once, because
    mistake once: see the stash on `notally-molly`, which downgraded typographic
    apostrophes and ellipses in thirty languages of Android UI text, where the
    ellipsis character is correct and `...` is wrong.
-4. **All 35 must stay reproducible.** Any new C repo needs
+4. **All 38 must stay reproducible.** Any new C repo needs
    `-ffile-prefix-map=$(CURDIR)=.` in `CFLAGS`, or `-g` writes the build directory
    into DWARF `.debug_line_str`. Check with
    `python3 unrepro/unrepro.py check ../REPO --cmd 'make -B'` on a clean tree.
@@ -136,10 +150,23 @@ including the ones that were in the harness. Multi-paragraph is normal here.
 - Backups: `/home/x/projects-SNAPSHOT-FINAL/` holds a full tarball and a
   `git bundle` per repo. Refresh it after significant work.
 - Do not execute build scripts from downloaded third-party tarballs.
+- **`pkill -f PATTERN` kills the shell that runs it.** Every Bash call here is
+  `bash -c '<the whole command>'`, so the pattern you are matching is sitting
+  in the invoking shell's own `/proc/*/cmdline`. `pkill -f 'tlp.py reduce'`
+  issued in the same command as a `tlp.py reduce` run kills both, and the
+  surviving symptom is an exit code of 143 or 144 with no output and no
+  explanation. It cost three debugging detours in one session, once sending me
+  after a non-existent bug in code whose patch had been killed before it
+  wrote. Kill by PID from `pgrep -af`, in a separate call.
+- **`.portfolio/extract.py` must be the only thing running.** Its own
+  docstring says so -- cc, lnk, sqlr and tarx use fixed scratch paths and
+  `prof` asserts sampling ratios -- and a run with test suites running
+  alongside it reports repos as FAILING that pass on their own. Finish every
+  repo change first, then extract once, then render.
 
 ## State
 
-636 commits, 35 repos, all suites green, all builds reproducible, every commit
+577 commits, 38 repos, all suites green, all builds reproducible, every commit
 builds. `INDEX.md` has the per-repo invariant table and where each one goes next.
 
 `cc` compiles itself: `make self-host` builds it with itself twice and

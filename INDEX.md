@@ -1,10 +1,17 @@
 # projects
 
-Thirty-six repositories. Every one is a working program with an **external
+Thirty-eight repositories. Every one is a working program with an **external
 oracle** -- something outside the author's control that decides whether the code
 is right. Pure C or standard-library Python throughout; no frameworks, no package
 managers, no dependency beyond `zlib`. Every repo has `make test` and it passes.
 Every commit builds, verified by removing build artifacts and rebuilding each one.
+
+The last two rows of the table are **unfinished**, and are listed rather than
+hidden: `ed25519` has every arithmetic layer differenced against an independent
+implementation but no signing function yet, and `terminfo` reads headers,
+booleans and numbers but not the string table. Both say so first in their own
+READMEs. They were built in sessions that were interrupted, and were invisible
+here until they acquired the `PLAN.md` that makes a directory a member.
 
 All of them produce **reproducible builds**, verified by `unrepro` -- one of the
 thirty-six.
@@ -76,7 +83,9 @@ variadic functions checked against glibc's own `va_arg`, and it compiles
 | [gitobj](gitobj/) | C | git object database reader/writer | the object name is its own SHA-1 | 322 |
 | [zipc](zipc/) | C | ZIP reader/writer | Info-ZIP `unzip`/`zip`, bidirectional | 55 |
 | [xmlc](xmlc/) | C | XML 1.0 well-formedness checker | W3C conformance suite, 2585 cases | 83 |
-| [tlp](tlp/) | Py | metamorphic SQL logic-bug finder | a relation SQLite must satisfy with **itself** | 36 |
+| [tlp](tlp/) | Py | metamorphic SQL logic-bug finder | a relation SQLite must satisfy with **itself** | **100** |
+| [ed25519](ed25519/) | C | Ed25519 field, scalar and group arithmetic -- *no signing yet* | Python integers, and an independent group in Python | 23 |
+| [terminfo](terminfo/) | C | compiled-terminfo reader -- *strings not yet* | `infocmp`, and `tic` for the name tables | 6 |
 
 Worth running once each:
 
