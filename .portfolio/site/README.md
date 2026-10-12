@@ -3,9 +3,6 @@
 One self-contained page: `index.html`. No build step, no assets, no
 dependencies. Open it in a browser and that is the whole thing.
 
-Published copy (private until you share it):
-https://internal.invalid/artifact
-
 ## Before it goes anywhere public
 
 1. **Replace the name.** The first line of `<header>` is a placeholder and is
