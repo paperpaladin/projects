@@ -66,8 +66,21 @@ def truthy(label, cond, *detail):
 
 
 def sh(*args, cwd=None):
-    return subprocess.run(args, cwd=cwd, capture_output=True, text=True,
-                          timeout=120)
+    """Run a command. A missing binary is a returncode, not an exception.
+
+    This used to let FileNotFoundError out, which killed the suite at the one
+    place that tries to detect a missing binary: the pdftotext branch below
+    reads `sh("pdftotext", "-v").returncode` to decide whether to SKIP, so an
+    absent pdftotext raised inside the very check meant to notice it, and the
+    ~50 assertions after that point -- render.sh's refusals, the gitlink and
+    gitignore checks, the whole extractor section, all four suite_summary
+    checks -- never ran. 127 is what a shell reports for "command not found".
+    """
+    try:
+        return subprocess.run(args, cwd=cwd, capture_output=True, text=True,
+                              timeout=120)
+    except FileNotFoundError:
+        return subprocess.CompletedProcess(args, 127, "", "%s: not found" % args[0])
 
 
 def mkrepo(parent, name, files, ignore=None):
@@ -304,10 +317,27 @@ with tempfile.TemporaryDirectory() as tmp:
     })
     check("hist/ is excluded from the line count", extract.measure(h)[0], 1)
 
-    # members() is what keeps a stray checkout out of the document.
-    nop = mkrepo(tmp, "notaplan", {"README.md": "not one of them\n"})
-    truthy("a repo with no PLAN.md is not a member",
-           not (nop / "PLAN.md").exists() and "notaplan" not in members)
+    # members() is what keeps a stray checkout out of the document. Ask
+    # members() about the tempdir, not about the real collection: this used to
+    # assert `"notaplan" not in members`, where `members` is the module-level
+    # set built from /home/x/projects, which can never contain it. Deleting
+    # the PLAN.md rule from extract.members entirely left that assertion
+    # passing.
+    mkrepo(tmp, "notaplan", {"README.md": "not one of them\n"})
+    mkrepo(tmp, "isaplan", {"PLAN.md": "# plan\n"})
+    # members(root) enumerates through commitq.repos(), which reads
+    # commitq.ROOT -- the `root` argument is used only for the `r != root`
+    # self-exclusion. So ROOT has to move for this to be about the tempdir,
+    # and that is exactly why the old assertion could not fail.
+    _saved_root = commitq.ROOT
+    try:
+        commitq.ROOT = Path(tmp)
+        names = {d.name for d in extract.members(Path(tmp))}
+    finally:
+        commitq.ROOT = _saved_root
+    truthy("a repo with no PLAN.md is not a member", "notaplan" not in names)
+    truthy("...and one with a PLAN.md is, so the rule is doing the work",
+           "isaplan" in names)
 
 
 # =================================================== the extractor is repeatable
@@ -337,6 +367,14 @@ def _fake_tests(output, ok_flag=True, found=True):
     commitq.run_tests = lambda repo: (ok_flag, output, found)
 
 
+# suite_summary() writes a failing suite's full output to FAILURE_DIR, so the
+# faked failing run below used to overwrite .portfolio/failures/cc.log with
+# this file's invented numbers -- destroying, on every run of the suite, the
+# one artefact that block exists to preserve. Point it somewhere disposable.
+_orig_failure_dir = extract.FAILURE_DIR
+_failure_tmp = tempfile.TemporaryDirectory()
+extract.FAILURE_DIR = Path(_failure_tmp.name)
+
 try:
     _fake_tests("ok a\n291 passed, 0 failed\nok b\n64 passed, 0 failed\n")
     check("two suites are summed, not truncated to the last",
@@ -361,6 +399,8 @@ try:
           "FAILING: 14 passed, 1 failed (2 suites)")
 finally:
     commitq.run_tests = _orig_run_tests
+    extract.FAILURE_DIR = _orig_failure_dir
+    _failure_tmp.cleanup()
 
 
 print("\n%d passed, %d failed" % (passed, failed))

@@ -79,7 +79,7 @@ never counts it.
 `repos.json`, which is **generated, not written**:
 
 ```sh
-python3 .portfolio/extract.py > .portfolio/repos.json   # runs all 38 suites, ~30 min
+make portfolio        # runs all 38 suites, ~30 min, then moves repos.json
 NAME="..." GITHUB="..." .portfolio/render.sh            # build.py, then chromium
 ```
 

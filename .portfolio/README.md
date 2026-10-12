@@ -8,9 +8,9 @@ Generates `portfolio.pdf` from the repositories themselves.
 from tracked files, test counts from actually running each suite -- so the
 document cannot drift from the work it describes. Regenerate it with:
 
-    cd /home/x/projects && python3 .portfolio/extract.py > .portfolio/repos.json
+    make portfolio
 
-That takes a few minutes, because it runs all eighteen suites; `wasmi` alone is
+That takes about half an hour, because it runs all thirty-eight suites; `wasmi` alone is
 about three. It is a separate script from `build.py` for exactly that reason.
 
 Four fields per repo are editorial -- `blurb`, `oracle`, `invariant`, `group` --
@@ -29,7 +29,7 @@ walking the tree rather than asking `git`:
 - `lnk` was credited with 2,873 test lines. 2,456 of those were
   `t/tmp.pages.c`, a generated file that is gitignored and was never part of
   the repo.
-- `psh` was credited with 63, which was `t/run.sh` alone -- the 185-script
+- `psh` was credited with 63, which was `t/run.sh` alone -- the 208-script
   corpus that the harness actually runs did not count at all.
 
 Totals went *down* as a result, from 11,503 test lines to 8,732. A number that

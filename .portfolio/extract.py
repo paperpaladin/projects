@@ -1,7 +1,21 @@
 #!/usr/bin/env python3
 """Extract repos.json from the repositories themselves.
 
-    cd /home/x/projects && python3 .portfolio/extract.py > .portfolio/repos.json
+    make portfolio
+
+NOT `python3 .portfolio/extract.py > .portfolio/repos.json`, which is what this
+docstring, the README and METHOD.md all used to say. The shell truncates a
+redirect target before exec, so repos.json is empty before this script starts
+-- and the script reads it back for the editorial fields (blurb, oracle,
+invariant, group), which are written by hand and are not re-measurable. The
+run then dies on the empty file. `make portfolio` writes repos.json.new and
+moves it into place.
+
+The guard in main() cannot undo that truncation; nothing in this process can,
+because it happened before exec. What it does is stop with one line saying
+what happened and how to get the file back, instead of a JSONDecodeError
+traceback. I destroyed the file with this exact command twice while testing
+the guard, which is the argument for having it.
 
 Every number in portfolio.pdf comes from repos.json, and the whole point of
 generating that file rather than writing it is that the document then cannot
@@ -43,6 +57,7 @@ backstop is t/test_portfolio.py, which refuses to accept a FAILING or NO SUITE
 string in a document meant to be published.
 """
 import json
+import os
 import pathlib
 import re
 import sys
@@ -52,6 +67,10 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 sys.path.insert(0, str(ROOT / "commitq"))
 import commitq  # noqa: E402  (path has to be set up first)
+
+# Where a failing suite's full output is written. The test suite repoints this
+# at a temporary directory; see the comment in suite_summary().
+FAILURE_DIR = HERE / "failures"
 
 EDITORIAL = ("blurb", "oracle", "invariant", "group")
 SRC_EXT = (".c", ".h", ".py", ".sh")
@@ -171,9 +190,14 @@ def suite_summary(repo, keep=None):
     # extract, then 101/0 on four consecutive runs afterwards, with no record
     # of which assertion it was. Not reproduced and therefore not fixed; the
     # least this can do is make the next occurrence diagnosable.
+    # FAILURE_DIR is overridable so the suite can point it at a tempdir. It
+    # was not, and t/test_portfolio.py calls suite_summary() with a faked
+    # failing run -- so every run of the suite overwrote .portfolio/failures/
+    # cc.log with the test's invented "5 passed, 1 failed", destroying the one
+    # artefact this block exists to preserve.
     try:
-        log = pathlib.Path(__file__).resolve().parent / "failures"
-        log.mkdir(exist_ok=True)
+        log = FAILURE_DIR
+        log.mkdir(exist_ok=True, parents=True)
         (log / ("%s.log" % repo.name)).write_text(out)
     except OSError:
         pass          # a missing log must not change the verdict
@@ -303,7 +327,30 @@ def index_drift(out):
     return drift
 
 
+def refuse_self_redirect():
+    """Stop if stdout IS the repos.json this run has to read back.
+
+    (st_dev, st_ino) catches it however the path is spelled -- relative,
+    absolute, or through a symlink -- and runs before the lock is taken, so a
+    doomed run does not also block a good one.
+    """
+    target = HERE / "repos.json"
+    try:
+        out = os.fstat(sys.stdout.fileno())
+        tgt = os.stat(target)
+    except OSError:
+        return
+    if (out.st_dev, out.st_ino) == (tgt.st_dev, tgt.st_ino):
+        sys.exit(
+            "extract: stdout is %s, so the shell truncated it before this\n"
+            "  process started. The editorial fields in it are already gone\n"
+            "  and they are not re-measurable.\n"
+            "  Get them back:  git checkout -- .portfolio/repos.json\n"
+            "  Then use:       make portfolio" % target)
+
+
 def main():
+    refuse_self_redirect()
     _lock = take_the_lock()
     args = sys.argv[1:]
     keep_counts = "--keep-test-counts" in args
