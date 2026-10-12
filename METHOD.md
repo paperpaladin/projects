@@ -301,8 +301,14 @@ including the ones that were in the harness. Multi-paragraph is normal here.
 
 ## State
 
-643 commits, 38 repos, all builds reproducible, every commit
-builds. `INDEX.md` has the per-repo invariant table and where each one goes next.
+681 commits, 38 repos, all 38 suites green as of the last `make portfolio`.
+`INDEX.md` has the per-repo invariant table and where each one goes next.
+
+Two things this line used to assert are **not** established: "every commit
+builds" (hard rule 2 -- nothing checks it) and "all builds reproducible",
+which was measured when the collection was 18 repos and has not been re-run
+across all 38. `unrepro`'s own README still lists four siblings as
+not-reproducible that now are.
 
 `cc` compiles itself: `make self-host` builds it with itself twice and
 asserts the two binaries are byte-identical AND that the stage-2 compiler
