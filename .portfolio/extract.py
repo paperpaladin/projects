@@ -39,6 +39,7 @@ backstop is t/test_portfolio.py, which refuses to accept a FAILING or NO SUITE
 string in a document meant to be published.
 """
 import json
+import pathlib
 import re
 import sys
 from pathlib import Path
@@ -155,7 +156,24 @@ def suite_summary(repo, keep=None):
                 break
         if summary is None:
             summary = lines[-1] if lines else "(no output)"
-    return summary if ok else "FAILING: " + summary
+    if ok:
+        return summary
+    # Keep the whole output of a failing suite. The summary line is all that
+    # reaches repos.json, and that is right for the document -- but it threw
+    # away the only evidence of what went wrong, which matters most for a
+    # suite that fails under a full extract and passes on its own.
+    #
+    # unrepro did exactly that: "FAILING: 100 passed, 1 failed" during an
+    # extract, then 101/0 on four consecutive runs afterwards, with no record
+    # of which assertion it was. Not reproduced and therefore not fixed; the
+    # least this can do is make the next occurrence diagnosable.
+    try:
+        log = pathlib.Path(__file__).resolve().parent / "failures"
+        log.mkdir(exist_ok=True)
+        (log / ("%s.log" % repo.name)).write_text(out)
+    except OSError:
+        pass          # a missing log must not change the verdict
+    return "FAILING: " + summary
 
 
 def members(root):

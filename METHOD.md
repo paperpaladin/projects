@@ -161,6 +161,19 @@ including the ones that were in the harness. Multi-paragraph is normal here.
 - Backups: `/home/x/projects-SNAPSHOT-FINAL/` holds a full tarball and a
   `git bundle` per repo. Refresh it after significant work.
 - Do not execute build scripts from downloaded third-party tarballs.
+- **`unrepro`'s suite flaked once under a full extract and has not been
+  reproduced.** It reported `FAILING: 100 passed, 1 failed` during one
+  `extract.py` run and then 101/0 on four consecutive runs on an idle
+  machine. Its timestamp-planted causes are all deterministic by
+  construction -- `date-macro` varies `SOURCE_DATE_EPOCH`, `date-cmd` varies
+  `TZ`, and `date-macro`'s own comment explains that relying on the wall
+  clock is the flakiness that lets this bug class survive -- so the
+  candidates are the locale-dependent `ls-order` case or the real sibling
+  build of `cc`, which is the heaviest thing either suite does. Recorded
+  rather than fixed, because one unreproduced failure is not a diagnosis.
+  `extract.py` now writes a failing suite's full output to
+  `.portfolio/failures/REPO.log`, so the next occurrence can be read instead
+  of guessed at.
 - **Run `make test`, never `sh t/run.sh` directly.** 14 harnesses compile the
   binary under test themselves (cc, corex, dwarfdump, ed25519, jsonc, lnk,
   sha2, slab, tomlc, trace, utf8n, vtparse, xmlc) and are safe either way.
@@ -192,7 +205,7 @@ including the ones that were in the harness. Multi-paragraph is normal here.
 
 ## State
 
-599 commits, 38 repos, all suites green, all builds reproducible, every commit
+605 commits, 38 repos, all builds reproducible, every commit
 builds. `INDEX.md` has the per-repo invariant table and where each one goes next.
 
 `cc` compiles itself: `make self-host` builds it with itself twice and
