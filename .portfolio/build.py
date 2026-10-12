@@ -136,7 +136,7 @@ def composition_map():
                 f'text-anchor="middle">{note}</text>')
 
     s = [f'<svg class="map" viewBox="0 0 {W} 268" role="img" aria-label="How the '
-         'eighteen repositories compose">']
+         'these repositories compose">']
 
     # lane label is vertically centred on its box row
     def lane(ly, nm, rule=True):
@@ -181,7 +181,7 @@ def ratio_fig(code, harness, width=740):
  <text x="0" y="8" class="bv">in the code &mdash; {code}</text>
  <text x="{w1 + 4:.1f}" y="8" class="bv">in the thing meant to test the code &mdash; {harness}</text>
  <text x="0" y="50" class="cap">Defects recorded in commit messages and READMEs across all
- eighteen repositories. Counted once per root cause.</text>
+ every repository here. Counted once per root cause.</text>
 </svg>'''
 
 
@@ -281,6 +281,24 @@ def repo_card(name, v):
 </article>'''
 
 
+WORDS = {18: "Eighteen", 19: "Nineteen", 20: "Twenty",
+         30: "Thirty", 36: "Thirty-six", 38: "Thirty-eight"}
+
+
+def word(n):
+    """The repo count as a word, for prose that has to agree with the tiles.
+
+    Every number on this page was supposed to come from repos.json. The
+    PROSE did not: the h1 said "Eighteen programs" and a cover tile said
+    "18/18 suites green" while the tile beside it said a generated 38, so
+    page one contradicted itself by twenty. "Eighteen" also appeared in the
+    composition caption, the reproducibility claim, the SVG's aria-label
+    and two docstrings. They were typed when there were eighteen and never
+    touched again.
+    """
+    return WORDS.get(n, str(n))
+
+
 def build():
     by_commits = [(k, v["commits"]) for k, v in DATA.items()]
     by_loc = sorted(((k, v["src"], v["test"]) for k, v in DATA.items()),
@@ -314,6 +332,15 @@ def build():
         harness_bugs=bug_rows("harness"), code_bugs=bug_rows("code"),
         groups=groups_html,
         n_harness=n_harness, n_code=n_code, n_bugs=n_harness + n_code,
+        word=word(len(DATA)),
+        # "N/N suites green" rather than a literal. extract.py prefixes
+        # FAILING: on any suite that did not pass, so counting the ones
+        # that did is the honest denominator -- and if one ever fails the
+        # tile says so instead of claiming a clean sweep.
+        green="%d/%d" % (sum(1 for v in DATA.values()
+                             if not v["tests"].startswith("FAILING")
+                             and v["tests"] != "NO SUITE"), len(DATA)),
+        jail_tests=DATA["jail"]["tests"].split()[0],
         groups_table="".join(
             f'<tr><td>{k}</td><td>{esc(v["tests"]) or "&mdash;"}</td>'
             f'<td>{v["done"]}/{v["done"] + v["todo"]}</td></tr>'
@@ -461,7 +488,7 @@ td:first-child{font-family:var(--f-mono);color:var(--ink);font-size:8.4pt}
 <!-- ============ cover ============ -->
 <section class="sheet cover">
   <p class="eyebrow">Systems engineering portfolio &middot; Linux / FOSS</p>
-  <h1>Eighteen programs, and something outside each one that decides if it is right.</h1>
+  <h1>@@word@@ programs, and something outside each one that decides if it is right.</h1>
   <p class="lede">Every project here is built against an <b>external oracle</b> &mdash; gcc
   and clang, the Linux kernel, <code>dash</code>, GNU tar, readelf, SQLite, Python's
   own regex engine. Not one of them is the judge of its own correctness. That
@@ -475,7 +502,7 @@ td:first-child{font-family:var(--f-mono);color:var(--ink);font-size:8.4pt}
     <div class="tile"><div class="v">@@commits@@</div><div class="k">commits</div></div>
     <div class="tile"><div class="v">@@src@@</div><div class="k">lines of source</div></div>
     <div class="tile"><div class="v">@@test@@</div><div class="k">lines of tests</div></div>
-    <div class="tile"><div class="v">18/18</div><div class="k">suites green</div></div>
+    <div class="tile"><div class="v">@@green@@</div><div class="k">suites green</div></div>
   </div>
   <p class="cap" style="margin-top:7mm">Every figure in this document is generated from the
   repositories themselves: commit counts from <code>git</code>, line counts from the files,
@@ -492,9 +519,9 @@ td:first-child{font-family:var(--f-mono);color:var(--ink);font-size:8.4pt}
 
   <figure>
     @@comp_map@@
-    <figcaption>How the eighteen compose. Each arrow is a dependency recorded in a
+    <figcaption>How these @@repos@@ compose. Each arrow is a dependency recorded in a
     PLAN.md. The three process tools in the bottom lane act on all the others:
-    <b>unrepro</b> found a real reproducibility defect in eight of the eighteen,
+    <b>unrepro</b> found a real reproducibility defect in eight of the @@repos@@,
     <b>commitq</b> gates every commit in all of them, and <b>srcdiff</b> audits
     published artifacts against the repositories they claim to come from.</figcaption>
   </figure>
@@ -538,7 +565,7 @@ td:first-child{font-family:var(--f-mono);color:var(--ink);font-size:8.4pt}
   <div class="note"><span class="k">A number worth distrusting</span>
   <p>Test <em>counts</em> are not comparable between these repos and are deliberately
   not charted together. <code>wasmi</code>'s 11,833 are generated arithmetic cases;
-  <code>jail</code>'s 50 are hand-written assertions against kernel behaviour, and each
+  <code>jail</code>'s @@jail_tests@@ are hand-written assertions against kernel behaviour, and each
   one took longer to get right than a thousand of the former. Plotting them on one
   axis would imply a comparison that does not exist.</p></div>
 
@@ -575,8 +602,8 @@ td:first-child{font-family:var(--f-mono);color:var(--ink);font-size:8.4pt}
   <div class="quiet"><span class="k">How this is kept honest</span>
   <p><b>Every commit builds.</b> Verified by checking out each one in turn, deleting
   build artifacts so a stale binary cannot fake a pass, and rebuilding.</p>
-  <p><b>All eighteen build reproducibly.</b> Proven by <code>unrepro</code>, one of the
-  eighteen, which found that eight of its siblings were not &mdash; <code>-g</code> writes
+  <p><b>All @@repos@@ build reproducibly.</b> Proven by <code>unrepro</code>, one of
+  them, which found that eight of its siblings were not &mdash; <code>-g</code> writes
   the compiler's working directory into DWARF <code>.debug_line_str</code>. Every repo
   compiling with <code>-g</code> was affected and every repo without it was already clean,
   which is independent confirmation of the cause rather than a plausible guess.</p>

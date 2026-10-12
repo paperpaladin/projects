@@ -55,7 +55,7 @@ exists for deliberately committing a known-red state (bisecting, recording a
 reproducer); it should be a decision, never a habit.
 
 Pick work from the repo's `PLAN.md`. The unchecked `- [ ]` items are ordered, and
-each one records *why* it is next. 347 of them are queued.
+each one records *why* it is next. 345 of them are queued.
 
 **Membership is having a `PLAN.md`.** That is the rule `extract.py` uses and the
 one `commitq`'s gateability guard asserts against, so a directory with a `.git`
@@ -161,6 +161,21 @@ including the ones that were in the harness. Multi-paragraph is normal here.
 - Backups: `/home/x/projects-SNAPSHOT-FINAL/` holds a full tarball and a
   `git bundle` per repo. Refresh it after significant work.
 - Do not execute build scripts from downloaded third-party tarballs.
+- **Run `make test`, never `sh t/run.sh` directly.** 14 harnesses compile the
+  binary under test themselves (cc, corex, dwarfdump, ed25519, jsonc, lnk,
+  sha2, slab, tomlc, trace, utf8n, vtparse, xmlc) and are safe either way.
+  The other 18 compile nothing: every `make test` target depends on `all`, so
+  the documented path rebuilds first, but invoked directly after an edit they
+  report passes for the binary that was lying around. That is not
+  hypothetical -- three mutations of `terminfo`'s number decoder were each
+  recorded as SURVIVING against a stale binary, and all three are caught the
+  moment it is rebuilt.
+
+  `terminfo/t/run.sh` now refuses to run when its source is newer than its
+  binary, and exits non-zero saying so. It is the pattern to copy: four lines
+  using `-nt`. The other 18 are **not** guarded, because each names its
+  binary differently and 18 tailored edits is a worse trade than this note --
+  add the guard to a repo when you are in it for another reason.
 - **`pkill -f PATTERN` kills the shell that runs it.** Every Bash call here is
   `bash -c '<the whole command>'`, so the pattern you are matching is sitting
   in the invoking shell's own `/proc/*/cmdline`. `pkill -f 'tlp.py reduce'`
@@ -177,7 +192,7 @@ including the ones that were in the harness. Multi-paragraph is normal here.
 
 ## State
 
-587 commits, 38 repos, all suites green, all builds reproducible, every commit
+592 commits, 38 repos, all suites green, all builds reproducible, every commit
 builds. `INDEX.md` has the per-repo invariant table and where each one goes next.
 
 `cc` compiles itself: `make self-host` builds it with itself twice and

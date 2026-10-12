@@ -14,14 +14,14 @@
   },
   "cc": {
     "blurb": "C compiler for x86-64",
-    "commits": 31,
+    "commits": 32,
     "done": 25,
     "group": "toolchain",
     "invariant": "Self-host fixpoint: cmp cc2 cc3",
     "oracle": "gcc AND clang must agree on every case",
     "shortcuts": 8,
     "src": 4772,
-    "test": 1807,
+    "test": 1832,
     "tests": "389 passed, 0 failed (2 suites)",
     "todo": 6
   },
@@ -40,15 +40,15 @@
   },
   "commitq": {
     "blurb": "Multi-repo commit gate and GUI",
-    "commits": 12,
+    "commits": 13,
     "done": 8,
     "group": "supply chain",
     "invariant": "No commit is ever created with a date other than now",
     "oracle": "Throwaway repos in a temp directory",
     "shortcuts": 0,
-    "src": 1161,
-    "test": 579,
-    "tests": "94 passed, 0 failed",
+    "src": 1201,
+    "test": 667,
+    "tests": "101 passed, 0 failed",
     "todo": 9
   },
   "corex": {
@@ -92,14 +92,14 @@
   },
   "ed25519": {
     "blurb": "Ed25519 and X25519, built up from the field",
-    "commits": 10,
+    "commits": 11,
     "done": 9,
     "group": "formats",
     "invariant": "Every layer is differenced against an implementation sharing no code with it, because sign-then-verify is not evidence",
     "oracle": "A second Ed25519 in Python written from the RFC algorithm rather than its vectors; the same point reached through the other curve form; Diffie-Hellman agreeing with itself; and all 669 Project Wycheproof EDDSA and XDH vectors",
     "shortcuts": 7,
-    "src": 1512,
-    "test": 1085,
+    "src": 1514,
+    "test": 1108,
     "tests": "36 passed, 0 failed",
     "todo": 3
   },
@@ -113,7 +113,7 @@
     "shortcuts": 3,
     "src": 857,
     "test": 497,
-    "tests": "980 passed, 0 failed",
+    "tests": "999 passed, 0 failed",
     "todo": 20
   },
   "httpd": {
@@ -339,16 +339,16 @@
   },
   "terminfo": {
     "blurb": "compiled-terminfo reader",
-    "commits": 4,
-    "done": 3,
+    "commits": 6,
+    "done": 5,
     "group": "formats",
     "invariant": "Every capability reported is the one infocmp reports, because a positional format can be parsed perfectly and named wrongly",
     "oracle": "ncurses as a subprocess: infocmp for every capability of all 44 terminals on this machine, and tic asked where it puts each name so the tables are derived rather than typed",
     "shortcuts": 1,
-    "src": 456,
-    "test": 285,
-    "tests": "6 passed, 0 failed",
-    "todo": 5
+    "src": 603,
+    "test": 520,
+    "tests": "10 passed, 0 failed",
+    "todo": 3
   },
   "tlp": {
     "blurb": "metamorphic SQL logic-bug finder",
