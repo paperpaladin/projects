@@ -56,8 +56,11 @@ wasmi/
 xmlc/
 zipc/
 
-# git worktrees. Never committable -- recording one as a gitlink makes a
-# clone that cannot be checked out, and `git add -A` will do it silently.
-.tool-state/worktrees/
+# Editor and tool state. The whole directory, not just the worktrees under it:
+# a worktree recorded as a gitlink makes a clone that cannot be checked out and
+# `git add -A` will do it silently, which is what the narrower rule was for --
+# but everything else that lands in here is local scratch and settings, and
+# none of it belongs in a repository that is going to be read by other people.
+.tool-state/
 .portfolio/failures/
 .portfolio/.extract.lock
