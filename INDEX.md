@@ -6,12 +6,20 @@ is right. Pure C or standard-library Python throughout; no frameworks, no packag
 managers, no dependency beyond `zlib`. Every repo has `make test` and it passes.
 Every commit builds, verified by removing build artifacts and rebuilding each one.
 
-The last row of the table is **unfinished** and is listed rather than hidden:
-`terminfo` reads headers, booleans and numbers but not the string table, and
-says so first in its own README. It and `ed25519` were both built in sessions
-that were interrupted, and were invisible here until they acquired the
-`PLAN.md` that makes a directory a member -- `ed25519` has since been finished
-through signing and verification against Project Wycheproof.
+Three rows are **unfinished** and are listed rather than hidden. `terminfo`
+reads headers, booleans, numbers and the string table -- 4584 string
+capabilities byte for byte against `infocmp` -- but not the ncurses extended
+section, and not parameterised strings evaluated against `tput`. `xmlc`
+parses names and elements but not comments, processing instructions, CDATA or
+the prolog, so it declines 93% of the W3C suite rather than judging it, and
+`zipc` reads archives but cannot write one. Each says so first in its own
+README or PLAN, and each refuses what it has not implemented instead of
+answering wrongly.
+
+`terminfo` and `ed25519` were both built in sessions that were interrupted,
+and were invisible here until they acquired the `PLAN.md` that makes a
+directory a member -- `ed25519` has since been finished through signing and
+verification against Project Wycheproof.
 
 All of them produce **reproducible builds**, verified by `unrepro` -- one of the
 thirty-six.
@@ -81,11 +89,11 @@ variadic functions checked against glibc's own `va_arg`, and it compiles
 | [sockv](sockv/) | C | socket lister via netlink | the kernel | 82 |
 | [tzf](tzf/) | C | TZif reader, RFC 8536 | zoneinfo | 59 |
 | [gitobj](gitobj/) | C | git object database reader/writer | the object name is its own SHA-1 | 999 |
-| [zipc](zipc/) | C | ZIP reader/writer | Info-ZIP `unzip`/`zip`, bidirectional | 55 |
+| [zipc](zipc/) | C | ZIP reader -- *writing not yet* | Info-ZIP `unzip`/`zipinfo` and Python `zipfile`, read side | 69 |
 | [xmlc](xmlc/) | C | XML 1.0 well-formedness checker -- *prolog, comments, CDATA not yet* | W3C conformance suite; 121 of 1674 in-scope cases judged, the rest declined | 84 |
 | [tlp](tlp/) | Py | metamorphic SQL logic-bug finder | 11 relations, none of them redundant -- measured, not argued | **130** |
 | [ed25519](ed25519/) | C | Ed25519 **and X25519**, built up from the field | a second Ed25519 in Python, the other curve form, and 669 Wycheproof vectors | 36 |
-| [terminfo](terminfo/) | C | compiled-terminfo reader -- *strings not yet* | `infocmp`, and `tic` for the name tables | 10 |
+| [terminfo](terminfo/) | C | compiled-terminfo reader -- *extended section and `tput` params not yet* | `infocmp`, and `tic` for the name tables | 10 |
 
 Worth running once each:
 
