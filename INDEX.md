@@ -84,7 +84,7 @@ variadic functions checked against glibc's own `va_arg`, and it compiles
 | [zipc](zipc/) | C | ZIP reader/writer | Info-ZIP `unzip`/`zip`, bidirectional | 55 |
 | [xmlc](xmlc/) | C | XML 1.0 well-formedness checker | W3C conformance suite, 2585 cases | 83 |
 | [tlp](tlp/) | Py | metamorphic SQL logic-bug finder | 11 relations, none of them redundant -- measured, not argued | **126** |
-| [ed25519](ed25519/) | C | Ed25519, RFC 8032, built up from the field | an independent Ed25519 in Python, and Wycheproof | 30 |
+| [ed25519](ed25519/) | C | Ed25519 **and X25519**, built up from the field | a second Ed25519 in Python, the other curve form, and 669 Wycheproof vectors | 36 |
 | [terminfo](terminfo/) | C | compiled-terminfo reader -- *strings not yet* | `infocmp`, and `tic` for the name tables | 6 |
 
 Worth running once each:

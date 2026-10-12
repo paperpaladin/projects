@@ -91,17 +91,17 @@
     "todo": 10
   },
   "ed25519": {
-    "blurb": "Ed25519, RFC 8032, built up from the field",
-    "commits": 8,
-    "done": 7,
+    "blurb": "Ed25519 and X25519, built up from the field",
+    "commits": 10,
+    "done": 9,
     "group": "formats",
     "invariant": "Every layer is differenced against an implementation sharing no code with it, because sign-then-verify is not evidence",
-    "oracle": "Python's arbitrary-precision integers for the field and the scalars, a second Ed25519 in Python written from the RFC algorithm rather than its vectors, and all 151 Project Wycheproof EDDSA vectors",
+    "oracle": "A second Ed25519 in Python written from the RFC algorithm rather than its vectors; the same point reached through the other curve form; Diffie-Hellman agreeing with itself; and all 669 Project Wycheproof EDDSA and XDH vectors",
     "shortcuts": 7,
-    "src": 1372,
-    "test": 769,
-    "tests": "30 passed, 0 failed",
-    "todo": 2
+    "src": 1512,
+    "test": 1085,
+    "tests": "36 passed, 0 failed",
+    "todo": 3
   },
   "gitobj": {
     "blurb": "git object database reader and writer",
