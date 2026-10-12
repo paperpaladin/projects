@@ -178,8 +178,8 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   `worktree-bunker-site` was created and committed to while this session was
   running, by something else. Leave other branches and worktrees alone, and
   do not assume the root repo's HEAD is where you left it.
-- Backups: `/home/x/projects-SNAPSHOT-FINAL/` holds a full tarball and a
-  `git bundle` per repo. Refresh it after significant work.
+- Backups: a sibling `projects-SNAPSHOT-FINAL/` directory holds a full tarball
+  and a `git bundle` per repo. Refresh it after significant work.
 - Do not execute build scripts from downloaded third-party tarballs.
 - **A flake is a defect; chase it with a loop that keeps the output.**
   `unrepro`'s suite failed once during an `extract.py` run and then passed

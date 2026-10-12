@@ -320,7 +320,7 @@ with tempfile.TemporaryDirectory() as tmp:
     # members() is what keeps a stray checkout out of the document. Ask
     # members() about the tempdir, not about the real collection: this used to
     # assert `"notaplan" not in members`, where `members` is the module-level
-    # set built from /home/x/projects, which can never contain it. Deleting
+    # set built from the real collection root, which can never contain it. Deleting
     # the PLAN.md rule from extract.members entirely left that assertion
     # passing.
     mkrepo(tmp, "notaplan", {"README.md": "not one of them\n"})

@@ -28,7 +28,7 @@ thirty-eight.
 ## Start here
 
 ```sh
-cd /home/x/projects
+cd path/to/projects
 ./cq id "Your Name" "<username>@users.noreply.github.com"   # do this FIRST
 ./cq a        # status + run every suite
 ./cq t        # what to work on next, stalest repo first
@@ -445,12 +445,12 @@ and all four are).
 ## Backups
 
 ```
-/home/x/projects-SNAPSHOT-FINAL/     full tar + per-repo bundles
-/home/x/projects-SNAPSHOT-2352/
-/home/x/projects-backup-20261005-2336/
+../projects-SNAPSHOT-FINAL/     full tar + per-repo bundles
+../projects-SNAPSHOT-2352/
+../projects-backup-20261005-2336/
 ```
 
-Restore any repo: `git clone /home/x/projects-SNAPSHOT-FINAL/bundles/jail.bundle jail`
+Restore any repo: `git clone ../projects-SNAPSHOT-FINAL/bundles/jail.bundle jail`
 
 `/tmp` on this machine is **tmpfs** and does not survive a reboot. `wasmi/hist/`
 was rescued from it -- the generator that built that repo's 31-commit history, which
