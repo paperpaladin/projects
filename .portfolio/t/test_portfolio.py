@@ -146,11 +146,20 @@ members = {r.name for r in extract.members(ROOT)}
 check("every member repo is in repos.json", sorted(members - set(DATA)), [])
 check("every repos.json entry is a member", sorted(set(DATA) - members), [])
 
-# No suite may be reported as failing or absent in a document we ship.
+# No suite may be reported as failing or absent in a document we ship -- and
+# the string has to look like a result at all. That second half is new: the
+# FAILING/NO SUITE check passed walkv's entry when it read
+# "make[1]: Leaving directory '/home/x/projects/walkv'", because that is
+# neither. repos.json shipped a make diagnostic as a test count, and the
+# portfolio printed it. Requiring two numbers and no "make" is what catches a
+# summary that was never found.
+RESULT_SHAPE = re.compile(r".*\d+.*\d+.*")
 for name in sorted(DATA):
     t = DATA[name]["tests"]
     truthy("%s: reported suite result is a pass" % name,
            not t.startswith("FAILING") and t != "NO SUITE", t)
+    truthy("%s: ...and the result looks like a count, not stray output" % name,
+           bool(RESULT_SHAPE.fullmatch(t)) and "make" not in t, t)
 
 
 # The PDF is what actually gets sent to anyone, and until now only the HTML was

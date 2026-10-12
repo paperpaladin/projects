@@ -165,9 +165,17 @@ def suite_summary(repo, keep=None):
         # The patterns are the shapes these suites actually print; a repo
         # whose summary matches none of them still falls back to the last
         # line, which is the old behaviour and is better than nothing.
+        # walkv's "219 scenarios checked, 0 failed" matched none of these, so
+        # it fell through to "the last non-blank line" -- and when this script
+        # is run the documented way, `make portfolio`, MAKELEVEL is set, every
+        # repo's `make test` becomes a recursive make, and the last line is
+        # make's "Leaving directory". repos.json recorded walkv's test count
+        # as that string. The MAKELEVEL half is fixed in commitq.run_tests;
+        # this half makes walkv's real summary findable either way.
         shapes = (
             r"\d+ passed, \d+ failed.*",
             r"\d+ agree, \d+ disagree.*",
+            r"\d+ scenarios checked, \d+ failed.*",
             r"\d+ of \d+ .*",
             r".*\b\d+ passed\b.*",
         )

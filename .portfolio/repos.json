@@ -14,7 +14,7 @@
   },
   "cc": {
     "blurb": "C compiler for x86-64",
-    "commits": 34,
+    "commits": 35,
     "done": 25,
     "group": "toolchain",
     "invariant": "Self-host fixpoint: cmp cc2 cc3",
@@ -113,7 +113,7 @@
     "shortcuts": 3,
     "src": 858,
     "test": 560,
-    "tests": "1219 passed, 0 failed",
+    "tests": "1234 passed, 0 failed",
     "todo": 19
   },
   "httpd": {
