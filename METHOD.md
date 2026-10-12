@@ -64,9 +64,13 @@ fork and stays out.
 
 Two repos were invisible for exactly that reason until they were given one:
 `ed25519` and `terminfo`, both built in sessions that were interrupted. Both
-build, both pass their suites against external oracles, and both are
-**unfinished** -- `ed25519` has no signing function and `terminfo` does not
-read the string table. Their READMEs say so first. The lesson is that the
+build and both pass their suites against external oracles. `ed25519` has since
+been finished through signing and verification against Project Wycheproof --
+`ed25519_sign` and `ed25519_verify` are both in `ed25519.h`. `terminfo` is
+still **unfinished**, but not in the way this said: it does read the string
+table, 4584 string capabilities compared byte for byte against `infocmp`.
+What it lacks is the ncurses extended section and parameterised strings
+evaluated against `tput`. Their READMEs say so first. The lesson is that the
 membership rule is silent: a repo with no `PLAN.md` is not reported as missing,
 it simply does not appear, so `cq t` never offers work on it and the portfolio
 never counts it.
@@ -85,14 +89,29 @@ starts claiming last week's numbers -- it had drifted by 38 values once, because
 
 ## Hard rules
 
-1. **Never fabricate commit dates.** There is no `--date` flag in `commitq` and its
-   test suite asserts there never will be, by grepping its own source for
-   `GIT_AUTHOR_DATE`, `GIT_COMMITTER_DATE` and `add_argument("--date"`. Do not add
-   one. A contribution graph is a claim about when work happened.
-2. **Every commit must build.** Verified by checking out each commit in turn,
-   deleting build artifacts so a stale binary cannot fake a pass, and rebuilding.
-   `git stash -u` does NOT stash ignored files, so an audit that relies on it
-   produces false passes.
+1. **Never fabricate commit dates.** There is no `--date` flag in `commitq`, and
+   its suite asserts the invariant **behaviourally**: it sets
+   `GIT_AUTHOR_DATE=2020-01-01` in the environment, runs a real commit, and
+   requires the resulting date to be today. Do not add a `--date` flag. A
+   contribution graph is a claim about when work happened.
+
+   This rule used to say the suite "greps its own source for `GIT_AUTHOR_DATE`,
+   `GIT_COMMITTER_DATE` and `add_argument("--date"`". Those greps were deleted
+   as discredited -- `commitq/t/test_commitq.py` records that all six passed
+   while the invariant was false -- and the sense is now inverted for two of
+   the three tokens: `commitq.py` *must contain* `GIT_AUTHOR_DATE`, because
+   that is the variable `git_env()` strips from every git subprocess. Only
+   `add_argument("--date"` is still grepped for absence. `INDEX.md` carried the
+   same stale description.
+2. **Every commit must build.** This is the intent, and it is **not** currently
+   verified. There is no harness that checks out each commit and rebuilds: the
+   only script that ever did is `bigint/scratch/audit.sh`, which is untracked
+   and hardcoded to one repo. Treat the claim as an aspiration until something
+   establishes it collection-wide.
+
+   When writing that harness: delete build artifacts between commits so a
+   stale binary cannot fake a pass, and do not reach for `git stash -u`, which
+   does NOT stash ignored files and so produces false passes.
 3. **ASCII punctuation only.** No em dashes, en dashes, curly quotes, ellipsis
    characters, arrows, multiplication signs or non-breaking spaces, in prose or in
    code comments. Use `--` for a parenthetical break, `...` for an ellipsis,
@@ -115,13 +134,13 @@ starts claiming last week's numbers -- it had drifted by 38 values once, because
 5. **Minimalism.** No frameworks, no test libraries, no abstraction before the
    second use case, fewest files. Standard library only in Python; no dependency
    beyond zlib in C. Mark a deliberate shortcut with a `shortcut:` comment naming
-   its ceiling and upgrade path. There are 170 of these; `./cq` has no counter for
+   its ceiling and upgrade path. There are 173 of these; `./cq` has no counter for
    them, and `grep -r` will lie to you here (see the gotcha below). Use:
    `find . -name '*.c' -o -name '*.py' | xargs grep -ho 'shortcut:' | wc -l`
 
 ## House conventions
 
-Each repo has a `PLAN.md` with exactly five sections: **Contract**, **Hard
+Each repo has a `PLAN.md` with at least these five sections: **Contract**, **Hard
 invariant** (the one property that, if violated, means the project failed),
 **Oracle** (ranked by how little we control them), **Non-goals**, **Commit
 sequence** (`[x]` done / `[ ]` next, each with an indented `why:`).
@@ -142,7 +161,7 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   cross a repo boundary, and treat a suspiciously round zero as this bug first.
 - `/tmp` is **tmpfs** and does not survive a reboot. Never leave anything there.
 - `wasmi/hist/build.py` does `rmtree('.git')` and rebuilds that repo's history from
-  scratch. It is the generator that produced wasmi's 28 commits. Do not run it
+  scratch. It is the generator that produced wasmi's 31 commits. Do not run it
   casually.
 - All commits currently carry a placeholder author. Before any push:
   `./cq id "Name" "<user>@users.noreply.github.com"`. That rewrites every commit
@@ -180,21 +199,36 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   wrong answers in about a minute, where a loop produced the right one in
   three. `extract.py` now writes a failing suite's full output to
   `.portfolio/failures/REPO.log` for the same reason.
-- **Run `make test`, never `sh t/run.sh` directly.** 14 harnesses compile the
-  binary under test themselves (cc, corex, dwarfdump, ed25519, jsonc, lnk,
-  sha2, slab, tomlc, trace, utf8n, vtparse, xmlc) and are safe either way.
-  The other 18 compile nothing: every `make test` target depends on `all`, so
-  the documented path rebuilds first, but invoked directly after an edit they
-  report passes for the binary that was lying around. That is not
-  hypothetical -- three mutations of `terminfo`'s number decoder were each
-  recorded as SURVIVING against a stale binary, and all three are caught the
-  moment it is rebuilt.
+- **Run `make test`, never `sh t/run.sh` directly.** 32 repos have a
+  `t/run.sh`. **Seven** of those harnesses compile the code under test
+  themselves and so are safe either way: `ed25519`, `jsonc`, `sha2`, `tomlc`,
+  `utf8n`, `vtparse`, `xmlc` -- each builds its test binaries *from the .c
+  file under test*, e.g. vtparse's `build ./t/table_test t/table_test.c
+  vtparse.c`.
 
-  `terminfo/t/run.sh` now refuses to run when its source is newer than its
-  binary, and exits non-zero saying so. It is the pattern to copy: four lines
-  using `-nt`. The other 18 are **not** guarded, because each names its
-  binary differently and 18 tailored edits is a worse trade than this note --
-  add the guard to a repo when you are in it for another reason.
+  The other **25** compile nothing they are testing: every `make test` target
+  depends on `all`, so the documented path rebuilds first, but invoked
+  directly after an edit they report passes for the binary that was lying
+  around. That is not hypothetical -- three mutations of `terminfo`'s number
+  decoder were each recorded as SURVIVING against a stale binary, and all
+  three are caught the moment it is rebuilt.
+
+  This note used to say "14 harnesses" while naming 13, and six of the
+  thirteen -- `cc`, `corex`, `dwarfdump`, `lnk`, `slab`, `trace` -- compile
+  only *fixtures and workloads*, never the thing under test. So it listed six
+  repos as safe to invoke directly when they are precisely the hazard it
+  warns about. `grep -E '\-o +[^ ]*REPO' REPO/t/run.sh` is the check; for the
+  seven safe ones the .c under test appears as an input.
+
+  `terminfo/t/run.sh` refuses to run when its source is newer than its binary
+  and exits non-zero saying so -- verified by touching the source. It is the
+  pattern to copy: four lines using `-nt`. The other 24 are **not** guarded,
+  because each names its binary differently and 24 tailored edits is a worse
+  trade than this note -- add the guard to a repo when you are in it for
+  another reason.
+
+  The six repos with no `t/run.sh` at all are `commitq`, `rx`, `srcdiff`,
+  `tlp`, `unrepro` and `walkv`.
 - **`pkill -f PATTERN` kills the shell that runs it.** Every Bash call here is
   `bash -c '<the whole command>'`, so the pattern you are matching is sitting
   in the invoking shell's own `/proc/*/cmdline`. `pkill -f 'tlp.py reduce'`
@@ -210,13 +244,28 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   produced a spurious `commitq: FAILING` instead, because some suites share a
   scratch directory between runs and `prof` asserts sampling ratios.
 
-  The repos whose scratch path is **fixed**, so a second concurrent run of the
-  same suite corrupts the first, are `cmark`, `derx`, `jsonc`, `tomlc` and
-  `xmlc` (`scratch/`, or `t/tmp` for derx). This note used to name cc, lnk,
-  sqlr and tarx instead, and every one of those four is per-run: cc, lnk and
-  tarx use `t/tmp.$$` and sqlr uses `work.<pid>`. So the warning pointed at
-  four safe repos and omitted all five unsafe ones. Checked with a sweep over
-  every `t/run.sh`, not from memory.
+  Three classes, checked with a sweep over every `t/run.sh` rather than from
+  memory -- and the first sweep I did still missed nine of them, so the list
+  below is the one to trust:
+
+  **Fixed path, any two concurrent runs collide.** `cmark`, `jsonc`, `tomlc`,
+  `xmlc`, `corex`, `ed25519`, `sha2`, `utf8n` (all `scratch/`), `derx` and
+  `terminfo` and `httpd` (`t/tmp`), and `trace`, which uses 61 fixed
+  `t/*.tmp` filenames and no scratch variable at all.
+
+  **Keyed by the binary under test.** `inflate` and `pngc` use
+  `t/tmp/$(basename "$IN")`, so `make test` and `make test-asan` can overlap
+  safely but two runs of the *same* binary cannot. inflate's own comment at
+  `t/run.sh:11` says so.
+
+  **Per-run, safe.** `cc`, `lnk` and `tarx` use `t/tmp.$$`; `sqlr` uses
+  `work.<pid>`; `prof` and `cc`'s fuzzer use `mktemp`.
+
+  This note originally named cc, lnk, sqlr and tarx as the unsafe ones --
+  all four are in the safe class -- and then, after I corrected it, named five
+  of the twelve unsafe ones. Both versions were written from a sweep whose
+  pattern was too narrow: the first matched only `^T=`-style assignments, the
+  second missed `S=`, `OUT=`, `work=` and trace's bare filenames.
 
   `extract.py` takes an exclusive `flock` on `.portfolio/.extract.lock` and
   exits non-zero if another run holds it. Refusing rather than waiting: a
@@ -252,7 +301,7 @@ including the ones that were in the harness. Multi-paragraph is normal here.
 
 ## State
 
-615 commits, 38 repos, all builds reproducible, every commit
+643 commits, 38 repos, all builds reproducible, every commit
 builds. `INDEX.md` has the per-repo invariant table and where each one goes next.
 
 `cc` compiles itself: `make self-host` builds it with itself twice and

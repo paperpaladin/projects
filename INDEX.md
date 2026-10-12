@@ -4,7 +4,8 @@ Thirty-eight repositories. Every one is a working program with an **external
 oracle** -- something outside the author's control that decides whether the code
 is right. Pure C or standard-library Python throughout; no frameworks, no package
 managers, no dependency beyond `zlib`. Every repo has `make test` and it passes.
-Every commit builds, verified by removing build artifacts and rebuilding each one.
+Every commit is meant to build; nothing currently verifies that across the
+collection (see METHOD.md hard rule 2).
 
 Three rows are **unfinished** and are listed rather than hidden. `terminfo`
 reads headers, booleans, numbers and the string table -- 4584 string
@@ -22,7 +23,7 @@ directory a member -- `ed25519` has since been finished through signing and
 verification against Project Wycheproof.
 
 All of them produce **reproducible builds**, verified by `unrepro` -- one of the
-thirty-six.
+thirty-eight.
 
 ## Start here
 
@@ -35,7 +36,7 @@ cd /home/x/projects
 ```
 
 Every commit currently carries a placeholder author so nothing had to guess at
-yours. `cq id` rewrites all 636 and fixes each repo's config. Safe now; don't do
+yours. `cq id` rewrites every commit and fixes each repo's config. Safe now; don't do
 it after pushing. Use the `users.noreply.github.com` address -- commit emails are
 public and scraped.
 
@@ -59,8 +60,8 @@ variadic functions checked against glibc's own `va_arg`, and it compiles
 | [cc](cc/) | C | C compiler for x86-64, **self-hosting** | gcc **and** clang, and itself | **325** + 64 cpp |
 | [lnk](lnk/) | C | static ELF linker | the kernel runs it, or it doesn't | 29 |
 | [wasmi](wasmi/) | C | WebAssembly interpreter | expectations computed in Python | **11,833** |
-| [psh](psh/) | C | POSIX shell subset | `dash`, stdout **and** exit status | **207 agree** |
-| [rx](rx/) | C | linear-time regex engine | Python's `re` | **15,500 cases** |
+| [psh](psh/) | C | POSIX shell subset | `dash`, stdout **and** exit status | **212 agree** |
+| [rx](rx/) | C | linear-time regex engine | Python's `re` | **3000 agree** per seed |
 | [inflate](inflate/) | C | DEFLATE/gzip codec | `gzip -d` accepts our output | 162 |
 | [tarx](tarx/) | C | tar reader/writer | GNU `tar`, bidirectional | 118 |
 | [sqlr](sqlr/) | C | SQLite file-format reader | libsqlite3 itself | 123 agree |
@@ -80,7 +81,7 @@ variadic functions checked against glibc's own `va_arg`, and it compiles
 | [sha2](sha2/) | C | SHA-2, HMAC, PBKDF2 | NIST CAVP vectors | 2561 vectors |
 | [pngc](pngc/) | C | PNG decoder | PngSuite | 162 + 14 refused |
 | [jsonc](jsonc/) | C | RFC 8259 JSON parser | JSONTestSuite | 95/95, 188/188 |
-| [bigint](bigint/) | C | Arbitrary-precision integers | Python's native int | 7.3M fuzz cases |
+| [bigint](bigint/) | C | Arbitrary-precision integers | Python's native int | **107,571 agree** |
 | [mydiff](mydiff/) | C | Myers diff and patch | GNU diff AND GNU patch | 995 |
 | [httpd](httpd/) | C | HTTP/1.1 static server | curl + RFC 9112 | 226 |
 | [corex](corex/) | C | ELF core dump reader | gdb, value by value | 71 |
@@ -113,30 +114,31 @@ already found and fixed a real defect in eight of its siblings.
 
 ## This directory is also a repo
 
-Nineteen repositories now, but still eighteen projects. The nineteenth is this
+Thirty-nine repositories now, but still thirty-eight projects. The
+thirty-ninth is this
 directory: `INDEX.md`, `METHOD.md`, the `cq` wrapper and `.portfolio/`. All of
 it was tracked by nothing until it became a repo, for a reason worth naming --
 `commitq.repos()` only ever looked *downward* from the root, so the root itself
 was invisible to the tool whose entire job is to notice unverified work. It is
 listed first by `./cq` and gated by the same `cq c` as everything else; its
-suite is `t/test_portfolio.py`.
+suite is `.portfolio/t/test_portfolio.py`.
 
-The eighteen stay independent. They are named one by one in `.gitignore` rather
+The thirty-eight stay independent. They are named one by one in `.gitignore` rather
 than matched by a pattern, because a pattern would silently swallow a
-nineteenth project the day it appeared.
+thirty-ninth project the day it appeared.
 
-It is not one of the eighteen and does not appear in the PDF. Those are
+It is not one of the thirty-eight and does not appear in the PDF. Those are
 programs judged by authorities outside the author; a document has no such
 authority for its prose. Only its figures are checkable, and those are
 checked -- see `PLAN.md` here for the contract.
 
 ## The PDF
 
-`.portfolio/` renders all eighteen into one document. Every figure in it is
+`.portfolio/` renders all thirty-eight into one document. Every figure in it is
 generated rather than typed:
 
 ```sh
-python3 .portfolio/extract.py > .portfolio/repos.json   # runs all 18 suites
+python3 .portfolio/extract.py > .portfolio/repos.json   # runs all 38 suites
 NAME="Your Name" GITHUB="yourhandle" .portfolio/render.sh
 ```
 
@@ -163,14 +165,17 @@ recording a reproducer before the fix.
 implementation before its tests and docs last, so every commit leaves the tree in
 a state where running the tests means something.
 
-There is no `--date` flag anywhere, and `commitq`'s own suite asserts there never
-will be -- it greps for `add_argument("--date"`, `GIT_AUTHOR_DATE` and
-`GIT_COMMITTER_DATE` and fails if any appears. The way to a dense graph is `cq t`
-plus small commits.
+There is no `--date` flag anywhere, and `commitq`'s own suite asserts the
+invariant behaviourally: it sets `GIT_AUTHOR_DATE=2020-01-01`, commits, and
+requires the date to be today. It used to grep its own source for those
+variable names instead; that was deleted after all six greps passed while the
+invariant was false. `commitq.py` must now *contain* `GIT_AUTHOR_DATE`, since
+that is what it strips. The way to a dense graph is `cq t` plus small commits.
 
 ## The PLAN.md convention
 
-Every repo has a `PLAN.md` with the same five sections. **Read it first when
+Every repo has a `PLAN.md` with at least the same five sections (16 of the 38
+add a sixth or seventh, such as `## Status, as of the last commit`). **Read it first when
 picking a repo back up after a gap.**
 
 - **Contract** -- the interface, and what must not break.
@@ -210,11 +215,12 @@ picking a repo back up after a gap.**
 
 The single highest-value step per repo, from its plan:
 
-- **cc** -- the preprocessor. `#include`, macros, `#if`, token pasting, hide-set
-  expansion. Last real blocker on self-hosting, and it will take longer than
-  everything before it combined: glibc's headers weaponise GNU C, so
-  `__attribute__`, statement expressions, `typeof` and `__builtin_*` all appear
-  before you reach anything useful.
+- **cc** -- the preprocessor is **done**; `cc/PLAN.md` records Milestone 1 as
+  complete and `t/cpp.sh` scores 64 cases. It was the last real blocker on
+  self-hosting and it did take longer than everything before it combined,
+  because glibc's headers weaponise GNU C: `__attribute__`, statement
+  expressions, `typeof` and `__builtin_*` all appear before you reach anything
+  useful. Next is `c-testsuite` (PLAN item 18), still unticked.
 - **wasmi** -- vendor the official WebAssembly spec testsuite and publish the real
   pass rate. 11,833 self-authored cases is a weaker claim than any external score,
   and the README says so.
@@ -222,26 +228,34 @@ The single highest-value step per repo, from its plan:
   a large block can grow without copying. Those two are the whole remaining gap:
   `realloc`-grow is 81x glibc and large churn 8x, both syscall-bound. Per-thread
   magazines are done, which took four-thread churn from 21x to about even.
-- **inflate** -- lazy match evaluation, then cost-based block boundaries. The
-  encoder builds its own Huffman trees now, which took text from 1.30x `gzip -6`
-  to 1.01x, so what is left in the gap is the match search.
+- **inflate** -- cost-based block boundaries. Lazy match evaluation is
+  **shipped** (`inflate.c` has `lazy_match` and a per-level `lazy` field), and
+  the encoder builds its own Huffman trees, which took text from 1.30x
+  `gzip -6` to 1.01x. What is left in the gap is the rest of the match
+  search.
 - **srcdiff** -- bulk mode: walk the top 1000 PyPI packages and publish an aggregate
   finding with a measured false-positive rate. The xz test is done and it rewrote
   the tool (see below). Next structural gap: vendored files with no canonical copy
   on the host cannot be checked at all, and that is where an xz-shaped file would
   now hide.
 - **walkv** -- `dm-log-writes` on the host. Mutation testing is done and it proved
-  the point: removing `fsync` **entirely** leaves all 163 scenarios green, because
+  the point: removing `fsync` **entirely** leaves all 216 scenarios green, because
   the page cache outlives the process. Only a device-level replay can see that.
 - **lnk** -- link against glibc. The blockers are known and ordered:
   `R_X86_64_GOTPCRELX`, archive member extraction with a pull-to-fixpoint loop,
   `.init_array`, the linker-defined `_end`/`__bss_start`, `PT_TLS` for `errno`, and
   `R_X86_64_IRELATIVE` for the ifunc `memcpy`.
-- **trace** -- `-e` filtering and `-p` attach, then `-T` timing, which is the
-  prerequisite for the three-generation overhead table the project exists to make.
-- **psh** -- shell functions, then positional parameters and `"$@"`, then the
-  `modernish` compliance suite. Here-documents are done, including `<<-` and the
-  quoted-delimiter form, at 185 corpus scripts agreeing with `dash`.
+- **trace** -- `-T` timing, the prerequisite for the three-generation overhead
+  table the project exists to make. `-e` filtering and `-p` attach are both
+  **shipped** (`trace.c` handles them, and the suite differentials each against
+  strace).
+- **psh** -- the `modernish` compliance suite. Shell functions are **shipped**
+  (`PLAN.md` item ticked), and positional parameters are a declared
+  **non-goal**, not a next step -- `$1` and `$#` expand to empty and zero, as
+  dash does for a script invoked without arguments, and the README says what
+  that costs. Here-documents are done, including `<<-` and the
+  quoted-delimiter form, at 208 corpus scripts plus 4 refusal checks agreeing
+  with `dash`.
 - **prof** -- DWARF `.eh_frame` unwinding. Frame pointers are why it cannot profile
   optimised libc.
 - **unrepro** -- an `LD_PRELOAD` shim over `readdir` that reverses directory
@@ -253,21 +267,22 @@ The single highest-value step per repo, from its plan:
 - **vtparse** -- grapheme cluster segmentation, then a `vttest` conformance table
   across xterm/foot/alacritty.
 - **jail** -- Landlock network rules; ABI 4 is available on this kernel and
-  unused. `--rox` and `--rw-no-exec` are done; `--deny PATH` is next, and has
-  to be built out of sibling grants because Landlock has no deny rule.
+  unused. `--rox`, `--rw-no-exec` and `--deny PATH` are all **done** -- `--deny`
+  is built out of sibling grants, because Landlock has no deny rule, and the
+  suite carries 16 assertions for it.
 - **commitq** -- split by hunk rather than by file, so one file touched for two
   reasons becomes two commits.
 
 ## What does not work here
 
-About this directory, not the eighteen; each of those has its own list.
+About this directory, not the thirty-eight; each of those has its own list.
 
 - **`INDEX.md` drifts by design.** The commit totals, line totals and per-repo
   test counts below are maintained by hand while `.portfolio/repos.json`
   measures the same things. They were eight commits and two thousand lines out
   of date when this became a repo. Item 06 in `PLAN.md` is to generate them or
   cut them.
-- **Only the HTML is checked, not the PDF.** `t/test_portfolio.py` asserts that
+- **Only the HTML is checked, not the PDF.** `.portfolio/t/test_portfolio.py` asserts that
   every figure appears in `portfolio.html`, because that is text. The PDF is
   what actually gets sent to anyone, and a stale `portfolio.pdf` sitting next
   to a fresh `portfolio.html` passes everything today.
@@ -279,7 +294,7 @@ About this directory, not the eighteen; each of those has its own list.
   to leave a PDF that is missing or older than the page it came from, and the
   suite reads the figures back out with `pdftotext`, but no check looks at
   where anything sits on the page or which fonts were embedded.
-- **A full regeneration takes minutes**, because it runs all eighteen suites.
+- **A full regeneration takes minutes**, because it runs all thirty-eight suites.
   `--keep-test-counts` makes it instant by inheriting the previous counts
   instead of measuring them, which is right for the test suite and wrong
   before publishing.
@@ -304,7 +319,7 @@ About this directory, not the eighteen; each of those has its own list.
 
 ## The pattern: the harness is usually the bug
 
-Across eighteen repos built largely in parallel, the defect was in the *test rig*
+Across thirty-eight repos built largely in parallel, the defect was in the *test rig*
 far more often than in the code:
 
 - **`inflate`'s ASan target could not fail.** Reject tests assert exit code exactly
@@ -421,7 +436,11 @@ cause is DWARF path embedding rather than a plausible-looking guess.
 `CFLAGS` and once on `TCFLAGS`, which builds the frame-pointer workload -- and only
 a tool reporting *per output* rather than per repo made the remaining half visible.
 
-All 18 now report `REPRODUCIBLE across all varied conditions`.
+All 18 repos that existed when this was measured reported `REPRODUCIBLE across
+all varied conditions`. There has been no collection-wide re-run since; the
+collection is 38 now, and `unrepro`'s own README carries a stale claim in the
+other direction (it lists `cc`, `walkv`, `rx` and `trace` as not reproducible,
+and all four are).
 
 ## Backups
 
@@ -434,5 +453,5 @@ All 18 now report `REPRODUCIBLE across all varied conditions`.
 Restore any repo: `git clone /home/x/projects-SNAPSHOT-FINAL/bundles/jail.bundle jail`
 
 `/tmp` on this machine is **tmpfs** and does not survive a reboot. `wasmi/hist/`
-was rescued from it -- the generator that built that repo's 28-commit history, which
+was rescued from it -- the generator that built that repo's 31-commit history, which
 would otherwise have been lost.
