@@ -40,13 +40,13 @@
   },
   "commitq": {
     "blurb": "Multi-repo commit gate and GUI",
-    "commits": 19,
+    "commits": 20,
     "done": 8,
     "group": "supply chain",
     "invariant": "No commit is ever created with a date other than now",
     "oracle": "Throwaway repos in a temp directory",
     "shortcuts": 0,
-    "src": 1234,
+    "src": 1254,
     "test": 814,
     "tests": "134 passed, 0 failed",
     "todo": 9
@@ -451,7 +451,7 @@
     "shortcuts": 1,
     "src": 387,
     "test": 480,
-    "tests": "make[1]: Leaving directory '/home/x/projects/walkv'",
+    "tests": "219 scenarios checked, 0 failed",
     "todo": 8
   },
   "wasmi": {

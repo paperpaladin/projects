@@ -55,6 +55,13 @@ variadic functions checked against glibc's own `va_arg`, and it compiles
 
 ## The repos
 
+The `tests` column is generated from a real run of every suite by
+`make portfolio`, which reports any row that has drifted. Two of these numbers
+move on their own: `gitobj` walks the loose objects of nine sibling
+repositories, so committing anywhere in the collection changes its count, and
+`rx` is per-seed. A row being one or two behind usually means work has landed
+since the last regeneration, not that something is wrong.
+
 | repo | lang | what it is | the oracle | tests |
 |---|---|---|---|---|
 | [cc](cc/) | C | C compiler for x86-64, **self-hosting** | gcc **and** clang, and itself | **325** + 64 cpp |
@@ -89,7 +96,7 @@ variadic functions checked against glibc's own `va_arg`, and it compiles
 | [seccompc](seccompc/) | C | seccomp policy compiler | the kernel | 125 |
 | [sockv](sockv/) | C | socket lister via netlink | the kernel | 83 |
 | [tzf](tzf/) | C | TZif reader, RFC 8536 | zoneinfo | 34 |
-| [gitobj](gitobj/) | C | git object database reader/writer | the object name is its own SHA-1 | 1,219 |
+| [gitobj](gitobj/) | C | git object database reader/writer | the object name is its own SHA-1 | 1,234 |
 | [zipc](zipc/) | C | ZIP reader -- *writing not yet* | Info-ZIP `unzip`/`zipinfo` and Python `zipfile`, read side | 69 |
 | [xmlc](xmlc/) | C | XML 1.0 well-formedness checker -- *prolog, comments, CDATA not yet* | W3C conformance suite; 121 of 1674 in-scope cases judged, the rest declined | 84 |
 | [tlp](tlp/) | Py | metamorphic SQL logic-bug finder | 11 relations, none of them redundant -- measured, not argued | **130** |
