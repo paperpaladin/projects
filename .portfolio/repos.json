@@ -74,7 +74,7 @@
     "shortcuts": 3,
     "src": 1339,
     "test": 1138,
-    "tests": "10822 DER elements compared against openssl asn1parse",
+    "tests": "216 passed, 0 failed, 0 skipped",
     "todo": 11
   },
   "dwarfdump": {
@@ -157,14 +157,14 @@
   },
   "jsonc": {
     "blurb": "Strict RFC 8259 JSON parser",
-    "commits": 17,
+    "commits": 18,
     "done": 17,
     "group": "formats",
     "invariant": "A crash can never score as a rejection; exit status outside {0,1} is a failure",
     "oracle": "JSONTestSuite: 95 must-accept, 188 must-reject, 35 pinned choices",
     "shortcuts": 3,
     "src": 1112,
-    "test": 1221,
+    "test": 1240,
     "tests": "363 passed, 0 failed",
     "todo": 5
   },
@@ -196,15 +196,15 @@
   },
   "pngc": {
     "blurb": "PNG decoder, all colour types and Adam7",
-    "commits": 17,
+    "commits": 18,
     "done": 17,
     "group": "formats",
     "invariant": "A corrupt file is refused by CRC, never rendered as a wrong image",
     "oracle": "PngSuite: 162 images that must decode, 14 that must be refused",
     "shortcuts": 5,
     "src": 908,
-    "test": 907,
-    "tests": "72 passed, 0 failed",
+    "test": 938,
+    "tests": "73 passed, 0 failed",
     "todo": 7
   },
   "prof": {
@@ -365,15 +365,15 @@
   },
   "tomlc": {
     "blurb": "TOML 1.0.0 parser",
-    "commits": 18,
+    "commits": 20,
     "done": 18,
     "group": "formats",
     "invariant": "Valid documents parse to the expected value, not merely without error",
     "oracle": "toml-test, plus Python's stdlib tomllib",
     "shortcuts": 3,
     "src": 1379,
-    "test": 1267,
-    "tests": "629 passed, 0 failed",
+    "test": 1311,
+    "tests": "630 passed, 0 failed",
     "todo": 5
   },
   "trace": {
@@ -417,27 +417,27 @@
   },
   "utf8n": {
     "blurb": "Unicode normalisation, all four forms",
-    "commits": 15,
+    "commits": 17,
     "done": 7,
     "group": "formats",
     "invariant": "Normalising twice equals normalising once, for every form on every input",
     "oracle": "NormalizationTest.txt from the UCD: 806,840 assertions",
     "shortcuts": 3,
     "src": 3421,
-    "test": 1284,
-    "tests": "UCD 18.0.0: 5982 decomp records, 6828 pool words, 422 ccc ranges, 961 composites, 1120 exclusions",
+    "test": 1310,
+    "tests": "107 passed, 0 failed",
     "todo": 10
   },
   "vtparse": {
     "blurb": "VT500 parser and wcwidth",
-    "commits": 19,
+    "commits": 20,
     "done": 9,
     "group": "formats",
     "invariant": "Never allocates, never reads past its byte, matches the table",
     "oracle": "The published DEC state table, all 3584 pairs",
     "shortcuts": 1,
     "src": 2260,
-    "test": 1044,
+    "test": 1063,
     "tests": "98 passed, 0 failed",
     "todo": 11
   },

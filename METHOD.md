@@ -192,7 +192,7 @@ including the ones that were in the harness. Multi-paragraph is normal here.
 
 ## State
 
-592 commits, 38 repos, all suites green, all builds reproducible, every commit
+599 commits, 38 repos, all suites green, all builds reproducible, every commit
 builds. `INDEX.md` has the per-repo invariant table and where each one goes next.
 
 `cc` compiles itself: `make self-host` builds it with itself twice and

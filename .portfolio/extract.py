@@ -123,8 +123,38 @@ def suite_summary(repo, keep=None):
         passed = sum(int(l.split()[0]) for l in summaries)
         failed = sum(int(l.split()[2]) for l in summaries)
         summary = "%d passed, %d failed (%d suites)" % (passed, failed, len(summaries))
+    elif summaries:
+        summary = summaries[0]
     else:
-        summary = lines[-1] if lines else "(no output)"
+        # The LAST line that looks like a count, not the last line.
+        #
+        # run_tests merges stdout and stderr, and the two are buffered
+        # independently, so a build message written to stderr can land after
+        # the summary written to stdout. utf8n's card published
+        # "UCD 18.0.0: 5982 decomp records, 6828 pool words," in a field
+        # labelled Result -- a true sentence about the corpus that says
+        # nothing about whether the suite passed -- while `make test` on its
+        # own ends with "107 passed, 0 failed". derx's card has the same
+        # shape.
+        #
+        # So the summary is searched for rather than assumed to be last.
+        # The patterns are the shapes these suites actually print; a repo
+        # whose summary matches none of them still falls back to the last
+        # line, which is the old behaviour and is better than nothing.
+        shapes = (
+            r"\d+ passed, \d+ failed.*",
+            r"\d+ agree, \d+ disagree.*",
+            r"\d+ of \d+ .*",
+            r".*\b\d+ passed\b.*",
+        )
+        summary = None
+        for shape in shapes:
+            hits = [l for l in lines if re.fullmatch(shape, l)]
+            if hits:
+                summary = hits[-1]
+                break
+        if summary is None:
+            summary = lines[-1] if lines else "(no output)"
     return summary if ok else "FAILING: " + summary
 
 
