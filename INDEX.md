@@ -83,7 +83,7 @@ variadic functions checked against glibc's own `va_arg`, and it compiles
 | [gitobj](gitobj/) | C | git object database reader/writer | the object name is its own SHA-1 | 322 |
 | [zipc](zipc/) | C | ZIP reader/writer | Info-ZIP `unzip`/`zip`, bidirectional | 55 |
 | [xmlc](xmlc/) | C | XML 1.0 well-formedness checker | W3C conformance suite, 2585 cases | 83 |
-| [tlp](tlp/) | Py | metamorphic SQL logic-bug finder | a relation SQLite must satisfy with **itself** | **100** |
+| [tlp](tlp/) | Py | metamorphic SQL logic-bug finder | 11 relations, none of them redundant -- measured, not argued | **126** |
 | [ed25519](ed25519/) | C | Ed25519 field, scalar and group arithmetic -- *no signing yet* | Python integers, and an independent group in Python | 23 |
 | [terminfo](terminfo/) | C | compiled-terminfo reader -- *strings not yet* | `infocmp`, and `tic` for the name tables | 6 |
 

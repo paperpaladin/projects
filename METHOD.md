@@ -55,7 +55,7 @@ exists for deliberately committing a known-red state (bisecting, recording a
 reproducer); it should be a decision, never a habit.
 
 Pick work from the repo's `PLAN.md`. The unchecked `- [ ]` items are ordered, and
-each one records *why* it is next. 346 of them are queued.
+each one records *why* it is next. 348 of them are queued.
 
 **Membership is having a `PLAN.md`.** That is the rule `extract.py` uses and the
 one `commitq`'s gateability guard asserts against, so a directory with a `.git`
@@ -166,7 +166,7 @@ including the ones that were in the harness. Multi-paragraph is normal here.
 
 ## State
 
-577 commits, 38 repos, all suites green, all builds reproducible, every commit
+582 commits, 38 repos, all suites green, all builds reproducible, every commit
 builds. `INDEX.md` has the per-repo invariant table and where each one goes next.
 
 `cc` compiles itself: `make self-host` builds it with itself twice and
