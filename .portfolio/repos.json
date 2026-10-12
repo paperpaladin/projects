@@ -91,17 +91,17 @@
     "todo": 10
   },
   "ed25519": {
-    "blurb": "Ed25519 arithmetic, built up from the field",
-    "commits": 5,
-    "done": 4,
+    "blurb": "Ed25519, RFC 8032, built up from the field",
+    "commits": 8,
+    "done": 7,
     "group": "formats",
     "invariant": "Every layer is differenced against an implementation sharing no code with it, because sign-then-verify is not evidence",
-    "oracle": "Python's arbitrary-precision integers for the field and the scalars, an independent 40-line Python group from RFC 8032 5.1.3, and the constants the RFC itself prints",
-    "shortcuts": 6,
-    "src": 1066,
-    "test": 475,
-    "tests": "23 passed, 0 failed",
-    "todo": 4
+    "oracle": "Python's arbitrary-precision integers for the field and the scalars, a second Ed25519 in Python written from the RFC algorithm rather than its vectors, and all 151 Project Wycheproof EDDSA vectors",
+    "shortcuts": 7,
+    "src": 1372,
+    "test": 769,
+    "tests": "30 passed, 0 failed",
+    "todo": 2
   },
   "gitobj": {
     "blurb": "git object database reader and writer",

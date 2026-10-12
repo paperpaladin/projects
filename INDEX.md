@@ -6,12 +6,12 @@ is right. Pure C or standard-library Python throughout; no frameworks, no packag
 managers, no dependency beyond `zlib`. Every repo has `make test` and it passes.
 Every commit builds, verified by removing build artifacts and rebuilding each one.
 
-The last two rows of the table are **unfinished**, and are listed rather than
-hidden: `ed25519` has every arithmetic layer differenced against an independent
-implementation but no signing function yet, and `terminfo` reads headers,
-booleans and numbers but not the string table. Both say so first in their own
-READMEs. They were built in sessions that were interrupted, and were invisible
-here until they acquired the `PLAN.md` that makes a directory a member.
+The last row of the table is **unfinished** and is listed rather than hidden:
+`terminfo` reads headers, booleans and numbers but not the string table, and
+says so first in its own README. It and `ed25519` were both built in sessions
+that were interrupted, and were invisible here until they acquired the
+`PLAN.md` that makes a directory a member -- `ed25519` has since been finished
+through signing and verification against Project Wycheproof.
 
 All of them produce **reproducible builds**, verified by `unrepro` -- one of the
 thirty-six.
@@ -84,7 +84,7 @@ variadic functions checked against glibc's own `va_arg`, and it compiles
 | [zipc](zipc/) | C | ZIP reader/writer | Info-ZIP `unzip`/`zip`, bidirectional | 55 |
 | [xmlc](xmlc/) | C | XML 1.0 well-formedness checker | W3C conformance suite, 2585 cases | 83 |
 | [tlp](tlp/) | Py | metamorphic SQL logic-bug finder | 11 relations, none of them redundant -- measured, not argued | **126** |
-| [ed25519](ed25519/) | C | Ed25519 field, scalar and group arithmetic -- *no signing yet* | Python integers, and an independent group in Python | 23 |
+| [ed25519](ed25519/) | C | Ed25519, RFC 8032, built up from the field | an independent Ed25519 in Python, and Wycheproof | 30 |
 | [terminfo](terminfo/) | C | compiled-terminfo reader -- *strings not yet* | `infocmp`, and `tic` for the name tables | 6 |
 
 Worth running once each:
