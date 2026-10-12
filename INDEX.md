@@ -55,14 +55,14 @@ variadic functions checked against glibc's own `va_arg`, and it compiles
 | [rx](rx/) | C | linear-time regex engine | Python's `re` | **15,500 cases** |
 | [inflate](inflate/) | C | DEFLATE/gzip codec | `gzip -d` accepts our output | 162 |
 | [tarx](tarx/) | C | tar reader/writer | GNU `tar`, bidirectional | 118 |
-| [sqlr](sqlr/) | C | SQLite file-format reader | libsqlite3 itself | 114 agree |
+| [sqlr](sqlr/) | C | SQLite file-format reader | libsqlite3 itself | 123 agree |
 | [vtparse](vtparse/) | C | VT500 parser + wcwidth | published table, **3584/3584** | 98 |
-| [unrepro](unrepro/) | Py | build-reproducibility differ | planted causes, 7/7 diagnosed | 101 |
+| [unrepro](unrepro/) | Py | build-reproducibility differ | planted causes, 7/7 diagnosed | 105 |
 | [dwarfdump](dwarfdump/) | C | DWARF debug-info parser | `readelf` | 85 |
 | [jail](jail/) | C | Landlock sandbox | the kernel -- denied means EACCES | 77 |
-| [commitq](commitq/) | Py | multi-repo commit gate + GUI | throwaway repos in a tempdir | 94 |
+| [commitq](commitq/) | Py | multi-repo commit gate + GUI | throwaway repos in a tempdir | 105 |
 | [walkv](walkv/) | C | WAL key-value store | crash at every I/O boundary | 216 scenarios |
-| [slab](slab/) | C | LD_PRELOAD malloc replacement | real programs, identical output | 31 |
+| [slab](slab/) | C | LD_PRELOAD malloc replacement | real programs, identical output | 32 |
 | [trace](trace/) | C | ptrace syscall tracer, follows children | `strace -c` / `strace -f -c` | 43 |
 | [srcdiff](srcdiff/) | Py | finds shipped code absent from the repo | **real xz artifacts** + live PyPI | 25 |
 | [prof](prof/) | C | sampling profiler | a planted hot loop, known 10:1 ratios | 15 |
@@ -79,13 +79,13 @@ variadic functions checked against glibc's own `va_arg`, and it compiles
 | [derx](derx/) | C | ASN.1 DER / X.509 reader | openssl asn1parse | 10,822 elements |
 | [seccompc](seccompc/) | C | seccomp policy compiler | the kernel | 125 |
 | [sockv](sockv/) | C | socket lister via netlink | the kernel | 82 |
-| [tzf](tzf/) | C | TZif reader, RFC 8536 | zoneinfo | 34 |
-| [gitobj](gitobj/) | C | git object database reader/writer | the object name is its own SHA-1 | 322 |
+| [tzf](tzf/) | C | TZif reader, RFC 8536 | zoneinfo | 59 |
+| [gitobj](gitobj/) | C | git object database reader/writer | the object name is its own SHA-1 | 999 |
 | [zipc](zipc/) | C | ZIP reader/writer | Info-ZIP `unzip`/`zip`, bidirectional | 55 |
-| [xmlc](xmlc/) | C | XML 1.0 well-formedness checker | W3C conformance suite, 2585 cases | 83 |
-| [tlp](tlp/) | Py | metamorphic SQL logic-bug finder | 11 relations, none of them redundant -- measured, not argued | **126** |
+| [xmlc](xmlc/) | C | XML 1.0 well-formedness checker -- *prolog, comments, CDATA not yet* | W3C conformance suite; 121 of 1674 in-scope cases judged, the rest declined | 84 |
+| [tlp](tlp/) | Py | metamorphic SQL logic-bug finder | 11 relations, none of them redundant -- measured, not argued | **130** |
 | [ed25519](ed25519/) | C | Ed25519 **and X25519**, built up from the field | a second Ed25519 in Python, the other curve form, and 669 Wycheproof vectors | 36 |
-| [terminfo](terminfo/) | C | compiled-terminfo reader -- *strings not yet* | `infocmp`, and `tic` for the name tables | 6 |
+| [terminfo](terminfo/) | C | compiled-terminfo reader -- *strings not yet* | `infocmp`, and `tic` for the name tables | 10 |
 
 Worth running once each:
 

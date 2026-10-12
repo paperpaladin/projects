@@ -92,7 +92,7 @@
   },
   "ed25519": {
     "blurb": "Ed25519 and X25519, built up from the field",
-    "commits": 11,
+    "commits": 12,
     "done": 9,
     "group": "formats",
     "invariant": "Every layer is differenced against an implementation sharing no code with it, because sign-then-verify is not evidence",
@@ -300,15 +300,15 @@
   },
   "sqlr": {
     "blurb": "SQLite file-format reader",
-    "commits": 17,
+    "commits": 18,
     "done": 17,
     "group": "formats",
     "invariant": "Byte-identical output to SQLite; malformed input errors, never crashes",
     "oracle": "libsqlite3 itself",
     "shortcuts": 8,
     "src": 1256,
-    "test": 720,
-    "tests": "114 agree, 0 disagree",
+    "test": 849,
+    "tests": "123 agree, 0 disagree",
     "todo": 11
   },
   "srcdiff": {
@@ -469,15 +469,15 @@
   },
   "xmlc": {
     "blurb": "XML 1.0 well-formedness checker and canonicaliser",
-    "commits": 4,
+    "commits": 5,
     "done": 2,
     "group": "formats",
     "invariant": "Acceptance is exactly the XML 1.0 Fifth Edition grammar, and no input crashes, overreads or leaks",
     "oracle": "The W3C XML Conformance Test Suite: 2585 catalogued cases, vendored unmodified",
     "shortcuts": 2,
-    "src": 689,
-    "test": 547,
-    "tests": "83 passed, 0 failed",
+    "src": 707,
+    "test": 591,
+    "tests": "84 passed, 0 failed",
     "todo": 16
   },
   "zipc": {

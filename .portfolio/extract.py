@@ -268,6 +268,41 @@ def take_the_lock():
     return fh          # held until the process exits
 
 
+# INDEX.md's "tests" column is hand-maintained, and it rots. Two kinds of
+# number live in it: a bare count, which is meant to be the harness's own
+# assertion total, and a headline figure with a unit ("7.3M fuzz cases",
+# "806,840 assertions", "652/652"), which deliberately measures something
+# else. Only the bare ones are comparable, and seven of them had drifted --
+# gitobj's said 322 against an actual 999. extract.py is the only thing that
+# knows the real numbers, so it is the right place to notice.
+INDEX_ROW = re.compile(r"^\| \[(?P<repo>[\w.-]+)\]\(\1/\) \|.*\|"
+                       r"\s*(?P<tests>[^|]*?)\s*\|\s*$")
+
+
+def index_drift(out):
+    """Report INDEX.md rows whose bare test count disagrees with what ran."""
+    index = ROOT / "INDEX.md"
+    if not index.exists():
+        return []
+    drift = []
+    for line in index.read_text().splitlines():
+        m = INDEX_ROW.match(line)
+        if not m:
+            continue
+        repo, cell = m.group("repo"), m.group("tests")
+        bare = re.fullmatch(r"\**([\d,]+)\**", cell)
+        if not bare or repo not in out:
+            continue  # a headline figure, or a repo not measured this run
+        said = int(bare.group(1).replace(",", ""))
+        ran = re.search(r"[\d,]+", out[repo].get("tests", "") or "")
+        if not ran:
+            continue
+        ran = int(ran.group(0).replace(",", ""))
+        if said != ran:
+            drift.append((repo, said, ran))
+    return drift
+
+
 def main():
     _lock = take_the_lock()
     args = sys.argv[1:]
@@ -281,6 +316,10 @@ def main():
     out = records(members(ROOT), old, keep_counts, log=sys.stderr)
     json.dump(out, sys.stdout, indent=2, sort_keys=True)
     sys.stdout.write("\n")
+
+    for repo, said, ran in index_drift(out):
+        print("extract: INDEX.md says %s has %d tests, the suite ran %d"
+              % (repo, said, ran), file=sys.stderr)
 
 
 if __name__ == "__main__":

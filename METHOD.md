@@ -207,8 +207,16 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   Two runs both write `repos.json.new` and both `mv` it, so one can move a
   half-written file over the real one -- which happened, leaving the file
   empty and recoverable only because it is committed. An earlier overlap
-  produced a spurious `commitq: FAILING` instead, because cc, lnk, sqlr and
-  tarx use fixed scratch paths and `prof` asserts sampling ratios.
+  produced a spurious `commitq: FAILING` instead, because some suites share a
+  scratch directory between runs and `prof` asserts sampling ratios.
+
+  The repos whose scratch path is **fixed**, so a second concurrent run of the
+  same suite corrupts the first, are `cmark`, `derx`, `jsonc`, `tomlc` and
+  `xmlc` (`scratch/`, or `t/tmp` for derx). This note used to name cc, lnk,
+  sqlr and tarx instead, and every one of those four is per-run: cc, lnk and
+  tarx use `t/tmp.$$` and sqlr uses `work.<pid>`. So the warning pointed at
+  four safe repos and omitted all five unsafe ones. Checked with a sweep over
+  every `t/run.sh`, not from memory.
 
   `extract.py` takes an exclusive `flock` on `.portfolio/.extract.lock` and
   exits non-zero if another run holds it. Refusing rather than waiting: a
@@ -220,10 +228,31 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   It did not say that the second invocation silently destroys the first's
   output, which is the part that would have stopped me. I wrote that note and
   then made the mistake twice. Prose is not an interlock.
+- **`git checkout <file>` as a cleanup reflex deletes uncommitted work.** It
+  is the natural way to undo a one-line experimental edit, and it is also the
+  natural way to undo the two hours of edits sitting in the same file. I ran
+  `git checkout -q t/oracle.py` to revert a `sed` probe against sqlr and lost
+  six uncommitted fixes in one keystroke; they were only recoverable because
+  the patch text was still in the conversation. Commit first, then experiment
+  -- `git stash` if the work is not commit-ready. Reverting an experiment is
+  never urgent enough to skip that.
+- **`nohup CMD &` plus `run_in_background` reports completion immediately.**
+  The backgrounding shell exits as soon as it has forked, so the tool fires
+  its completion notification for the launcher while the real process keeps
+  running. The output file is empty and exit status is 0, which reads exactly
+  like a job that ran and produced nothing. Pick one: `run_in_background`
+  alone, or `nohup ... &` with a `pgrep` check afterwards. The hazard here is
+  specific -- a 30-minute `extract.py` looked finished after two seconds, and
+  acting on that would have meant running suites against its held lock.
+- **`n=$(grep -c PAT f || echo 0)` yields `"0\n0"`, not `0`.** `grep -c`
+  prints the count *and* exits 1 when the count is zero, so the fallback
+  appends a second line and `$((q+n))` dies with "syntax error in expression".
+  Drop the `|| echo 0`: the count is already printed. This cost a detour in
+  `prof` and then, in the same session as the fix, a second one at the root.
 
 ## State
 
-612 commits, 38 repos, all builds reproducible, every commit
+615 commits, 38 repos, all builds reproducible, every commit
 builds. `INDEX.md` has the per-repo invariant table and where each one goes next.
 
 `cc` compiles itself: `make self-host` builds it with itself twice and
