@@ -24,8 +24,12 @@ else in here without spending three minutes doing it, and it is honest about
 what it costs: the test counts are then inherited rather than measured, which
 makes it the wrong thing to use before publishing.
 
-Run this on an otherwise idle machine, and never two at once.  Two mechanisms
-make a loaded run lie:
+Run this on an otherwise idle machine.  Never two at once -- and that is now
+enforced by an flock rather than by this paragraph, because the paragraph
+failed twice: once producing bogus FAILING records, and once leaving
+repos.json truncated when both runs mv'd their own repos.json.new over it.
+
+Three mechanisms make a loaded run lie:
 
   - cc, lnk, sqlr and tarx still use a fixed scratch path inside their own t/
     directory, so two concurrent runs clobber each other's fixtures and the
@@ -232,7 +236,40 @@ def records(repos, old, keep_counts=False, log=None):
     return out
 
 
+def take_the_lock():
+    """Refuse to run while another extraction holds the lock.
+
+    The docstring at the top of this file has said "never two at once" since
+    the first time two overlapping runs produced bogus FAILING records, and
+    the hazard was enforced by nothing but that sentence. It was then
+    violated twice by the person who wrote the sentence: once producing a
+    spurious `commitq: FAILING`, and once DESTROYING repos.json -- two runs
+    both write repos.json.new and both mv it, so one can move a half-written
+    file over the real one. The file was recoverable only because it is
+    committed.
+
+    So the rule is a lock now. REFUSING rather than waiting, because a second
+    concurrent invocation is a mistake and not a queue: blocking would hide
+    it for thirty minutes and then produce the right answer, which teaches
+    nothing and wastes the wait.
+    """
+    import fcntl
+    lock = HERE / ".extract.lock"
+    fh = open(lock, "w")
+    try:
+        fcntl.flock(fh.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except OSError:
+        sys.exit("extract: another extract.py holds %s\n"
+                 "  Two runs at once produce wrong records -- cc, lnk, sqlr\n"
+                 "  and tarx share scratch paths and prof asserts timing --\n"
+                 "  and can leave repos.json truncated, because both write\n"
+                 "  repos.json.new and both mv it. Wait for the other one."
+                 % lock)
+    return fh          # held until the process exits
+
+
 def main():
+    _lock = take_the_lock()
     args = sys.argv[1:]
     keep_counts = "--keep-test-counts" in args
     for a in args:

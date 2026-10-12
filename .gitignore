@@ -60,3 +60,4 @@ zipc/
 # clone that cannot be checked out, and `git add -A` will do it silently.
 .tool-state/worktrees/
 .portfolio/failures/
+.portfolio/.extract.lock

@@ -55,7 +55,7 @@ exists for deliberately committing a known-red state (bisecting, recording a
 reproducer); it should be a decision, never a habit.
 
 Pick work from the repo's `PLAN.md`. The unchecked `- [ ]` items are ordered, and
-each one records *why* it is next. 345 of them are queued.
+each one records *why* it is next. 344 of them are queued.
 
 **Membership is having a `PLAN.md`.** That is the rule `extract.py` uses and the
 one `commitq`'s gateability guard asserts against, so a directory with a `.git`
@@ -98,11 +98,12 @@ starts claiming last week's numbers -- it had drifted by 38 values once, because
    code comments. Use `--` for a parenthetical break, `...` for an ellipsis,
    `->` for an arrow, straight quotes.
 
-   **This rule is about prose, not about bytes.** Five files hold non-ASCII on
-   purpose and a sweep must leave them alone: `tarx/t/run.sh` and
-   `sqlr/t/oracle.py` carry non-ASCII *test data* (filenames and strings whose
-   whole point is that they are not ASCII), and `commitq`'s block characters and
-   middot are UI glyphs. Replacing those does not tidy anything, it deletes the
+   **This rule is about prose, not about bytes.** Six files hold non-ASCII on
+   purpose and a sweep must leave them alone: `tarx/t/run.sh`,
+   `sqlr/t/oracle.py` and `gitobj/t/run.sh` carry non-ASCII *test data*
+   (filenames and strings whose whole point is that they are not ASCII -- the
+   last creates a filename with a diaeresis), and `commitq`'s block characters
+   and middot are UI glyphs. Replacing those does not tidy anything, it deletes the
    test. A blanket sweep over user-facing strings is already recorded as a
    mistake once: see the stash on `notally-molly`, which downgraded typographic
    apostrophes and ellipses in thirty languages of Android UI text, where the
@@ -161,19 +162,24 @@ including the ones that were in the harness. Multi-paragraph is normal here.
 - Backups: `/home/x/projects-SNAPSHOT-FINAL/` holds a full tarball and a
   `git bundle` per repo. Refresh it after significant work.
 - Do not execute build scripts from downloaded third-party tarballs.
-- **`unrepro`'s suite flaked once under a full extract and has not been
-  reproduced.** It reported `FAILING: 100 passed, 1 failed` during one
-  `extract.py` run and then 101/0 on four consecutive runs on an idle
-  machine. Its timestamp-planted causes are all deterministic by
-  construction -- `date-macro` varies `SOURCE_DATE_EPOCH`, `date-cmd` varies
-  `TZ`, and `date-macro`'s own comment explains that relying on the wall
-  clock is the flakiness that lets this bug class survive -- so the
-  candidates are the locale-dependent `ls-order` case or the real sibling
-  build of `cc`, which is the heaviest thing either suite does. Recorded
-  rather than fixed, because one unreproduced failure is not a diagnosis.
-  `extract.py` now writes a failing suite's full output to
-  `.portfolio/failures/REPO.log`, so the next occurrence can be read instead
-  of guessed at.
+- **A flake is a defect; chase it with a loop that keeps the output.**
+  `unrepro`'s suite failed once during an `extract.py` run and then passed
+  four times in a row, and I recorded it here as unreproduced with two
+  guessed candidates -- the locale-dependent `ls-order` case and the heavy
+  `cc` sibling build. Both guesses were wrong. A loop running `make test`
+  until it failed, saving the whole output, caught it on the thirteenth run:
+  `ar rcsU` stamps the archive's SYMBOL-INDEX member with the wall clock, so
+  the `ar-stamp` case was irreproducible on the clock alone and its bisection
+  assertion only passed when both builds landed in the same second.
+
+  Two lessons worth more than the fix. The repo already warned about exactly
+  this -- `t/cases/date-macro/Makefile` says relying on the wall clock "is
+  exactly the flakiness that lets this class of bug survive in real
+  projects" -- so the trap was documented in one case and present in its
+  neighbour. And guessing at a flake from its summary line produced two
+  wrong answers in about a minute, where a loop produced the right one in
+  three. `extract.py` now writes a failing suite's full output to
+  `.portfolio/failures/REPO.log` for the same reason.
 - **Run `make test`, never `sh t/run.sh` directly.** 14 harnesses compile the
   binary under test themselves (cc, corex, dwarfdump, ed25519, jsonc, lnk,
   sha2, slab, tomlc, trace, utf8n, vtparse, xmlc) and are safe either way.
@@ -197,15 +203,27 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   explanation. It cost three debugging detours in one session, once sending me
   after a non-existent bug in code whose patch had been killed before it
   wrote. Kill by PID from `pgrep -af`, in a separate call.
-- **`.portfolio/extract.py` must be the only thing running.** Its own
-  docstring says so -- cc, lnk, sqlr and tarx use fixed scratch paths and
-  `prof` asserts sampling ratios -- and a run with test suites running
-  alongside it reports repos as FAILING that pass on their own. Finish every
-  repo change first, then extract once, then render.
+- **A second `extract.py` now REFUSES, and it used to destroy `repos.json`.**
+  Two runs both write `repos.json.new` and both `mv` it, so one can move a
+  half-written file over the real one -- which happened, leaving the file
+  empty and recoverable only because it is committed. An earlier overlap
+  produced a spurious `commitq: FAILING` instead, because cc, lnk, sqlr and
+  tarx use fixed scratch paths and `prof` asserts sampling ratios.
+
+  `extract.py` takes an exclusive `flock` on `.portfolio/.extract.lock` and
+  exits non-zero if another run holds it. Refusing rather than waiting: a
+  second concurrent invocation is a mistake, not a queue, and blocking would
+  hide it for thirty minutes and then produce the right answer.
+
+  The note that used to sit here said "finish every repo change first, then
+  extract once" -- advice to someone who has already decided to be careful.
+  It did not say that the second invocation silently destroys the first's
+  output, which is the part that would have stopped me. I wrote that note and
+  then made the mistake twice. Prose is not an interlock.
 
 ## State
 
-605 commits, 38 repos, all builds reproducible, every commit
+612 commits, 38 repos, all builds reproducible, every commit
 builds. `INDEX.md` has the per-repo invariant table and where each one goes next.
 
 `cc` compiles itself: `make self-host` builds it with itself twice and

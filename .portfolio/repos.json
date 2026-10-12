@@ -105,16 +105,16 @@
   },
   "gitobj": {
     "blurb": "git object database reader and writer",
-    "commits": 5,
-    "done": 4,
+    "commits": 6,
+    "done": 5,
     "group": "toolchain",
     "invariant": "Every object read hashes back to its own name, loose or packed, through the whole delta chain",
     "oracle": "The object name itself: git chose the filename, we recompute the SHA-1. Plus git verify-pack -v, field by field",
     "shortcuts": 3,
-    "src": 857,
-    "test": 497,
+    "src": 858,
+    "test": 500,
     "tests": "999 passed, 0 failed",
-    "todo": 20
+    "todo": 19
   },
   "httpd": {
     "blurb": "HTTP/1.1 static file server",
@@ -235,14 +235,14 @@
   },
   "rx": {
     "blurb": "Linear-time regex engine",
-    "commits": 6,
+    "commits": 7,
     "done": 5,
     "group": "systems",
     "invariant": "A pc enters a thread list at most once per input position",
     "oracle": "Python's re module",
     "shortcuts": 1,
     "src": 407,
-    "test": 187,
+    "test": 285,
     "tests": "3000 agree, 0 disagree, 0 skipped  (seed=0)",
     "todo": 11
   },
@@ -274,15 +274,15 @@
   },
   "slab": {
     "blurb": "LD_PRELOAD malloc replacement",
-    "commits": 18,
+    "commits": 19,
     "done": 18,
     "group": "systems",
     "invariant": "Two live allocations never overlap; every pointer aligned",
     "oracle": "Real programs must produce identical output",
     "shortcuts": 7,
     "src": 795,
-    "test": 999,
-    "tests": "31 passed, 0 failed",
+    "test": 1061,
+    "tests": "32 passed, 0 failed",
     "todo": 11
   },
   "sockv": {
@@ -352,15 +352,15 @@
   },
   "tlp": {
     "blurb": "metamorphic SQL logic-bug finder",
-    "commits": 14,
+    "commits": 15,
     "done": 13,
     "group": "formats",
     "invariant": "Every disagreement reported is a real one, and a run that finds nothing is distinguishable from a run that tested nothing",
     "oracle": "A relation SQLite must satisfy with itself, so no second engine is needed; plus planted bugs proving the oracles can fail",
     "shortcuts": 0,
-    "src": 1890,
-    "test": 1307,
-    "tests": "126 passed, 0 failed",
+    "src": 1912,
+    "test": 1375,
+    "tests": "130 passed, 0 failed",
     "todo": 4
   },
   "tomlc": {
@@ -404,15 +404,15 @@
   },
   "unrepro": {
     "blurb": "Build-reproducibility differ",
-    "commits": 30,
+    "commits": 33,
     "done": 12,
     "group": "supply chain",
     "invariant": "Never report clean on a build that is not reproducible",
     "oracle": "Planted causes, each asserting its diagnosis",
     "shortcuts": 6,
-    "src": 950,
-    "test": 436,
-    "tests": "101 passed, 0 failed",
+    "src": 985,
+    "test": 467,
+    "tests": "105 passed, 0 failed",
     "todo": 12
   },
   "utf8n": {
