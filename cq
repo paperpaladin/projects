@@ -12,6 +12,7 @@
 #   cq gui        start the localhost GUI
 #   cq id N E     rewrite the placeholder author to name N, email E
 #   cq p          what each repo has pushed, and what is still local
+#                 (CQ_REDACT=1 hides the remote URL, which names your account)
 #   cq p R N      push the first N commits of R to origin (N=all for the rest)
 #
 # Install:  ln -s "$PWD/cq" ~/.local/bin/cq
@@ -67,6 +68,10 @@ case "$cmd" in
           pushed=0
         fi
         rem=$(git -C "$d" config --get remote.origin.url || echo -)
+        # CQ_REDACT=1 replaces the URL with whether there is one. A remote URL
+        # contains the account name, which is the one thing in this output you
+        # might not want to paste somewhere while asking for help.
+        if [ -n "${CQ_REDACT:-}" ] && [ "$rem" != "-" ]; then rem="(set)"; fi
         printf '%-12s %7s %7s %7s  %s\n' "$(basename "$d")" "$total" "$pushed" \
                "$((total - pushed))" "$rem"
       done

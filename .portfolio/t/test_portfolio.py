@@ -540,5 +540,24 @@ with tempfile.TemporaryDirectory() as td:
     check("cq p status reports beta partially pushed", rows.get("beta"), ["5", "2"])
     check("cq p status reports gamma unpushed", rows.get("gamma"), ["1", "0"])
 
+    # A remote URL contains the account name. CQ_REDACT=1 exists so the status
+    # table can be pasted somewhere without carrying it, which means the test
+    # that matters is that the URL is actually absent -- not that the word
+    # "(set)" appears.
+    plain = cq_p().stdout
+    redacted = subprocess.run([str(coll / "cq"), "p"], capture_output=True,
+                              text=True, cwd=str(coll),
+                              env=dict(os.environ, CQ_REDACT="1")).stdout
+    truthy("the unredacted table does show the remote url, so there is "
+           "something to hide", str(real_bare) in plain, plain)
+    truthy("CQ_REDACT=1 removes every remote url",
+           str(real_bare) not in redacted and str(ph_bare) not in redacted,
+           redacted)
+    truthy("...and still says which repos have a remote",
+           "(set)" in redacted, redacted)
+    truthy("...and the counts are unchanged by redacting",
+           [l.split()[:4] for l in plain.splitlines()]
+           == [l.split()[:4] for l in redacted.splitlines()])
+
 print("\n%d passed, %d failed" % (passed, failed))
 sys.exit(1 if failed else 0)
