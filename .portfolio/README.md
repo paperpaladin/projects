@@ -24,8 +24,8 @@ about three. It is a separate script from `build.py` for exactly that reason.
 
 Four fields per repo are editorial: `blurb`, `oracle`, `invariant`, `group`,
 and are read back out of the existing `repos.json`, because no measurement
-produces a sentence. A repo with a `PLAN.md` and no editorial text is an error
-rather than a silent omission, and so is an entry describing a repo that is no
+produces a sentence. A repo with a `PLAN.md` and no editorial text is an error,
+not a silent omission, and so is an entry describing a repo that is no
 longer there.
 
 It had drifted anyway, because this script was documented and did not exist.
