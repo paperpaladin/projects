@@ -47,6 +47,7 @@ directory with no siblings and `make test` is run there. That is the only way
 to find out what a suite depends on that is not in the repository, and it is
 how the gitobj and wasmi defects above were found. It takes about ten minutes.
 """
+import json
 import os
 import re
 import subprocess
@@ -384,6 +385,53 @@ def check_placeholders():
 # =====================================================================
 # 7 to 11. repository state
 # =====================================================================
+# Each repository's README quotes the summary line its own suite prints,
+# usually inside a pasted transcript. Five were stale when this was written:
+# commitq said 105 against 156, gitobj 1219 against 2208, terminfo 10 against
+# 24, unrepro 109 against 114, tarx 118 against 119. Nothing checked them --
+# the drift detector in extract.py reads the two tables in this repository and
+# stops there -- and a count in a repo's own README is the first thing a
+# reader compares against the suite they just ran.
+REPOS_JSON = HERE / "repos.json"
+
+# A repo whose README deliberately quotes something other than the combined
+# total. An entry is a claim that the number is informative rather than wrong.
+README_COUNT_ALLOW = {
+    # cc's Makefile runs two suites and reports 389; the README quotes them
+    # separately, as 325 and 64, which is what the transcripts actually show.
+    "cc",
+}
+
+SUMMARY_RE = re.compile(r"^([\d,]+) (?:passed|agree|scenarios)", re.M)
+
+
+def check_readme_counts():
+    if not REPOS_JSON.exists():
+        notes.append("no repos.json, so README counts were not checked")
+        return True
+    data = json.loads(REPOS_JSON.read_text())
+    bad = []
+    for repo in repos():
+        name = name_of(repo)
+        if name in README_COUNT_ALLOW or name not in data:
+            continue
+        text = read_text(repo / "README.md")
+        if text is None:
+            continue
+        quoted = [int(q.replace(",", "")) for q in SUMMARY_RE.findall(text)]
+        if not quoted:
+            continue
+        m = re.search(r"[\d,]+", data[name].get("tests") or "")
+        if not m:
+            continue
+        ran = int(m.group(0).replace(",", ""))
+        if ran not in quoted:
+            bad.append("%s: README says %s, the suite ran %d"
+                       % (name, "/".join(str(q) for q in quoted), ran))
+    return check("every README's quoted count matches what its suite runs",
+                 bad)
+
+
 def check_gitlinks():
     bad = []
     for repo in repos():
@@ -533,6 +581,7 @@ CHECKS = [
     check_objects,
     check_readme,
     check_license,
+    check_readme_counts,
     check_abs_paths,
     check_siblings,
     check_placeholders,

@@ -16,6 +16,7 @@ is what you get when a pattern is too broad.
 No pytest. The fixtures are real git repositories, because most of the checks
 read git rather than files.
 """
+import json
 import os
 import subprocess
 import sys
@@ -268,6 +269,55 @@ with tempfile.TemporaryDirectory() as td:
     check("branches passes once that branch is accounted for",
           run(audit.check_branches, root), True)
 
+# --------------------------------------------- README counts vs the suite
+#
+# Five READMEs quoted stale counts when this check was written, including one
+# off by a single test. Nothing compared them: extract.py's drift detector
+# reads the two tables in the root repository and stops there, while the
+# number a reader actually checks is the one in the repo they just cloned.
+with tempfile.TemporaryDirectory() as td:
+    root = make_collection(td)
+    (root / ".portfolio").mkdir(parents=True, exist_ok=True)
+    json_path = root / ".portfolio" / "repos.json"
+
+    def write_json(tests):
+        json_path.write_text(json.dumps(
+            {"alpha": {"tests": tests}, "beta": {"tests": "7 passed, 0 failed"}}))
+
+    _orig_dl = audit.REPOS_JSON
+    audit.REPOS_JSON = json_path
+    try:
+        write_json("500 passed, 0 failed")
+        (root / "alpha" / "README.md").write_text(
+            "# alpha\n\n```\n$ make test\n500 passed, 0 failed\n```\n")
+        check("README counts pass when they match", 
+              run(audit.check_readme_counts, root), True)
+
+        (root / "alpha" / "README.md").write_text(
+            "# alpha\n\n```\n$ make test\n499 passed, 0 failed\n```\n")
+        check("...and fail when off by one",
+              run(audit.check_readme_counts, root), False)
+
+        # A README that quotes several numbers is fine as long as the total
+        # is among them -- cc quotes its two component suites.
+        (root / "alpha" / "README.md").write_text(
+            "# alpha\n\n```\n325 passed, 0 failed\n500 passed, 0 failed\n```\n")
+        check("...and pass when the total is one of several quoted",
+              run(audit.check_readme_counts, root), True)
+
+        # A README quoting no summary at all is not a failure.
+        (root / "alpha" / "README.md").write_text("# alpha\n\nNo numbers.\n")
+        check("...and pass when a README quotes no count",
+              run(audit.check_readme_counts, root), True)
+
+        # Missing repos.json is a note, not a failure: a clone of one repo
+        # has no collection-wide figures to compare against.
+        audit.REPOS_JSON = root / ".portfolio" / "absent.json"
+        check("...and pass, with a note, when there is no repos.json",
+              run(audit.check_readme_counts, root), True)
+    finally:
+        audit.REPOS_JSON = _orig_dl
+
 # ------------------------------------------------- the exemption lists
 #
 # Two checks have allowlists: a path that is data rather than a location
@@ -287,6 +337,11 @@ for lst, what in ((audit.ABS_ALLOW, "ABS_ALLOW"),
     for repo_name, rel in sorted(lst):
         check("%s entry %s/%s names a tracked file" % (what, repo_name, rel),
               rel in real.get(repo_name, set()), True)
+
+# Same rule, different shape: this one is a set of repository names.
+for repo_name in sorted(audit.README_COUNT_ALLOW):
+    check("README_COUNT_ALLOW entry %s names a real repository" % repo_name,
+          repo_name in real, True)
 
 print("\n%d passed, %d failed" % (passed, failed))
 sys.exit(1 if failed else 0)
