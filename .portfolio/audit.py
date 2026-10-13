@@ -259,6 +259,18 @@ ABS_ALLOW = {
     # A tar member whose stored name is absolute. The suite asserts tarx
     # REFUSES to write it, so the path must stay absolute to be the hazard.
     ("tarx", "t/run.sh"),
+    # The fixtures that prove THIS check works. A test which demonstrates that
+    # an absolute path is caught has to contain an absolute path, in a live
+    # line, in a comment and in a docstring -- those three cases are the test.
+    # Exempting it is correct, and it is also the file that guarantees the rest
+    # of this exemption list is not hiding a real one.
+    ("projects", ".portfolio/t/test_audit.py"),
+}
+
+# Same reason, for the placeholder check: the fixture for "a pasteable command
+# with a blank in it" is a pasteable command with a blank in it.
+PLACEHOLDER_ALLOW = {
+    ("projects", ".portfolio/t/test_audit.py"),
 }
 
 
@@ -349,6 +361,8 @@ def check_placeholders():
         for rel in tracked(repo):
             suf = Path(rel).suffix
             if suf not in {".md", ".sh", ".py", ".html"}:
+                continue
+            if (name_of(repo), rel) in PLACEHOLDER_ALLOW:
                 continue
             text = read_text(repo / rel)
             if text is None:

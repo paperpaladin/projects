@@ -268,5 +268,25 @@ with tempfile.TemporaryDirectory() as td:
     check("branches passes once that branch is accounted for",
           run(audit.check_branches, root), True)
 
+# ------------------------------------------------- the exemption lists
+#
+# Two checks have allowlists: a path that is data rather than a location
+# (tarx's absolute tar member) and the fixtures that prove those checks work,
+# which have to contain what the checks look for.
+#
+# An allowlist is a hole, and a hole whose entry no longer matches a real file
+# is worse than one that does: it exempts nothing while reading as though it
+# exempts something, and a typo in the path exempts a file nobody meant to
+# exempt. So every entry must name a file that is actually tracked.
+audit.ROOT = Path(__file__).resolve().parent.parent.parent
+real = {}
+for _r in audit.repos():
+    real[audit.name_of(_r)] = set(audit.tracked(_r))
+for lst, what in ((audit.ABS_ALLOW, "ABS_ALLOW"),
+                  (audit.PLACEHOLDER_ALLOW, "PLACEHOLDER_ALLOW")):
+    for repo_name, rel in sorted(lst):
+        check("%s entry %s/%s names a tracked file" % (what, repo_name, rel),
+              rel in real.get(repo_name, set()), True)
+
 print("\n%d passed, %d failed" % (passed, failed))
 sys.exit(1 if failed else 0)

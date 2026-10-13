@@ -22,8 +22,14 @@ and were invisible here until they acquired the `PLAN.md` that makes a
 directory a member -- `ed25519` has since been finished through signing and
 verification against Project Wycheproof.
 
-All of them produce **reproducible builds**, verified by `unrepro` -- one of the
-thirty-eight.
+`unrepro` -- one of the thirty-eight -- checks **reproducible builds** by
+building twice under deliberately different conditions (directory name, TZ,
+locale, umask, hostname, user, `-j`, `SOURCE_DATE_EPOCH`). Over the whole
+tree: **34 of 38 REPRODUCIBLE**, the other four being the Python repos where
+there is nothing compiled to compare and the verdict is *inconclusive* by
+design. It found `cc`, `walkv`, `rx` and `trace` embedding the build path in
+DWARF `.debug_line_str` (fixed with `-ffile-prefix-map=$(CURDIR)=.`) and
+`httpd` crashing the tool outright via a fifo in its test tree.
 
 ## Start here
 
@@ -36,9 +42,14 @@ read -rp 'email: ' GIT_EMAIL
 
 ./cq a        # status + run every suite
 ./cq t        # what to work on next, stalest repo first
+./cq au       # pre-publication audit: 11 checks, four seconds
 ./cq p        # per repo: total commits, how many are pushed, what is local
 ./cq gui      # http://127.0.0.1:8787
 ```
+
+`README.md` is the reader-facing version of this file -- GitHub renders that
+one as the landing page and does not render this one. This file is the
+maintainer's view: the plan state, the gotchas, and the commands above.
 
 Every commit currently carries a placeholder author so nothing had to guess at
 yours. `cq id` rewrites every commit and fixes each repo's config. Safe now; don't do
@@ -88,7 +99,7 @@ since the last regeneration, not that something is wrong.
 | [unrepro](unrepro/) | Py | build-reproducibility differ | planted causes, 7/7 diagnosed | 109 |
 | [dwarfdump](dwarfdump/) | C | DWARF debug-info parser | `readelf` | 85 |
 | [jail](jail/) | C | Landlock sandbox | the kernel -- denied means EACCES | 77 |
-| [commitq](commitq/) | Py | multi-repo commit gate + GUI | throwaway repos in a tempdir | 153 |
+| [commitq](commitq/) | Py | multi-repo commit gate + GUI | throwaway repos in a tempdir | 156 |
 | [walkv](walkv/) | C | WAL key-value store | crash at every I/O boundary | 216 scenarios |
 | [slab](slab/) | C | LD_PRELOAD malloc replacement | real programs, identical output | 32 |
 | [trace](trace/) | C | ptrace syscall tracer, follows children | `strace -c` / `strace -f -c` | 43 |
@@ -108,7 +119,7 @@ since the last regeneration, not that something is wrong.
 | [seccompc](seccompc/) | C | seccomp policy compiler | the kernel | 125 |
 | [sockv](sockv/) | C | socket lister via netlink | the kernel | 83 |
 | [tzf](tzf/) | C | TZif reader, RFC 8536 | zoneinfo | 34 |
-| [gitobj](gitobj/) | C | git object database reader/writer | the object name is its own SHA-1 | 1,885 |
+| [gitobj](gitobj/) | C | git object database reader/writer | the object name is its own SHA-1 | 2,208 |
 | [zipc](zipc/) | C | ZIP reader -- *writing not yet* | Info-ZIP `unzip`/`zipinfo` and Python `zipfile`, read side | 69 |
 | [xmlc](xmlc/) | C | XML 1.0 well-formedness checker -- *prolog, comments, CDATA not yet* | W3C conformance suite; 121 of 1674 in-scope cases judged, the rest declined | 84 |
 | [tlp](tlp/) | Py | metamorphic SQL logic-bug finder | 11 relations, none of them redundant -- measured, not argued | **130** |
@@ -130,6 +141,28 @@ cd unrepro   && python3 unrepro.py check ../cc --cmd 'make -B'
 Several compose. `cc` + `lnk` together remove the binutils dependency, which is
 `cc`'s milestone-3 goal. `inflate` is what `tarx` needs for compression. `unrepro`
 already found and fixed a real defect in eight of its siblings.
+
+## Checking it the way a stranger would
+
+```sh
+./cq au              # 11 checks, 4s. Every one is a mistake that got through.
+make test            # audit + 33 audit tests + 252 assertions
+make audit-deep      # ~10 min: clone each repo ALONE and test it there
+```
+
+`make audit-deep` is the one that matters before publishing, and the only one
+that finds what a suite depends on which is not in its repository. All 38 pass
+it. Two did not when it was first written: `gitobj` required eight named
+sibling repositories to exist at `../<name>/.git`, and `wasmi/hist/build.py`
+pointed an `rmtree('.git')` at an absolute path on this machine, so running it
+from a clone would have destroyed the original's history rather than the
+clone's.
+
+The audit's own checks are tested by `.portfolio/t/test_audit.py`, which runs
+each one against a fixture with its defect planted and requires it to fail. A
+gate whose checks have never been seen to fail may be checking nothing, and
+three of these could not fail when first written -- they flagged the comments
+explaining them.
 
 ## This directory is also a repo
 

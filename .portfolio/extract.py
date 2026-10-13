@@ -311,27 +311,40 @@ INDEX_ROW = re.compile(r"^\| \[(?P<repo>[\w.-]+)\]\(\1/\) \|.*\|"
                        r"\s*(?P<tests>[^|]*?)\s*\|\s*$")
 
 
+# Both files carry the table. README.md is what GitHub renders as the landing
+# page and INDEX.md is the maintainer's view, so the table was copied rather
+# than linked -- which means two sets of the same numbers that can disagree
+# with nothing noticing. That is the drift this function exists to catch, so
+# it reads both. Adding a third file here is cheaper than finding out from a
+# reader that the front page says 1,885 and the suite says 2,208.
+TABLE_FILES = ("INDEX.md", "README.md")
+
+
 def index_drift(out):
-    """Report INDEX.md rows whose bare test count disagrees with what ran."""
-    index = ROOT / "INDEX.md"
-    if not index.exists():
-        return []
+    """Report table rows whose bare test count disagrees with what ran.
+
+    Returns (file, repo, said, ran) so the message names which copy drifted.
+    """
     drift = []
-    for line in index.read_text().splitlines():
-        m = INDEX_ROW.match(line)
-        if not m:
+    for fname in TABLE_FILES:
+        path = ROOT / fname
+        if not path.exists():
             continue
-        repo, cell = m.group("repo"), m.group("tests")
-        bare = re.fullmatch(r"\**([\d,]+)\**", cell)
-        if not bare or repo not in out:
-            continue  # a headline figure, or a repo not measured this run
-        said = int(bare.group(1).replace(",", ""))
-        ran = re.search(r"[\d,]+", out[repo].get("tests", "") or "")
-        if not ran:
-            continue
-        ran = int(ran.group(0).replace(",", ""))
-        if said != ran:
-            drift.append((repo, said, ran))
+        for line in path.read_text().splitlines():
+            m = INDEX_ROW.match(line)
+            if not m:
+                continue
+            repo, cell = m.group("repo"), m.group("tests")
+            bare = re.fullmatch(r"\**([\d,]+)\**", cell)
+            if not bare or repo not in out:
+                continue  # a headline figure, or a repo not measured this run
+            said = int(bare.group(1).replace(",", ""))
+            ran = re.search(r"[\d,]+", out[repo].get("tests", "") or "")
+            if not ran:
+                continue
+            ran = int(ran.group(0).replace(",", ""))
+            if said != ran:
+                drift.append((fname, repo, said, ran))
     return drift
 
 
@@ -372,9 +385,9 @@ def main():
     json.dump(out, sys.stdout, indent=2, sort_keys=True)
     sys.stdout.write("\n")
 
-    for repo, said, ran in index_drift(out):
-        print("extract: INDEX.md says %s has %d tests, the suite ran %d"
-              % (repo, said, ran), file=sys.stderr)
+    for fname, repo, said, ran in index_drift(out):
+        print("extract: %s says %s has %d tests, the suite ran %d"
+              % (fname, repo, said, ran), file=sys.stderr)
 
 
 if __name__ == "__main__":

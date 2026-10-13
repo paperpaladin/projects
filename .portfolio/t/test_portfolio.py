@@ -559,5 +559,56 @@ with tempfile.TemporaryDirectory() as td:
            [l.split()[:4] for l in plain.splitlines()]
            == [l.split()[:4] for l in redacted.splitlines()])
 
+# ------------------------------------------------- the table-drift detector
+#
+# This is what keeps the published figures honest: the test counts in the
+# tables are prose, and prose rots. Nothing tested it.
+#
+# It matters more since the table was copied into README.md, which is what
+# GitHub renders as the landing page. Two copies of the same numbers can
+# disagree, and the detector read only INDEX.md -- so the front page could
+# have said 1,885 while the suite printed 2,208, which is exactly the drift
+# the whole generator exists to prevent. It reads both now, and the row below
+# asserts that it does.
+with tempfile.TemporaryDirectory() as td:
+    fake = Path(td)
+    row = ("| [alpha](alpha/) | C | a thing | an oracle | %s |\n")
+    measured = {"alpha": {"tests": "500 passed, 0 failed"}}
+
+    _orig_root = extract.ROOT
+    extract.ROOT = fake
+    try:
+        (fake / "INDEX.md").write_text("# i\n\n" + row % "500")
+        (fake / "README.md").write_text("# r\n\n" + row % "500")
+        check("no drift when both tables match the suite",
+              extract.index_drift(measured), [])
+
+        (fake / "INDEX.md").write_text("# i\n\n" + row % "499")
+        drift = extract.index_drift(measured)
+        check("drift in INDEX.md is reported, naming the file",
+              drift, [("INDEX.md", "alpha", 499, 500)])
+
+        (fake / "INDEX.md").write_text("# i\n\n" + row % "500")
+        (fake / "README.md").write_text("# r\n\n" + row % "123")
+        drift = extract.index_drift(measured)
+        check("drift in README.md is reported too, which it was not before",
+              drift, [("README.md", "alpha", 123, 500)])
+
+        # A headline figure with a unit ("652/652", "806,840 assertions") is
+        # deliberately not a bare count and must not be compared.
+        (fake / "INDEX.md").write_text("# i\n\n" + row % "**652/652**")
+        (fake / "README.md").write_text("# r\n\n" + row % "500")
+        check("a headline figure with a unit is left alone",
+              extract.index_drift(measured), [])
+
+        # A repo in the table that this run did not measure is not drift.
+        (fake / "INDEX.md").write_text("# i\n\n" + row % "500"
+                                       + "| [beta](beta/) | C | x | y | 7 |\n")
+        (fake / "README.md").write_text("# r\n\n" + row % "500")
+        check("an unmeasured repo is not drift",
+              extract.index_drift(measured), [])
+    finally:
+        extract.ROOT = _orig_root
+
 print("\n%d passed, %d failed" % (passed, failed))
 sys.exit(1 if failed else 0)
