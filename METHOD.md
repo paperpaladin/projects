@@ -6,7 +6,7 @@ next in it.
 
 ## The method, which is the point
 
-**Every project is measured against an authority it does not control.** gcc and
+Every project is measured against an authority it does not control. gcc and
 clang, the Linux kernel, `dash`, GNU tar, `readelf`, SQLite, Python's `re`. A test
 you wrote, checking code you wrote, against a number you worked out yourself,
 proves only that you were consistent.
@@ -49,7 +49,7 @@ Four things learned by doing this repeatedly, all of them cheap to reuse:
 ./cq gui        # localhost dashboard
 ```
 
-`cq c` is a gate. It runs the suite against the working tree **before** committing
+`cq c` is a gate. It runs the suite against the working tree before committing
 and refuses if red, or if the repo has no discoverable suite at all. `--no-verify`
 exists for deliberately committing a known-red state (bisecting, recording a
 reproducer); it should be a decision, never a habit.
@@ -67,7 +67,7 @@ Two repos were invisible for exactly that reason until they were given one:
 build and both pass their suites against external oracles. `ed25519` has since
 been finished through signing and verification against Project Wycheproof:
 `ed25519_sign` and `ed25519_verify` are both in `ed25519.h`. `terminfo` is
-still **unfinished**, but not in the way this said: it does read the string
+still unfinished, but not in the way this said: it does read the string
 table, 4584 string capabilities compared byte for byte against `infocmp`.
 What it lacks is the ncurses extended section and parameterised strings
 evaluated against `tput`. Their READMEs say so first. The lesson is that the
@@ -90,7 +90,7 @@ starts claiming last week's numbers. It had drifted by 38 values once, because
 ## Hard rules
 
 1. Never fabricate commit dates. There is no `--date` flag in `commitq`, and
-   its suite asserts the invariant **behaviourally**: it sets
+   its suite asserts the invariant behaviourally: it sets
    `GIT_AUTHOR_DATE=2020-01-01` in the environment, runs a real commit, and
    requires the resulting date to be today. Do not add a `--date` flag. A
    contribution graph is a claim about when work happened.
@@ -103,7 +103,7 @@ starts claiming last week's numbers. It had drifted by 38 values once, because
    that is the variable `git_env()` strips from every git subprocess. Only
    `add_argument("--date"` is still grepped for absence. `INDEX.md` carried the
    same stale description.
-2. Every commit must build. This is the intent, and it is **not** currently
+2. Every commit must build. This is the intent, and it is not currently
    verified. There is no harness that checks out each commit and rebuilds: the
    only script that ever did is `bigint/scratch/audit.sh`, which is untracked
    and hardcoded to one repo. Treat the claim as an aspiration until something
@@ -117,7 +117,7 @@ starts claiming last week's numbers. It had drifted by 38 values once, because
    code comments. Use `--` for a parenthetical break, `...` for an ellipsis,
    `->` for an arrow, straight quotes.
 
-   **This rule is about prose, not about bytes.** Six files hold non-ASCII on
+   This rule is about prose, not about bytes. Six files hold non-ASCII on
    purpose and a sweep must leave them alone: `tarx/t/run.sh`,
    `sqlr/t/oracle.py` and `gitobj/t/run.sh` carry non-ASCII *test data*
    (filenames and strings whose whole point is that they are not ASCII: the
@@ -140,12 +140,12 @@ starts claiming last week's numbers. It had drifted by 38 values once, because
 
 ## House conventions
 
-Each repo has a `PLAN.md` with at least these five sections: **Contract**, **Hard
+Each repo has a `PLAN.md` with at least these five sections: Contract, **Hard
 invariant** (the one property that, if violated, means the project failed),
-**Oracle** (ranked by how little we control them), **Non-goals**, **Commit
+Oracle (ranked by how little we control them), Non-goals, **Commit
 sequence** (`[x]` done / `[ ]` next, each with an indented `why:`).
 
-READMEs state what does **not** work, plainly and in detail. A README that only
+READMEs state what does not work, plainly and in detail. A README that only
 lists successes is not finished.
 
 Commit messages explain *why*, name what the oracle proved, and record bugs found
@@ -203,7 +203,7 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   among several there. `corex` exits 2 with one line, because `gdb` is the
   only oracle for every fact it checks and the only way to obtain a core, so a
   reduced run would print "0 passed, 0 failed" having checked nothing.
-- `/tmp` is **tmpfs** and does not survive a reboot. Never leave anything there.
+- `/tmp` is tmpfs and does not survive a reboot. Never leave anything there.
   It is also shared: a fixed name there (`/tmp/vtparse-fuzz.bin`) means two
   concurrent runs feed each other their inputs, and a cleanup that sweeps
   `/tmp` while the code honours `$TMPDIR` removes nothing and exits 0.
@@ -260,13 +260,13 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   three. `extract.py` now writes a failing suite's full output to
   `.portfolio/failures/REPO.log` for the same reason.
 - Run `make test`, never `sh t/run.sh` directly. 32 repos have a
-  `t/run.sh`. **Seven** of those harnesses compile the code under test
+  `t/run.sh`. Seven of those harnesses compile the code under test
   themselves and so are safe either way: `ed25519`, `jsonc`, `sha2`, `tomlc`,
   `utf8n`, `vtparse`, `xmlc`, each builds its test binaries *from the .c
   file under test*, e.g. vtparse's `build ./t/table_test t/table_test.c
   vtparse.c`.
 
-  The other **25** compile nothing they are testing: every `make test` target
+  The other 25 compile nothing they are testing: every `make test` target
   depends on `all`, so the documented path rebuilds first, but invoked
   directly after an edit they report passes for the binary that was lying
   around. That is not hypothetical, three mutations of `terminfo`'s number
@@ -282,7 +282,7 @@ including the ones that were in the harness. Multi-paragraph is normal here.
 
   `terminfo/t/run.sh` refuses to run when its source is newer than its binary
   and exits non-zero saying so, verified by touching the source. It is the
-  pattern to copy: four lines using `-nt`. The other 24 are **not** guarded,
+  pattern to copy: four lines using `-nt`. The other 24 are not guarded,
   because each names its binary differently and 24 tailored edits is a worse
   trade than this note: add the guard to a repo when you are in it for
   another reason.
@@ -308,7 +308,7 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   memory, and the first sweep I did still missed nine of them, so the list
   below is the one to trust:
 
-  **Fixed path, any two concurrent runs collide.** `cmark`, `jsonc`, `tomlc`,
+  Fixed path, any two concurrent runs collide. `cmark`, `jsonc`, `tomlc`,
   `xmlc`, `corex`, `ed25519`, `sha2`, `utf8n` (all `scratch/`), `derx` and
   `terminfo` and `httpd` (`t/tmp`), and `trace`, which uses 61 fixed
   `t/*.tmp` filenames and no scratch variable at all.
@@ -364,7 +364,7 @@ including the ones that were in the harness. Multi-paragraph is normal here.
 681 commits, 38 repos, all 38 suites green as of the last `make portfolio`.
 `INDEX.md` has the per-repo invariant table and where each one goes next.
 
-Two things this line used to assert are **not** established: "every commit
+Two things this line used to assert are not established: "every commit
 builds" (hard rule 2: nothing checks it) and "all builds reproducible",
 which was measured when the collection was 18 repos and has not been re-run
 across all 38. `unrepro`'s own README still lists four siblings as

@@ -28,7 +28,7 @@ produces a sentence. A repo with a `PLAN.md` and no editorial text is an error
 rather than a silent omission, and so is an entry describing a repo that is no
 longer there.
 
-**It had drifted anyway, because this script was documented and did not exist.**
+It had drifted anyway, because this script was documented and did not exist.
 The claim above was true of the design and false of the artifact: the shipped
 PDF carried 38 stale values, including test counts from five suites that had
 since grown and a commit total six behind. Two of the stale figures were not
@@ -51,13 +51,13 @@ silently fall back and the PDF would not match the design. Noto Serif Condensed 
 Noto Serif / Hack are all installed here and embed correctly, confirmed by
 reading the font table out of the finished PDF.
 
-**The two data-fill colours were validated, not chosen by eye.** `#0E8F85` and
+The two data-fill colours were validated, not chosen by eye. `#0E8F85` and
 `#A1551D` pass all six checks against the paper surface (CVD Delta-E 12.6,
 normal-vision Delta-E 21.0). The darker brand teal `#0A6B6B` is used for type and rules
 only: as a data fill it FAILS the chroma floor at 0.079 and reads gray. That is
 exactly the kind of thing you cannot eyeball.
 
-**Three layout bugs were found by rendering the PDF and looking at it**, not by
+Three layout bugs were found by rendering the PDF and looking at it, not by
 reading the source: arrow labels clipping into the boxes they sat between, map
 annotations running past the right edge of the viewBox, and a caption describing
 dashed arrows that no longer existed. A colour validator checks colour; nothing

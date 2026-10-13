@@ -158,10 +158,10 @@ whose number has drifted from what the suite actually prints.
 
 | repo | lang | what it is | the oracle | tests |
 |---|---|---|---|---|
-| [cc](cc/) | C | C compiler for x86-64, **self-hosting** | gcc **and** clang, and itself | **325** + 64 cpp |
+| [cc](cc/) | C | C compiler for x86-64, **self-hosting** | gcc and clang, and itself | **325** + 64 cpp |
 | [lnk](lnk/) | C | static ELF linker | the kernel runs it, or it does not | 29 |
 | [wasmi](wasmi/) | C | WebAssembly interpreter | expectations computed in Python | **11,833** |
-| [psh](psh/) | C | POSIX shell subset | `dash`, stdout **and** exit status | **212 agree** |
+| [psh](psh/) | C | POSIX shell subset | `dash`, stdout and exit status | **212 agree** |
 | [rx](rx/) | C | linear-time regex engine | Python's `re` | **3000 agree** per seed |
 | [inflate](inflate/) | C | DEFLATE/gzip codec | `gzip -d` accepts our output | 162 |
 | [tarx](tarx/) | C | tar reader/writer | GNU `tar`, bidirectional | 119 |

@@ -7,7 +7,7 @@ managers, no dependency beyond `zlib`. Every repo has `make test` and it passes.
 Every commit is meant to build; nothing currently verifies that across the
 collection (see METHOD.md hard rule 2).
 
-Three rows are **unfinished** and are listed, not hidden. `terminfo`
+Three rows are unfinished and are listed, not hidden. `terminfo`
 reads headers, booleans, numbers and the string table: 4584 string
 capabilities byte for byte against `infocmp`, but not the ncurses extended
 section, and not parameterised strings evaluated against `tput`. `xmlc`
@@ -90,10 +90,10 @@ since the last regeneration, not that something is wrong.
 
 | repo | lang | what it is | the oracle | tests |
 |---|---|---|---|---|
-| [cc](cc/) | C | C compiler for x86-64, **self-hosting** | gcc **and** clang, and itself | **325** + 64 cpp |
+| [cc](cc/) | C | C compiler for x86-64, **self-hosting** | gcc and clang, and itself | **325** + 64 cpp |
 | [lnk](lnk/) | C | static ELF linker | the kernel runs it, or it doesn't | 29 |
 | [wasmi](wasmi/) | C | WebAssembly interpreter | expectations computed in Python | **11,833** |
-| [psh](psh/) | C | POSIX shell subset | `dash`, stdout **and** exit status | **212 agree** |
+| [psh](psh/) | C | POSIX shell subset | `dash`, stdout and exit status | **212 agree** |
 | [rx](rx/) | C | linear-time regex engine | Python's `re` | **3000 agree** per seed |
 | [inflate](inflate/) | C | DEFLATE/gzip codec | `gzip -d` accepts our output | 162 |
 | [tarx](tarx/) | C | tar reader/writer | GNU `tar`, bidirectional | 119 |
@@ -215,7 +215,7 @@ that moves a number.
 ./cq c cc "..."             # runs the tests, commits only if green
 ```
 
-`commit` runs the suite **against the working tree before committing** and refuses
+`commit` runs the suite against the working tree before committing and refuses
 if it is red. `--no-verify` is there for when red is deliberate, bisecting, or
 recording a reproducer before the fix.
 
@@ -248,7 +248,7 @@ picking a repo back up after a gap.**
   | psh | stdout and exit status identical to `dash`, every corpus script |
   | rx | a pc enters a thread list at most once per input position |
   | inflate | `gzip` accepts everything we emit; we decode everything it emits |
-  | tarx | GNU tar agrees both ways, **and** no member escapes the destination |
+  | tarx | GNU tar agrees both ways, and no member escapes the destination |
   | sqlr | output byte-identical to SQLite; malformed input errors, never crashes |
   | vtparse | never allocates, never reads past its byte, matches the published table |
   | unrepro | never report clean on a build that is not reproducible |
@@ -258,7 +258,7 @@ picking a repo back up after a gap.**
   | walkv | recovered state is a prefix with no holes |
   | slab | two live allocations never overlap; every pointer correctly aligned |
   | trace | tracing does not change the traced program |
-  | srcdiff | no false negatives in HIGH, **and** few enough false positives that a real one is visible |
+  | srcdiff | no false negatives in HIGH, and few enough false positives that a real one is visible |
   | prof | profiling does not change the profiled program |
 
 - Oracle: ranked by how little the author controls them.
@@ -273,7 +273,7 @@ picking a repo back up after a gap.**
 
 The single highest-value step per repo, from its plan:
 
-- cc: the preprocessor is **done**; `cc/PLAN.md` records Milestone 1 as
+- cc: the preprocessor is done; `cc/PLAN.md` records Milestone 1 as
   complete and `t/cpp.sh` scores 64 cases. It was the last real blocker on
   self-hosting and it did take longer than everything before it combined,
   because glibc's headers weaponise GNU C: `__attribute__`, statement
@@ -287,7 +287,7 @@ The single highest-value step per repo, from its plan:
   `realloc`-grow is 81x glibc and large churn 8x, both syscall-bound. Per-thread
   magazines are done, which took four-thread churn from 21x to about even.
 - inflate: cost-based block boundaries. Lazy match evaluation is
-  **shipped** (`inflate.c` has `lazy_match` and a per-level `lazy` field), and
+  shipped (`inflate.c` has `lazy_match` and a per-level `lazy` field), and
   the encoder builds its own Huffman trees, which took text from 1.30x
   `gzip -6` to 1.01x. What is left in the gap is the rest of the match
   search.
@@ -297,7 +297,7 @@ The single highest-value step per repo, from its plan:
   on the host cannot be checked at all, and that is where an xz-shaped file would
   now hide.
 - walkv: `dm-log-writes` on the host. Mutation testing is done and it proved
-  the point: removing `fsync` **entirely** leaves all 216 scenarios green, because
+  the point: removing `fsync` entirely leaves all 216 scenarios green, because
   the page cache outlives the process. Only a device-level replay can see that.
 - lnk: link against glibc. The blockers are known and ordered:
   `R_X86_64_GOTPCRELX`, archive member extraction with a pull-to-fixpoint loop,
@@ -305,11 +305,11 @@ The single highest-value step per repo, from its plan:
   `R_X86_64_IRELATIVE` for the ifunc `memcpy`.
 - trace: `-T` timing, the prerequisite for the three-generation overhead
   table the project exists to make. `-e` filtering and `-p` attach are both
-  **shipped** (`trace.c` handles them, and the suite differentials each against
+  shipped (`trace.c` handles them, and the suite differentials each against
   strace).
-- psh: the `modernish` compliance suite. Shell functions are **shipped**
+- psh: the `modernish` compliance suite. Shell functions are shipped
   (`PLAN.md` item ticked), and positional parameters are a declared
-  **non-goal**, not a next step: `$1` and `$#` expand to empty and zero, as
+  non-goal, not a next step: `$1` and `$#` expand to empty and zero, as
   dash does for a script invoked without arguments, and the README says what
   that costs. Here-documents are done, including `<<-` and the
   quoted-delimiter form, at 208 corpus scripts plus 4 refusal checks agreeing
@@ -325,7 +325,7 @@ The single highest-value step per repo, from its plan:
 - vtparse: grapheme cluster segmentation, then a `vttest` conformance table
   across xterm/foot/alacritty.
 - jail: Landlock network rules; ABI 4 is available on this kernel and
-  unused. `--rox`, `--rw-no-exec` and `--deny PATH` are all **done**: `--deny`
+  unused. `--rox`, `--rw-no-exec` and `--deny PATH` are all done: `--deny`
   is built out of sibling grants, because Landlock has no deny rule, and the
   suite carries 16 assertions for it.
 - commitq: split by hunk, not by file, so one file touched for two
@@ -414,7 +414,7 @@ far more often than in the code:
   *opposite* case, which looks identical from outside: a perfectly reproducible
   build rewrites its products to the bytes already in the tree, so "did anything
   change" answers no and the tool refused to compare the outputs it had just
-  rebuilt. An output is now any file the build **rewrote**.
+  rebuilt. An output is now any file the build rewrote.
 - `inflate`'s length limiter had never executed. Dynamic Huffman went in, all
   148 checks passed, and the ratio on the project's own source went from 1.30x to
   1.01x, and then raising the 15-bit code-length cap to 16 left the suite green,
@@ -456,7 +456,7 @@ shape of the attack. The real signal would have been one line in seventeen.
 The cause is structural and was invisible from the toy fixtures: `libtoolize` and
 `gettextize` vendor those macros in **from the build host**, so the project's
 repository is the wrong oracle for them. And no name-based allowlist can fix it,
-because **`build-to-host.m4` is a legitimate gettext macro**, it ships at
+because `build-to-host.m4` is a legitimate gettext macro, it ships at
 `/usr/share/aclocal/build-to-host.m4` on any machine with gettext installed. The
 attacker didn't invent a filename; they shipped a modified copy of a real one.
 That is why it survived review.
@@ -510,6 +510,6 @@ and all four are).
 
 Restore any repo: `git clone ../projects-SNAPSHOT-FINAL/bundles/jail.bundle jail`
 
-`/tmp` on this machine is **tmpfs** and does not survive a reboot. `wasmi/hist/`
+`/tmp` on this machine is tmpfs and does not survive a reboot. `wasmi/hist/`
 was rescued from it: the generator that built that repo's 31-commit history, which
 would otherwise have been lost.
