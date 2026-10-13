@@ -138,7 +138,7 @@ build paths, filesystem ordering, ASLR, locale, parallelism.
 
 Pointed at every sibling: **34 of 38 verify as REPRODUCIBLE.** The other four
 are the Python repos, where `make -B` produces nothing to compare and the tool
-reports *inconclusive* rather than counting an empty comparison as a pass --
+reports *inconclusive* rather than counting an empty comparison as a pass,
 which is a distinction it learned the hard way, having once printed
 `REPRODUCIBLE (0 output(s))` for a tree where `make` was a no-op.
 

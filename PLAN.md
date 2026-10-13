@@ -6,7 +6,7 @@ This repository is what sits above the eighteen: `INDEX.md` as the entry point,
 `METHOD.md` as the working instructions, `cq` as the wrapper around `commitq`,
 and `.portfolio/` as the generator that renders all eighteen into one PDF.
 
-`.portfolio/extract.py` writes `repos.json` by measuring the repositories --
+`.portfolio/extract.py` writes `repos.json` by measuring the repositories,
 commit counts from `git`, line counts from tracked files, plan counts from each
 `PLAN.md`, test counts from actually running each suite. `.portfolio/build.py`
 turns that into `portfolio.html` and `render.sh` prints it to PDF with headless
@@ -25,7 +25,7 @@ repositories currently say.**
 When the document and the work disagree, the document is wrong. This is the
 only property here worth a test, and it is the one that failed: the README
 documented `extract.py`, `extract.py` did not exist, and the shipped PDF
-carried 38 stale values -- test counts from five suites that had since grown, a
+carried 38 stale values, test counts from five suites that had since grown, a
 commit total six behind, and two line counts that had never been right at all
 because they came from walking the tree instead of asking `git`.
 
@@ -51,9 +51,9 @@ Ranked by how little this repo controls them, most independent first:
    `portfolio.html`, so a `build.py` that drops a field fails rather than
    rendering a document that merely came from good data. Deleting one field
    turns 18 assertions red.
-5. **Throwaway repos in a tempdir.** The extractor's refusals -- a member repo
+5. **Throwaway repos in a tempdir.** The extractor's refusals: a member repo
    with no editorial text, an editorial entry whose repo is gone, an ignored
-   file, a `hist/` snapshot -- are driven against repos built for the purpose,
+   file, a `hist/` snapshot, are driven against repos built for the purpose,
    so no test mutates one of the eighteen. Same method as `commitq`'s own
    suite.
 6. **Itself, twice.** Two runs must agree byte for byte, and the `repos.json`
@@ -82,16 +82,16 @@ Ranked by how little this repo controls them, most independent first:
       `extract.py`, which had been documented without existing.
       why: everything above the eighteen was tracked by nothing. `commitq`
       only ever looked *downward* from the root for repos, so the root itself
-      was invisible to the tool that gates every other commit here -- which is
+      was invisible to the tool that gates every other commit here, which is
       also why nobody noticed. The first commit has to be the one that makes
       the rest reviewable.
 - [x] 02 assert the figures in `portfolio.pdf`, not only in `portfolio.html`
       why: the suite checks the HTML because that is text. The PDF is what gets
-      sent to anyone, and nothing currently proves the two agree -- a stale
+      sent to anyone, and nothing currently proves the two agree: a stale
       `portfolio.pdf` next to a fresh `portfolio.html` passes everything today.
       `pdftotext` is installed and already used by hand to spot-check it.
       done: four assertions, and item 03 fell out of it rather than needing
-      its own commit -- the PDF must be no older than `repos.json` or than the
+      its own commit, the PDF must be no older than `repos.json` or than the
       page it was rendered from, which is the timestamp check 03 wanted. The
       figure check had to be written twice: matching a bare number passed with
       a planted commit count of 999, because "999" occurs inside some other
@@ -101,7 +101,7 @@ Ranked by how little this repo controls them, most independent first:
       why: the suite now catches it (item 02), but only when run. chromium
       exits 0 on some failures, so the person who ran `render.sh` and saw no
       error is the one who should be told, at the moment it happened.
-      done: two refusals -- no PDF at all, and a PDF older than the page --
+      done: two refusals: no PDF at all, and a PDF older than the page,
       driven with a stub `chromium` on PATH that exits 0 and writes nothing.
       Run against a copy of `.portfolio`, because running it against the real
       directory leaves `portfolio.html` newer than the PDF and turns item 02's
@@ -125,7 +125,7 @@ Ranked by how little this repo controls them, most independent first:
 - [ ] 06 fold `INDEX.md`'s hand-maintained figures into the generated ones
       why: `INDEX.md` repeats commit totals, line totals and per-repo test
       counts that `repos.json` already measures, which means it drifts by
-      design -- it was eight commits and two thousand lines out when this repo
+      design. It was eight commits and two thousand lines out when this repo
       was created. Either generate that table or cut the numbers from it.
 - [ ] 08 a `cq`-visible list of repos that are members but undescribed
       why: a new project becomes a member the moment it has a PLAN.md, and from

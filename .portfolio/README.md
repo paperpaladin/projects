@@ -10,11 +10,11 @@ The values go through `read` rather than being written into the line, because
 this file used to show them inline and `build.py` would print whatever it was
 given onto the cover. Example text now resolves to empty and gets the red
 "[ your name ]" block instead, so a forgotten value is loud rather than
-plausible -- but a line that cannot be pasted wrongly beats a line that is
+plausible, but a line that cannot be pasted wrongly beats a line that is
 caught after being pasted wrongly.
 
-`repos.json` is extracted from the repos -- commit counts from `git`, line counts
-from tracked files, test counts from actually running each suite -- so the
+`repos.json` is extracted from the repos, commit counts from `git`, line counts
+from tracked files, test counts from actually running each suite, so the
 document cannot drift from the work it describes. Regenerate it with:
 
     make portfolio
@@ -22,7 +22,7 @@ document cannot drift from the work it describes. Regenerate it with:
 That takes about half an hour, because it runs all thirty-eight suites; `wasmi` alone is
 about three. It is a separate script from `build.py` for exactly that reason.
 
-Four fields per repo are editorial -- `blurb`, `oracle`, `invariant`, `group` --
+Four fields per repo are editorial: `blurb`, `oracle`, `invariant`, `group`,
 and are read back out of the existing `repos.json`, because no measurement
 produces a sentence. A repo with a `PLAN.md` and no editorial text is an error
 rather than a silent omission, and so is an entry describing a repo that is no
@@ -38,7 +38,7 @@ walking the tree rather than asking `git`:
 - `lnk` was credited with 2,873 test lines. 2,456 of those were
   `t/tmp.pages.c`, a generated file that is gitignored and was never part of
   the repo.
-- `psh` was credited with 63, which was `t/run.sh` alone -- the 208-script
+- `psh` was credited with 63, which was `t/run.sh` alone: the 208-script
   corpus that the harness actually runs did not count at all.
 
 Totals went *down* as a result, from 11,503 test lines to 8,732. A number that
@@ -48,7 +48,7 @@ only ever moves up is worth being suspicious of.
 
 **Fonts are local only.** Headless chromium has no network, so a webfont would
 silently fall back and the PDF would not match the design. Noto Serif Condensed /
-Noto Serif / Hack are all installed here and embed correctly -- confirmed by
+Noto Serif / Hack are all installed here and embed correctly, confirmed by
 reading the font table out of the finished PDF.
 
 **The two data-fill colours were validated, not chosen by eye.** `#0E8F85` and

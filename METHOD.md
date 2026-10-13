@@ -1,4 +1,4 @@
-# projects/ -- working instructions
+# projects/: working instructions
 
 Thirty-eight independent repositories, one method. Read this before touching anything;
 read `INDEX.md` for what each repo is, and the repo's own `PLAN.md` for what comes
@@ -59,13 +59,13 @@ each one records *why* it is next. 344 of them are queued.
 
 **Membership is having a `PLAN.md`.** That is the rule `extract.py` uses and the
 one `commitq`'s gateability guard asserts against, so a directory with a `.git`
-and no `PLAN.md` is outside the set -- `notally-molly` is an unrelated Android
+and no `PLAN.md` is outside the set, `notally-molly` is an unrelated Android
 fork and stays out.
 
 Two repos were invisible for exactly that reason until they were given one:
 `ed25519` and `terminfo`, both built in sessions that were interrupted. Both
 build and both pass their suites against external oracles. `ed25519` has since
-been finished through signing and verification against Project Wycheproof --
+been finished through signing and verification against Project Wycheproof:
 `ed25519_sign` and `ed25519_verify` are both in `ed25519.h`. `terminfo` is
 still **unfinished**, but not in the way this said: it does read the string
 table, 4584 string capabilities compared byte for byte against `infocmp`.
@@ -84,7 +84,7 @@ NAME="..." GITHUB="..." .portfolio/render.sh            # build.py, then chromiu
 ```
 
 Refresh it after any commit that changes a test count, or the document quietly
-starts claiming last week's numbers -- it had drifted by 38 values once, because
+starts claiming last week's numbers. It had drifted by 38 values once, because
 `extract.py` was documented in the README and did not exist.
 
 ## Hard rules
@@ -97,8 +97,8 @@ starts claiming last week's numbers -- it had drifted by 38 values once, because
 
    This rule used to say the suite "greps its own source for `GIT_AUTHOR_DATE`,
    `GIT_COMMITTER_DATE` and `add_argument("--date"`". Those greps were deleted
-   as discredited -- `commitq/t/test_commitq.py` records that all six passed
-   while the invariant was false -- and the sense is now inverted for two of
+   as discredited: `commitq/t/test_commitq.py` records that all six passed
+   while the invariant was false, and the sense is now inverted for two of
    the three tokens: `commitq.py` *must contain* `GIT_AUTHOR_DATE`, because
    that is the variable `git_env()` strips from every git subprocess. Only
    `add_argument("--date"` is still grepped for absence. `INDEX.md` carried the
@@ -120,7 +120,7 @@ starts claiming last week's numbers -- it had drifted by 38 values once, because
    **This rule is about prose, not about bytes.** Six files hold non-ASCII on
    purpose and a sweep must leave them alone: `tarx/t/run.sh`,
    `sqlr/t/oracle.py` and `gitobj/t/run.sh` carry non-ASCII *test data*
-   (filenames and strings whose whole point is that they are not ASCII -- the
+   (filenames and strings whose whole point is that they are not ASCII: the
    last creates a filename with a diaeresis), and `commitq`'s block characters
    and middot are UI glyphs. Replacing those does not tidy anything, it deletes the
    test. A blanket sweep over user-facing strings is already recorded as a
@@ -154,7 +154,7 @@ including the ones that were in the harness. Multi-paragraph is normal here.
 ## Gotchas discovered the hard way
 
 - **`grep -r` silently skips every repo.** The shell used here replaces `grep`
-  with a ugrep wrapper that passes `--ignore-files`, so it honours `.gitignore` --
+  with a ugrep wrapper that passes `--ignore-files`, so it honours `.gitignore`,
   and this directory's `.gitignore` lists all 39 repo directories by name. The
   result is not an error, it is a confident `0`. Counting shortcut comments this
   way returns 3 instead of 170. Use `find ... -exec grep` for anything that has to
@@ -164,9 +164,9 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   guard refuses obvious example text, and the test for the guard shelled out
   to `commitq.py` with `cwd` set to the real collection, on the assumption
   that `cwd` chose the tree. It does not: `ROOT` is
-  `Path(__file__).parent.parent`, fixed at import. So the mutation run -- the
+  `Path(__file__).parent.parent`, fixed at import. So the mutation run: the
   run that proves the guard is load-bearing, with the guard deliberately
-  disabled -- rewrote all 37 project repos and reported "151 passed, 1
+  disabled, rewrote all 37 project repos and reported "151 passed, 1
   failed". `filter-branch -f` does not refuse when `refs/original` exists, it
   overwrites it, so the undo survived only by luck. Anything that writes goes
   against a fixture, and the question to ask of a destructive test is not "is
@@ -177,7 +177,7 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   page for the previous commit. Removing something from history means
   rewriting history; checking that it is gone means
   `git cat-file --batch-all-objects --batch`, which also sees the unreachable
-  objects a rewrite leaves behind -- there were 3364 of those after one.
+  objects a rewrite leaves behind, there were 3364 of those after one.
   `cq au` does this.
 - **A detector must not contain what it detects.** The deny-list for that scan
   started as a literal regex in the checker, so the first run reported four
@@ -186,7 +186,7 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   in an untracked file now.
 - **A gate check that has never been seen to fail may be checking nothing.**
   This is the house rule applied to the house rules. Every check in
-  `.portfolio/audit.py` is run twice by `.portfolio/t/test_audit.py` -- clean,
+  `.portfolio/audit.py` is run twice by `.portfolio/t/test_audit.py`, clean,
   where it must pass, and with its own defect planted, where it must fail.
   Writing those pairs found three checks that could never pass (they flagged
   the comments explaining them) and one whose first version I had expected to
@@ -194,11 +194,11 @@ including the ones that were in the harness. Multi-paragraph is normal here.
 - **Clone it alone before believing it works.** `make audit-deep` clones each
   repository into a scratch directory with no siblings and runs its suite
   there. `gitobj`'s suite read eight named neighbours at `../<name>/.git`, so
-  it passed here and failed five assertions for anyone else -- one of them a
+  it passed here and failed five assertions for anyone else: one of them a
   corruption test that, finding no corpus, planted no corruption and then
   reported that the corruption was not caught.
 - **A missing external oracle is a refusal or a loud skip, never a quiet
-  one -- and which depends on how much of the oracle it is.** `trace` prints
+  one, and which depends on how much of the oracle it is.** `trace` prints
   `SKIP strace not installed` and continues, because strace is one oracle
   among several there. `corex` exits 2 with one line, because `gdb` is the
   only oracle for every fact it checks and the only way to obtain a core, so a
@@ -211,7 +211,7 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   scratch. It is the generator that produced wasmi's 31 commits. Do not run it
   casually.
 - All commits currently carry a placeholder author. Before any push, put the
-  values in variables and then `./cq id "$GIT_NAME" "$GIT_EMAIL"` -- never
+  values in variables and then `./cq id "$GIT_NAME" "$GIT_EMAIL"`, never
   inline, because the inline form was pasted with the example text still in it
   and rewrote 721 commits to "Your Name". `cq id` refuses obvious example text
   now, and its suite asserts both directions: that the paste is refused, and
@@ -225,7 +225,7 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   push is what makes a hash permanent.
 - **`git add -A` at the root will commit a git worktree as a gitlink.** The
   `.gitignore` lists every repo directory for this reason, and the local tool
-  directories are excluded in `.git/info/exclude` -- out of the tracked file
+  directories are excluded in `.git/info/exclude`, out of the tracked file
   deliberately, since they are machine state and every clone reads
   `.gitignore`. One of those worktrees appeared mid-session and went straight
   into a commit. A recorded gitlink produces a clone that cannot be checked
@@ -244,7 +244,7 @@ including the ones that were in the harness. Multi-paragraph is normal here.
 - **A flake is a defect; chase it with a loop that keeps the output.**
   `unrepro`'s suite failed once during an `extract.py` run and then passed
   four times in a row, and I recorded it here as unreproduced with two
-  guessed candidates -- the locale-dependent `ls-order` case and the heavy
+  guessed candidates: the locale-dependent `ls-order` case and the heavy
   `cc` sibling build. Both guesses were wrong. A loop running `make test`
   until it failed, saving the whole output, caught it on the thirteenth run:
   `ar rcsU` stamps the archive's SYMBOL-INDEX member with the wall clock, so
@@ -252,9 +252,9 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   assertion only passed when both builds landed in the same second.
 
   Two lessons worth more than the fix. The repo already warned about exactly
-  this -- `t/cases/date-macro/Makefile` says relying on the wall clock "is
+  this, `t/cases/date-macro/Makefile` says relying on the wall clock "is
   exactly the flakiness that lets this class of bug survive in real
-  projects" -- so the trap was documented in one case and present in its
+  projects", so the trap was documented in one case and present in its
   neighbour. And guessing at a flake from its summary line produced two
   wrong answers in about a minute, where a loop produced the right one in
   three. `extract.py` now writes a failing suite's full output to
@@ -262,29 +262,29 @@ including the ones that were in the harness. Multi-paragraph is normal here.
 - **Run `make test`, never `sh t/run.sh` directly.** 32 repos have a
   `t/run.sh`. **Seven** of those harnesses compile the code under test
   themselves and so are safe either way: `ed25519`, `jsonc`, `sha2`, `tomlc`,
-  `utf8n`, `vtparse`, `xmlc` -- each builds its test binaries *from the .c
+  `utf8n`, `vtparse`, `xmlc`, each builds its test binaries *from the .c
   file under test*, e.g. vtparse's `build ./t/table_test t/table_test.c
   vtparse.c`.
 
   The other **25** compile nothing they are testing: every `make test` target
   depends on `all`, so the documented path rebuilds first, but invoked
   directly after an edit they report passes for the binary that was lying
-  around. That is not hypothetical -- three mutations of `terminfo`'s number
+  around. That is not hypothetical, three mutations of `terminfo`'s number
   decoder were each recorded as SURVIVING against a stale binary, and all
   three are caught the moment it is rebuilt.
 
   This note used to say "14 harnesses" while naming 13, and six of the
-  thirteen -- `cc`, `corex`, `dbginfo`, `lnk`, `slab`, `trace` -- compile
+  thirteen (`cc`, `corex`, `dbginfo`, `lnk`, `slab`, `trace`) compile
   only *fixtures and workloads*, never the thing under test. So it listed six
   repos as safe to invoke directly when they are precisely the hazard it
   warns about. `grep -E '\-o +[^ ]*REPO' REPO/t/run.sh` is the check; for the
   seven safe ones the .c under test appears as an input.
 
   `terminfo/t/run.sh` refuses to run when its source is newer than its binary
-  and exits non-zero saying so -- verified by touching the source. It is the
+  and exits non-zero saying so, verified by touching the source. It is the
   pattern to copy: four lines using `-nt`. The other 24 are **not** guarded,
   because each names its binary differently and 24 tailored edits is a worse
-  trade than this note -- add the guard to a repo when you are in it for
+  trade than this note: add the guard to a repo when you are in it for
   another reason.
 
   The six repos with no `t/run.sh` at all are `commitq`, `rx`, `srcdiff`,
@@ -299,13 +299,13 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   wrote. Kill by PID from `pgrep -af`, in a separate call.
 - **A second `extract.py` now REFUSES, and it used to destroy `repos.json`.**
   Two runs both write `repos.json.new` and both `mv` it, so one can move a
-  half-written file over the real one -- which happened, leaving the file
+  half-written file over the real one, which happened, leaving the file
   empty and recoverable only because it is committed. An earlier overlap
   produced a spurious `commitq: FAILING` instead, because some suites share a
   scratch directory between runs and `prof` asserts sampling ratios.
 
   Three classes, checked with a sweep over every `t/run.sh` rather than from
-  memory -- and the first sweep I did still missed nine of them, so the list
+  memory, and the first sweep I did still missed nine of them, so the list
   below is the one to trust:
 
   **Fixed path, any two concurrent runs collide.** `cmark`, `jsonc`, `tomlc`,
@@ -321,8 +321,8 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   **Per-run, safe.** `cc`, `lnk` and `tarx` use `t/tmp.$$`; `sqlr` uses
   `work.<pid>`; `prof` and `cc`'s fuzzer use `mktemp`.
 
-  This note originally named cc, lnk, sqlr and tarx as the unsafe ones --
-  all four are in the safe class -- and then, after I corrected it, named five
+  This note originally named cc, lnk, sqlr and tarx as the unsafe ones,
+  all four are in the safe class, and then, after I corrected it, named five
   of the twelve unsafe ones. Both versions were written from a sweep whose
   pattern was too narrow: the first matched only `^T=`-style assignments, the
   second missed `S=`, `OUT=`, `work=` and trace's bare filenames.
@@ -333,7 +333,7 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   hide it for thirty minutes and then produce the right answer.
 
   The note that used to sit here said "finish every repo change first, then
-  extract once" -- advice to someone who has already decided to be careful.
+  extract once": advice to someone who has already decided to be careful.
   It did not say that the second invocation silently destroys the first's
   output, which is the part that would have stopped me. I wrote that note and
   then made the mistake twice. Prose is not an interlock.
@@ -342,8 +342,8 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   natural way to undo the two hours of edits sitting in the same file. I ran
   `git checkout -q t/oracle.py` to revert a `sed` probe against sqlr and lost
   six uncommitted fixes in one keystroke; they were only recoverable because
-  the patch text was still in the conversation. Commit first, then experiment
-  -- `git stash` if the work is not commit-ready. Reverting an experiment is
+  the patch text was still in the conversation. Commit first, then experiment:
+  `git stash` if the work is not commit-ready. Reverting an experiment is
   never urgent enough to skip that.
 - **`nohup CMD &` plus `run_in_background` reports completion immediately.**
   The backgrounding shell exits as soon as it has forked, so the tool fires
@@ -351,7 +351,7 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   running. The output file is empty and exit status is 0, which reads exactly
   like a job that ran and produced nothing. Pick one: `run_in_background`
   alone, or `nohup ... &` with a `pgrep` check afterwards. The hazard here is
-  specific -- a 30-minute `extract.py` looked finished after two seconds, and
+  specific: a 30-minute `extract.py` looked finished after two seconds, and
   acting on that would have meant running suites against its held lock.
 - **`n=$(grep -c PAT f || echo 0)` yields `"0\n0"`, not `0`.** `grep -c`
   prints the count *and* exits 1 when the count is zero, so the fallback
@@ -365,14 +365,14 @@ including the ones that were in the harness. Multi-paragraph is normal here.
 `INDEX.md` has the per-repo invariant table and where each one goes next.
 
 Two things this line used to assert are **not** established: "every commit
-builds" (hard rule 2 -- nothing checks it) and "all builds reproducible",
+builds" (hard rule 2: nothing checks it) and "all builds reproducible",
 which was measured when the collection was 18 repos and has not been re-run
 across all 38. `unrepro`'s own README still lists four siblings as
 not-reproducible that now are.
 
 `cc` compiles itself: `make self-host` builds it with itself twice and
 asserts the two binaries are byte-identical AND that the stage-2 compiler
-passes the whole suite. The second half is not ceremony -- at the first green
+passes the whole suite. The second half is not ceremony: at the first green
 `cmp cc2 cc3` the stage-2 compiler failed 15 cases, because a compiler that
 miscompiles itself consistently reaches a fixpoint without complaint.
 
