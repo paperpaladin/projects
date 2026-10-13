@@ -171,7 +171,42 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   overwrites it, so the undo survived only by luck. Anything that writes goes
   against a fixture, and the question to ask of a destructive test is not "is
   it correct" but "what does it do when the thing it tests is broken".
+- **A rename in a new commit does not remove the old content.** `git grep`
+  and `git ls-files` read the working tree. A string edited out of a file and
+  committed over is still in the blob underneath it, and still on the GitHub
+  page for the previous commit. Removing something from history means
+  rewriting history; checking that it is gone means
+  `git cat-file --batch-all-objects --batch`, which also sees the unreachable
+  objects a rewrite leaves behind -- there were 3364 of those after one.
+  `cq au` does this.
+- **A detector must not contain what it detects.** The deny-list for that scan
+  started as a literal regex in the checker, so the first run reported four
+  occurrences in this repository: its own source. Whatever is being kept out
+  of a repository cannot be written into the thing that keeps it out. It lives
+  in an untracked file now.
+- **A gate check that has never been seen to fail may be checking nothing.**
+  This is the house rule applied to the house rules. Every check in
+  `.portfolio/audit.py` is run twice by `.portfolio/t/test_audit.py` -- clean,
+  where it must pass, and with its own defect planted, where it must fail.
+  Writing those pairs found three checks that could never pass (they flagged
+  the comments explaining them) and one whose first version I had expected to
+  be fixed by `git gc`, which it is not.
+- **Clone it alone before believing it works.** `make audit-deep` clones each
+  repository into a scratch directory with no siblings and runs its suite
+  there. `gitobj`'s suite read eight named neighbours at `../<name>/.git`, so
+  it passed here and failed five assertions for anyone else -- one of them a
+  corruption test that, finding no corpus, planted no corruption and then
+  reported that the corruption was not caught.
+- **A missing external oracle is a refusal or a loud skip, never a quiet
+  one -- and which depends on how much of the oracle it is.** `trace` prints
+  `SKIP strace not installed` and continues, because strace is one oracle
+  among several there. `corex` exits 2 with one line, because `gdb` is the
+  only oracle for every fact it checks and the only way to obtain a core, so a
+  reduced run would print "0 passed, 0 failed" having checked nothing.
 - `/tmp` is **tmpfs** and does not survive a reboot. Never leave anything there.
+  It is also shared: a fixed name there (`/tmp/vtparse-fuzz.bin`) means two
+  concurrent runs feed each other their inputs, and a cleanup that sweeps
+  `/tmp` while the code honours `$TMPDIR` removes nothing and exits 0.
 - `wasmi/hist/build.py` does `rmtree('.git')` and rebuilds that repo's history from
   scratch. It is the generator that produced wasmi's 31 commits. Do not run it
   casually.
