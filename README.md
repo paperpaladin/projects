@@ -175,7 +175,7 @@ whose number has drifted from what the suite actually prints.
 | [tzf](tzf/) | C | TZif reader, RFC 8536 | zoneinfo | 34 |
 | [gitobj](gitobj/) | C | git object database reader/writer | the object name is its own SHA-1 | 2,208 |
 | [zipc](zipc/) | C | ZIP reader -- *writing not yet* | Info-ZIP `unzip`/`zipinfo`, Python `zipfile` | 69 |
-| [xmlc](xmlc/) | C | XML 1.0 well-formedness checker -- *prolog, comments, CDATA not yet* | W3C conformance suite | 84 |
+| [xmlc](xmlc/) | C | XML 1.0 well-formedness checker -- *references and DOCTYPE not yet* | W3C conformance suite | 127 |
 | [tlp](tlp/) | Py | metamorphic SQL logic-bug finder | 11 relations, none redundant -- measured | **130** |
 | [ed25519](ed25519/) | C | Ed25519 **and X25519**, built from the field up | a second implementation in Python, the other curve form, 669 Wycheproof vectors | 36 |
 | [terminfo](terminfo/) | C | compiled-terminfo reader -- *extended section, `tput` params not yet* | `infocmp`, and `tic` for the name tables | 10 |
@@ -207,9 +207,10 @@ and each refuses what it has not implemented instead of answering wrongly:
 - **`terminfo`** reads headers, booleans, numbers and the string table --
   4,584 string capabilities byte for byte against `infocmp` -- but not the
   ncurses extended section, and not parameterised strings against `tput`.
-- **`xmlc`** parses names and elements but not comments, processing
-  instructions, CDATA or the prolog, so it *declines* 93% of the W3C suite
-  rather than judging it.
+- **`xmlc`** has elements, attributes, character data, comments, processing
+  instructions, CDATA sections and the XML declaration, but not references or
+  the DOCTYPE -- so it *declines* 84% of the W3C suite rather than judging
+  it. 264 judged, of which not-wf is 207/207 and invalid 55/55.
 - **`zipc`** reads archives but cannot write one.
 
 A declined case is reported separately from a passing one. That distinction is
