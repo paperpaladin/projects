@@ -36,6 +36,7 @@ read -rp 'email: ' GIT_EMAIL
 
 ./cq a        # status + run every suite
 ./cq t        # what to work on next, stalest repo first
+./cq p        # per repo: total commits, how many are pushed, what is local
 ./cq gui      # http://127.0.0.1:8787
 ```
 

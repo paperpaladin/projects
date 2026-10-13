@@ -17,6 +17,7 @@ No pytest, no network. `python3 t/test_portfolio.py`.
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -443,6 +444,101 @@ for nm, gh, want_blank in [("Your Name", "yourhandle", True),
     truthy("cover name %r/%r is %s" % (nm, gh, "suppressed" if want_blank
                                        else "kept"),
            blank == want_blank and bool(out), out)
+
+# --------------------------------------------------------------- cq p (push)
+#
+# Pushing by commit id means looking the id up, and looking it up is where
+# mistakes live, so `cq p REPO N` takes a count. Two things are worth a test:
+# that N means N, and that it refuses to push commits still authored
+# placeholder@invalid -- because a push is what makes a hash permanent, and
+# rewriting the author afterwards means force-pushing over a public branch
+# while the forge keeps the old commits reachable anyway.
+#
+# Built as a throwaway collection in a tempdir with its own bare remote. `cq`
+# only checks that commitq/commitq.py exists, so a stub is enough, and nothing
+# here can reach the real repos or any network.
+with tempfile.TemporaryDirectory() as td:
+    coll = Path(td)
+    (coll / "commitq").mkdir()
+    (coll / "commitq" / "commitq.py").write_text("")
+    shutil.copy(ROOT / "cq", coll / "cq")
+    (coll / "cq").chmod(0o755)
+
+    def mkrepo(name, email):
+        r = coll / name
+        r.mkdir()
+        bare = coll / (name + ".git")
+        subprocess.run(["git", "init", "-q", "--bare", str(bare)], check=True)
+        subprocess.run(["git", "init", "-q"], cwd=r, check=True)
+        subprocess.run(["git", "config", "user.name", "T"], cwd=r, check=True)
+        subprocess.run(["git", "config", "user.email", email], cwd=r, check=True)
+        for i in range(5):
+            (r / ("f%d.txt" % i)).write_text(str(i))
+            subprocess.run(["git", "add", "-A"], cwd=r, check=True)
+            subprocess.run(["git", "commit", "-qm", "c%d" % i], cwd=r, check=True,
+                           env=commitq.git_env())
+        subprocess.run(["git", "remote", "add", "origin", str(bare)], cwd=r, check=True)
+        return r, bare
+
+    def remote_count(bare):
+        out = subprocess.run(["git", "rev-list", "--count", "--all"],
+                             capture_output=True, text=True, cwd=bare).stdout.strip()
+        return int(out or 0)
+
+    def cq_p(*args):
+        return subprocess.run([str(coll / "cq"), "p", *args],
+                              capture_output=True, text=True, cwd=str(coll))
+
+    # A repo with a real author: N means N, and repeated pushes fast-forward.
+    real, real_bare = mkrepo("alpha", "arp@users.noreply.github.com")
+    truthy("cq p: the fixture's remote starts empty, so a push is observable",
+           remote_count(real_bare) == 0)
+    for n, want in [("2", 2), ("4", 4), ("all", 5)]:
+        r = cq_p("alpha", n)
+        check("cq p alpha %s exits 0" % n, r.returncode, 0)
+        check("...and the remote holds %d commits" % want,
+              remote_count(real_bare), want)
+
+    # A repo still on the placeholder: refused, and nothing reaches the remote.
+    ph, ph_bare = mkrepo("beta", commitq.PLACEHOLDER_EMAIL)
+    r = cq_p("beta", "2")
+    check("cq p refuses a repo still authored placeholder@invalid",
+          r.returncode, 2)
+    check("...and pushed nothing", remote_count(ph_bare), 0)
+    truthy("...and says why, naming the rewrite", "author rewrite" in r.stderr,
+           r.stderr)
+    # The refusal prints a plain-git escape hatch. An escape hatch that does
+    # not work is worse than none, so run the line it printed.
+    hatch = [l.strip() for l in r.stderr.splitlines() if l.strip().startswith("git -C")]
+    truthy("...and prints exactly one plain-git alternative", len(hatch) == 1, hatch)
+    run = subprocess.run(hatch[0], shell=True, capture_output=True, text=True,
+                         cwd=str(coll))
+    check("...which actually pushes when run", run.returncode, 0)
+    check("...the 2 commits it claims", remote_count(ph_bare), 2)
+
+    # No origin yet is a refusal, not a traceback or a silent success.
+    noremote = coll / "gamma"
+    noremote.mkdir()
+    subprocess.run(["git", "init", "-q"], cwd=noremote, check=True)
+    subprocess.run(["git", "config", "user.email", "arp@users.noreply.github.com"],
+                   cwd=noremote, check=True)
+    (noremote / "x").write_text("x")
+    subprocess.run(["git", "add", "-A"], cwd=noremote, check=True)
+    subprocess.run(["git", "commit", "-qm", "c"], cwd=noremote, check=True,
+                   env=commitq.git_env())
+    r = cq_p("gamma", "1")
+    check("cq p refuses a repo with no origin", r.returncode, 2)
+    truthy("...and names the remote-add command", "remote add origin" in r.stderr,
+           r.stderr)
+
+    # The status view has to report a staged push, not just a completed one:
+    # `git push <sha>:refs/heads/<br>` is what updates the tracking ref here.
+    status = cq_p().stdout
+    rows = dict((l.split()[0], l.split()[1:3]) for l in status.splitlines()[1:]
+                if l.split())
+    check("cq p status reports alpha fully pushed", rows.get("alpha"), ["5", "5"])
+    check("cq p status reports beta partially pushed", rows.get("beta"), ["5", "2"])
+    check("cq p status reports gamma unpushed", rows.get("gamma"), ["1", "0"])
 
 print("\n%d passed, %d failed" % (passed, failed))
 sys.exit(1 if failed else 0)

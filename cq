@@ -11,6 +11,8 @@
 #   cq s R        propose a commit split for R
 #   cq gui        start the localhost GUI
 #   cq id N E     rewrite the placeholder author to name N, email E
+#   cq p          what each repo has pushed, and what is still local
+#   cq p R N      push the first N commits of R to origin (N=all for the rest)
 #
 # Install:  ln -s "$PWD/cq" ~/.local/bin/cq
 set -eu
@@ -44,12 +46,70 @@ case "$cmd" in
     exec python3 "$CQ" split "$repo" --write ;;
   gui|serve)
     exec python3 "$HERE/commitq/serve.py" "$@" ;;
+  p|push)
+    # Push by count, not by commit id. "the first six commits" is a thing you
+    # can decide; "efbffa5" is a thing you have to go and look up, and looking
+    # it up is where the mistakes live.
+    repo=${1:-}
+    if [ -z "$repo" ]; then
+      printf '%-12s %7s %7s %7s  %s\n' repo total pushed local remote
+      for d in "$HERE" "$HERE"/*/; do
+        d=${d%/}
+        [ -d "$d/.git" ] || continue
+        case $(basename "$d") in notally-molly) continue ;; esac
+        br=$(git -C "$d" symbolic-ref --short HEAD 2>/dev/null) || continue
+        total=$(git -C "$d" rev-list --count HEAD)
+        # The remote-tracking ref, not the network: this is what the last push
+        # left behind, which is the number you need and costs nothing to read.
+        if git -C "$d" rev-parse -q --verify "refs/remotes/origin/$br" >/dev/null; then
+          pushed=$(git -C "$d" rev-list --count "refs/remotes/origin/$br")
+        else
+          pushed=0
+        fi
+        rem=$(git -C "$d" config --get remote.origin.url || echo -)
+        printf '%-12s %7s %7s %7s  %s\n' "$(basename "$d")" "$total" "$pushed" \
+               "$((total - pushed))" "$rem"
+      done
+      exit 0
+    fi
+    n=${2:?usage: cq p REPO N   (N commits from the start, or '"'"'all'"'"')}
+    dir=$HERE/$repo
+    [ "$repo" = . ] || [ "$repo" = projects ] && dir=$HERE
+    [ -d "$dir/.git" ] || { echo "cq: $repo is not a git repo here" >&2; exit 2; }
+    br=$(git -C "$dir" symbolic-ref --short HEAD)
+    total=$(git -C "$dir" rev-list --count HEAD)
+    git -C "$dir" config --get remote.origin.url >/dev/null || {
+      echo "cq: $repo has no origin remote yet. Add one first:" >&2
+      echo "    git -C $repo remote add origin <url>" >&2
+      exit 2; }
+    # Pushing is what makes a commit hash permanent, so the author rewrite has
+    # to come first. After a push it means force-pushing over a public branch,
+    # and the old commits stay reachable on the forge regardless.
+    if git -C "$dir" log --format=%ae | grep -q placeholder@invalid; then
+      echo "cq: $repo still has commits authored placeholder@invalid." >&2
+      echo "    Run the author rewrite first, or every hash you push now" >&2
+      echo "    changes later and has to be force-pushed:" >&2
+      echo '        read -rp "name:  " GIT_NAME' >&2
+      echo '        read -rp "email: " GIT_EMAIL' >&2
+      echo '        ./cq id "$GIT_NAME" "$GIT_EMAIL"' >&2
+      echo "    To push it anyway, the plain git form is:" >&2
+      echo "        git -C $repo push origin \$(git -C $repo rev-list --reverse HEAD | sed -n ${n}p):refs/heads/$br" >&2
+      exit 2
+    fi
+    if [ "$n" = all ] || [ "$n" -ge "$total" ]; then
+      echo "cq: $repo -> origin/$br, all $total commits"
+      exec git -C "$dir" push -u origin "$br"
+    fi
+    sha=$(git -C "$dir" rev-list --reverse HEAD | sed -n "${n}p")
+    [ -n "$sha" ] || { echo "cq: $repo has no commit number $n" >&2; exit 2; }
+    echo "cq: $repo -> origin/$br, first $n of $total commits ($sha)"
+    exec git -C "$dir" push origin "$sha:refs/heads/$br" ;;
   id|identity)
     name=${1:?usage: cq id <name> <email>  (put them in variables first; see METHOD.md)}
     email=${2:?usage: cq id <name> <email>  (put them in variables first; see METHOD.md)}
     exec python3 "$CQ" identity --name "$name" --email "$email" --yes ;;
   -h|--help|help)
-    sed -n '2,20p' "$0" | sed 's/^# \{0,1\}//' ;;
+    sed -n '2,${/^#/!q; s/^# \{0,1\}//; p;}' "$0" ;;
   *)
     echo "cq: unknown command '$cmd' (try: cq help)" >&2
     exit 2 ;;

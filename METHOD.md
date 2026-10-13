@@ -183,7 +183,11 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   that a real address containing the same substrings ("superuser", "zhouyou")
   is not. That rewrites every commit and is safe only while nothing has been
   pushed.
-- Nothing has a git remote. Nothing has left this machine.
+- Nothing has a git remote. Nothing has left this machine. `cq p` is the
+  staged-push front end when that changes: `cq p` alone reports total/pushed/
+  local per repo, `cq p REPO N` sends the first N commits and nothing after
+  them. It refuses while a repo is still on the placeholder author, since a
+  push is what makes a hash permanent.
 - **`git add -A` at the root will commit a git worktree as a gitlink.** The
   `.gitignore` already lists every repo directory for this reason, and all of
   `.tool-state/` is ignored too, because a worktree under it appeared mid-session
