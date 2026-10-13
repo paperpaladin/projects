@@ -11,6 +11,7 @@
 # run is the whole point.
 test:
 	@python3 .portfolio/audit.py
+	@python3 .portfolio/t/test_audit.py
 	@python3 .portfolio/t/test_portfolio.py
 
 # The clean-clone check: every repository cloned alone, with no siblings, and

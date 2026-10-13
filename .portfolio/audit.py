@@ -55,7 +55,11 @@ import tempfile
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-ROOT = HERE.parent
+# Overridable so the suite can point the checks at a fixture collection with a
+# defect planted in it. A gate whose checks are never shown to fail is a gate
+# that might be checking nothing, which is the shape of defect this file is
+# otherwise about -- so it has to be testable against something broken.
+ROOT = Path(os.environ.get("AUDIT_ROOT") or HERE.parent)
 
 # Not part of the collection: an unrelated fork kept here for convenience. It
 # has its own history by other people and its own remote.
@@ -64,6 +68,14 @@ FOREIGN = {"notally-molly"}
 passed = 0
 failed = 0
 notes = []
+
+
+def reset():
+    """Clear the counters so one check can be run on its own, by the suite."""
+    global passed, failed, notes
+    passed = 0
+    failed = 0
+    notes = []
 
 
 def ok(label):
