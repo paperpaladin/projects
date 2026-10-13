@@ -209,14 +209,14 @@
   },
   "prof": {
     "blurb": "Sampling CPU profiler",
-    "commits": 26,
+    "commits": 27,
     "done": 18,
     "group": "observability",
     "invariant": "Profiling does not change the profiled program",
     "oracle": "A planted hot loop with known 10:1 ratios",
     "shortcuts": 6,
     "src": 752,
-    "test": 297,
+    "test": 319,
     "tests": "15 passed, 0 failed, 0 skipped",
     "todo": 12
   },
