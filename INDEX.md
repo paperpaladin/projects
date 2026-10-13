@@ -100,7 +100,7 @@ since the last regeneration, not that something is wrong.
 | [sqlr](sqlr/) | C | SQLite file-format reader | libsqlite3 itself | 123 agree |
 | [vtparse](vtparse/) | C | VT500 parser + wcwidth | published table, **3584/3584** | 101 |
 | [unrepro](unrepro/) | Py | build-reproducibility differ | planted causes, 7/7 diagnosed | 114 |
-| [dwarfdump](dwarfdump/) | C | DWARF debug-info parser | `readelf` | 85 |
+| [dbginfo](dbginfo/) | C | DWARF debug-info parser | `readelf` | 85 |
 | [jail](jail/) | C | Landlock sandbox | the kernel -- denied means EACCES | 77 |
 | [commitq](commitq/) | Py | multi-repo commit gate + GUI | throwaway repos in a tempdir | 156 |
 | [walkv](walkv/) | C | WAL key-value store | crash at every I/O boundary | 216 scenarios |
@@ -252,7 +252,7 @@ picking a repo back up after a gap.**
   | sqlr | output byte-identical to SQLite; malformed input errors, never crashes |
   | vtparse | never allocates, never reads past its byte, matches the published table |
   | unrepro | never report clean on a build that is not reproducible |
-  | dwarfdump | every fact printed agrees with readelf |
+  | dbginfo | every fact printed agrees with readelf |
   | jail | an ungranted path is never reachable, and the child cannot relax itself |
   | commitq | no commit is ever created with a date other than now |
   | walkv | recovered state is a prefix with no holes |
@@ -385,10 +385,10 @@ far more often than in the code:
   and watching 146 tests pass while ASan printed a heap overflow to stderr. Fixing
   it revealed every malformed input had been leaking 192KB, invisible for the same
   reason.
-- **`dwarfdump` resolved strings against the wrong base** and got back *different
+- **`dbginfo` resolved strings against the wrong base** and got back *different
   real strings* -- no error, no marker, plausible output, wrong answer. clang emits
   `DW_AT_name` as `strx1` before declaring `str_offsets_base` on the same DIE.
-- **`dwarfdump`'s ASan exit code collided** with its own "malformed input" status,
+- **`dbginfo`'s ASan exit code collided** with its own "malformed input" status,
   so robustness sweeps would have scored a heap overflow as a clean diagnostic.
 - **`tarx`'s symlink assertions were vacuous** because `diff -r` dereferences
   links. It also found a real security bug: setuid/setgid/sticky bits restored from
@@ -481,7 +481,7 @@ recognising a payload.
 ## The loop that closed
 
 `unrepro`, built in this same batch, found that eight sibling repos were not
-reproducible: `cc`, `walkv`, `rx`, `trace`, `dwarfdump`, `lnk`, `prof`, `vtparse`.
+reproducible: `cc`, `walkv`, `rx`, `trace`, `dbginfo`, `lnk`, `prof`, `vtparse`.
 Cause in every case `build-path` -- `-g` writes the compiler's working directory
 into DWARF `.debug_line_str`, and the section grew by exactly the difference in
 path length. It named the byte offset, the section, and the fix.

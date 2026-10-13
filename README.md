@@ -161,7 +161,7 @@ whose number has drifted from what the suite actually prints.
 | [sqlr](sqlr/) | C | SQLite file-format reader | libsqlite3 itself | 123 agree |
 | [vtparse](vtparse/) | C | VT500 parser + wcwidth | published table, **3584/3584** | 101 |
 | [unrepro](unrepro/) | Py | build-reproducibility differ | planted causes, 7/7 diagnosed | 114 |
-| [dwarfdump](dwarfdump/) | C | DWARF debug-info parser | `readelf` | 85 |
+| [dbginfo](dbginfo/) | C | DWARF debug-info parser | `readelf` | 85 |
 | [jail](jail/) | C | Landlock sandbox | the kernel -- denied means EACCES | 77 |
 | [commitq](commitq/) | Py | multi-repo commit gate + GUI | throwaway repos in a tempdir | 156 |
 | [walkv](walkv/) | C | WAL key-value store | crash at every I/O boundary | 216 scenarios |

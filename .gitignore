@@ -22,7 +22,7 @@ cmark/
 commitq/
 corex/
 derx/
-dwarfdump/
+dbginfo/
 ed25519/
 gitobj/
 httpd/

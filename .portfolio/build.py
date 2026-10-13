@@ -171,7 +171,7 @@ def composition_map():
     s.append(lane(96, "FORMATS"))
     s += [box(78, 96, 78, "inflate"), box(226, 96, 66, "tarx"),
           box(308, 96, 66, "sqlr"), box(390, 96, 78, "vtparse"),
-          box(484, 96, 92, "dwarfdump")]
+          box(484, 96, 92, "dbginfo")]
     s.append(arrow(160, 222, 96, "compresses for"))
     s.append('<text x="584" y="113" class="an">&#8594; prof unwinds with this</text>')
 
@@ -225,7 +225,7 @@ BUGS = [
      "Against the genuine xz-5.4.5 tarball and its git tag, every HIGH finding was wrong &mdash; and each was an "
      "<code>m4/*.m4</code> file absent from git, the exact shape of the attack it exists to find. The real signal "
      "would have been one line in seventeen."),
-    ("harness", "dwarfdump", "ASan's exit code collided with &ldquo;malformed input&rdquo;",
+    ("harness", "dbginfo", "ASan's exit code collided with &ldquo;malformed input&rdquo;",
      "Both are 1, so the robustness sweeps would have scored a genuine heap overflow as a clean diagnostic."),
     ("harness", "unrepro", "Reported REPRODUCIBLE because <code>make</code> did nothing",
      "Pointed at four sibling repos it compared zero outputs and called them clean. Zero outputs is now "
@@ -250,7 +250,7 @@ BUGS = [
      "The rule-installing loop reused the argument parser's index, so <code>jail</code> built a flawless ruleset and "
      "then exec'd <code>--ro</code>. Every internal invariant held; only a real program reporting a real errno could "
      "see it."),
-    ("code", "dwarfdump", "Strings resolved to different real strings",
+    ("code", "dbginfo", "Strings resolved to different real strings",
      "clang emits <code>DW_AT_name</code> as <code>strx1</code> before declaring <code>str_offsets_base</code> on the "
      "same DIE. Every lookup succeeded, no error, no marker &mdash; the second unit was simply named "
      "<code>main.c</code> where readelf said <code>lib.c</code>."),

@@ -274,7 +274,7 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   three are caught the moment it is rebuilt.
 
   This note used to say "14 harnesses" while naming 13, and six of the
-  thirteen -- `cc`, `corex`, `dwarfdump`, `lnk`, `slab`, `trace` -- compile
+  thirteen -- `cc`, `corex`, `dbginfo`, `lnk`, `slab`, `trace` -- compile
   only *fixtures and workloads*, never the thing under test. So it listed six
   repos as safe to invoke directly when they are precisely the hazard it
   warns about. `grep -E '\-o +[^ ]*REPO' REPO/t/run.sh` is the check; for the
