@@ -56,17 +56,12 @@ wasmi/
 xmlc/
 zipc/
 
-# Editor and tool state. The whole directory, not just the worktrees under it:
-# a worktree recorded as a gitlink makes a clone that cannot be checked out and
-# `git add -A` will do it silently, which is what the narrower rule was for --
-# but everything else that lands in here is local scratch and settings, and
-# none of it belongs in a repository that is going to be read by other people.
-.tool-state/
+# Generated locally and never committed: a failing suite's captured output,
+# and the extractor's lock file.
 .portfolio/failures/
 .portfolio/.extract.lock
 
-# The working instructions are METHOD.md. An untracked symlink at the root
-# points the local tooling at them, so there is one file and one source of
-# truth rather than two copies drifting apart. The symlink is local; only
-# METHOD.md is tracked.
-METHOD.md
+# Local editor and tool state is excluded in .git/info/exclude instead of
+# here. Same effect, and it keeps machine-specific paths out of a file that
+# every clone reads. See the gitlink gotcha in METHOD.md for why any of it
+# has to be excluded at all.

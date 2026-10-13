@@ -629,8 +629,9 @@ td:first-child{font-family:var(--f-mono);color:var(--ink);font-size:8.4pt}
   each repo's tests against the working tree before committing and refuses when they
   fail &mdash; or when a repo has no discoverable suite at all, which was a real bug it
   had for two thirds of the project.</p>
-  <p>@@shortcuts@@ deliberate shortcuts are marked <code>shortcut:</code> in the source, each naming
-  its own ceiling and the upgrade path. @@done@@ planned steps are done and @@todo@@ remain,
+  <p>@@shortcuts@@ places take a deliberately simple route, each marked
+  <code>shortcut:</code> in the source and naming both the ceiling it accepts and the
+  upgrade path. @@done@@ planned steps are done and @@todo@@ remain,
   ordered, each recording why it is next.</p></div>
 
   <p class="foot">Generated from the repositories by <code>.portfolio/build.py</code>.

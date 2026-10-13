@@ -189,16 +189,20 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   them. It refuses while a repo is still on the placeholder author, since a
   push is what makes a hash permanent.
 - **`git add -A` at the root will commit a git worktree as a gitlink.** The
-  `.gitignore` already lists every repo directory for this reason, and all of
-  `.tool-state/` is ignored too, because a worktree under it appeared mid-session
-  and went straight into a commit. A recorded gitlink produces a
-  clone that cannot be checked out, and git says it in a `hint:` block that
-  is easy to scroll past. Check with
-  `git ls-tree -r HEAD | awk '$2=="commit"'` after any root commit.
-- **Other sessions share this directory.** A worktree on
-  `worktree-bunker-site` was created and committed to while this session was
-  running, by something else. Leave other branches and worktrees alone, and
-  do not assume the root repo's HEAD is where you left it.
+  `.gitignore` lists every repo directory for this reason, and the local tool
+  directories are excluded in `.git/info/exclude` -- out of the tracked file
+  deliberately, since they are machine state and every clone reads
+  `.gitignore`. One of those worktrees appeared mid-session and went straight
+  into a commit. A recorded gitlink produces a clone that cannot be checked
+  out, and git says so only in a `hint:` block that is easy to scroll past.
+  Check with `git ls-tree -r HEAD | awk '$2=="commit"'` after any root
+  commit.
+- **This directory is not yours alone while you are working in it.** A
+  worktree on `worktree-bunker-site` was created and committed to from
+  elsewhere while work was in progress here. That branch is unrelated to this
+  collection and is not meant to be published with it: push `HEAD`, never
+  `--all`. More generally, leave branches and worktrees you did not make
+  alone, and do not assume the root repo's `HEAD` is where you left it.
 - Backups: a sibling `projects-SNAPSHOT-FINAL/` directory holds a full tarball
   and a `git bundle` per repo. Refresh it after significant work.
 - Do not execute build scripts from downloaded third-party tarballs.
