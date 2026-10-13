@@ -64,3 +64,9 @@ zipc/
 .tool-state/
 .portfolio/failures/
 .portfolio/.extract.lock
+
+# The working instructions are METHOD.md. An untracked symlink at the root
+# points the local tooling at them, so there is one file and one source of
+# truth rather than two copies drifting apart. The symlink is local; only
+# METHOD.md is tracked.
+METHOD.md

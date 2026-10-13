@@ -168,9 +168,9 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   and is safe only while nothing has been pushed.
 - Nothing has a git remote. Nothing has left this machine.
 - **`git add -A` at the root will commit a git worktree as a gitlink.** The
-  `.gitignore` already lists every repo directory for this reason; worktrees
-  under `.tool-state/worktrees/` are now listed too, because one appeared
-  mid-session and went straight into a commit. A recorded gitlink produces a
+  `.gitignore` already lists every repo directory for this reason, and all of
+  `.tool-state/` is ignored too, because a worktree under it appeared mid-session
+  and went straight into a commit. A recorded gitlink produces a
   clone that cannot be checked out, and git says it in a `hint:` block that
   is easy to scroll past. Check with
   `git ls-tree -r HEAD | awk '$2=="commit"'` after any root commit.
