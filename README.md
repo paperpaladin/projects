@@ -102,6 +102,16 @@ turned `897/897` into `98/98 of 121 judged, 1553/1674 declined`, and dropped
 the count of cases the parser should have caught from 749 to 2. The honest
 number is smaller and the work is better.
 
+It has since grown to **287 judged** -- comments, processing instructions,
+CDATA sections, the XML declaration and references -- with should-have-caught
+at 1. That is the pair of numbers worth watching together: judging well over
+twice as many cases without getting any more of them wrong. Adding the
+declaration made the point a second time, from the other side. Routed through
+the processing-instruction parser, because it does open `<?`, it failed [17]'s
+reserved-target rule, so every document carrying one was *rejected* as
+malformed: 676 judged and 183 of them confidently wrong. The score looked like
+a triumph.
+
 `rx` pinned a pathological-backtracking case to exit status `{0,1}` -- which
 accepted a timeout, a crash, and a correct answer equally. It now pins exit
 `1`, requires the 1MB subject to be at least 1,000,000 bytes, and requires
@@ -150,7 +160,7 @@ whose number has drifted from what the suite actually prints.
 | [tarx](tarx/) | C | tar reader/writer | GNU `tar`, bidirectional | 119 |
 | [sqlr](sqlr/) | C | SQLite file-format reader | libsqlite3 itself | 123 agree |
 | [vtparse](vtparse/) | C | VT500 parser + wcwidth | published table, **3584/3584** | 101 |
-| [unrepro](unrepro/) | Py | build-reproducibility differ | planted causes, 7/7 diagnosed | 109 |
+| [unrepro](unrepro/) | Py | build-reproducibility differ | planted causes, 7/7 diagnosed | 114 |
 | [dwarfdump](dwarfdump/) | C | DWARF debug-info parser | `readelf` | 85 |
 | [jail](jail/) | C | Landlock sandbox | the kernel -- denied means EACCES | 77 |
 | [commitq](commitq/) | Py | multi-repo commit gate + GUI | throwaway repos in a tempdir | 156 |
@@ -173,12 +183,12 @@ whose number has drifted from what the suite actually prints.
 | [seccompc](seccompc/) | C | seccomp policy compiler | the kernel | 125 |
 | [sockv](sockv/) | C | socket lister via netlink | the kernel | 83 |
 | [tzf](tzf/) | C | TZif reader, RFC 8536 | zoneinfo | 34 |
-| [gitobj](gitobj/) | C | git object database reader/writer | the object name is its own SHA-1 | 2,208 |
+| [gitobj](gitobj/) | C | git object database reader/writer | the object name is its own SHA-1 | **1,639** alone |
 | [zipc](zipc/) | C | ZIP reader -- *writing not yet* | Info-ZIP `unzip`/`zipinfo`, Python `zipfile` | 69 |
-| [xmlc](xmlc/) | C | XML 1.0 well-formedness checker -- *references and DOCTYPE not yet* | W3C conformance suite | 127 |
+| [xmlc](xmlc/) | C | XML 1.0 well-formedness checker -- *DOCTYPE not yet* | W3C conformance suite | 144 |
 | [tlp](tlp/) | Py | metamorphic SQL logic-bug finder | 11 relations, none redundant -- measured | **130** |
 | [ed25519](ed25519/) | C | Ed25519 **and X25519**, built from the field up | a second implementation in Python, the other curve form, 669 Wycheproof vectors | 36 |
-| [terminfo](terminfo/) | C | compiled-terminfo reader -- *extended section, `tput` params not yet* | `infocmp`, and `tic` for the name tables | 10 |
+| [terminfo](terminfo/) | C | compiled-terminfo reader -- *extended section, `tput` params not yet* | `infocmp`, and `tic` for the name tables | 24 |
 
 ## Start with cc
 
@@ -207,10 +217,13 @@ and each refuses what it has not implemented instead of answering wrongly:
 - **`terminfo`** reads headers, booleans, numbers and the string table --
   4,584 string capabilities byte for byte against `infocmp` -- but not the
   ncurses extended section, and not parameterised strings against `tput`.
+  Its malformed-file sweep found a corrupt string offset being accepted in
+  silence, because the code returned the same value for "offset outside the
+  table" as for "capability absent".
 - **`xmlc`** has elements, attributes, character data, comments, processing
-  instructions, CDATA sections and the XML declaration, but not references or
-  the DOCTYPE -- so it *declines* 84% of the W3C suite rather than judging
-  it. 264 judged, of which not-wf is 207/207 and invalid 55/55.
+  instructions, CDATA sections, the XML declaration and references, but not
+  the DOCTYPE -- so it *declines* 82% of the W3C suite rather than judging
+  it. 287 judged, of which not-wf is 227/227 and invalid 58/58.
 - **`zipc`** reads archives but cannot write one.
 
 A declined case is reported separately from a passing one. That distinction is

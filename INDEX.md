@@ -12,8 +12,8 @@ reads headers, booleans, numbers and the string table -- 4584 string
 capabilities byte for byte against `infocmp` -- but not the ncurses extended
 section, and not parameterised strings evaluated against `tput`. `xmlc`
 has elements, attributes, character data, comments, processing instructions,
-CDATA sections and the XML declaration, but not references or the DOCTYPE, so
-it declines 84% of the W3C suite rather than judging it, and
+CDATA sections, the XML declaration and references, but not the DOCTYPE, so
+it declines 82% of the W3C suite rather than judging it, and
 `zipc` reads archives but cannot write one. Each says so first in its own
 README or PLAN, and each refuses what it has not implemented instead of
 answering wrongly.
@@ -80,10 +80,12 @@ variadic functions checked against glibc's own `va_arg`, and it compiles
 ## The repos
 
 The `tests` column is generated from a real run of every suite by
-`make portfolio`, which reports any row that has drifted. Two of these numbers
-move on their own: `gitobj` walks the loose objects of nine sibling
-repositories, so committing anywhere in the collection changes its count, and
-`rx` is per-seed. A row being one or two behind usually means work has landed
+`make portfolio`, which reports any row that has drifted. One of these numbers still moves on its own: `rx` is per-seed. `gitobj`
+used to as well -- it walks the loose objects of its sibling repositories, so
+committing anywhere in the collection changed its count -- and its cell now
+quotes the figure a reader can actually reproduce: 1,639 from a clone of
+gitobj alone, against its own built corpus. In this tree, with the siblings
+present, it is 2,223 and climbing. A row being one or two behind usually means work has landed
 since the last regeneration, not that something is wrong.
 
 | repo | lang | what it is | the oracle | tests |
@@ -97,7 +99,7 @@ since the last regeneration, not that something is wrong.
 | [tarx](tarx/) | C | tar reader/writer | GNU `tar`, bidirectional | 119 |
 | [sqlr](sqlr/) | C | SQLite file-format reader | libsqlite3 itself | 123 agree |
 | [vtparse](vtparse/) | C | VT500 parser + wcwidth | published table, **3584/3584** | 101 |
-| [unrepro](unrepro/) | Py | build-reproducibility differ | planted causes, 7/7 diagnosed | 109 |
+| [unrepro](unrepro/) | Py | build-reproducibility differ | planted causes, 7/7 diagnosed | 114 |
 | [dwarfdump](dwarfdump/) | C | DWARF debug-info parser | `readelf` | 85 |
 | [jail](jail/) | C | Landlock sandbox | the kernel -- denied means EACCES | 77 |
 | [commitq](commitq/) | Py | multi-repo commit gate + GUI | throwaway repos in a tempdir | 156 |
@@ -120,12 +122,12 @@ since the last regeneration, not that something is wrong.
 | [seccompc](seccompc/) | C | seccomp policy compiler | the kernel | 125 |
 | [sockv](sockv/) | C | socket lister via netlink | the kernel | 83 |
 | [tzf](tzf/) | C | TZif reader, RFC 8536 | zoneinfo | 34 |
-| [gitobj](gitobj/) | C | git object database reader/writer | the object name is its own SHA-1 | 2,208 |
+| [gitobj](gitobj/) | C | git object database reader/writer | the object name is its own SHA-1 | **1,639** alone |
 | [zipc](zipc/) | C | ZIP reader -- *writing not yet* | Info-ZIP `unzip`/`zipinfo` and Python `zipfile`, read side | 69 |
-| [xmlc](xmlc/) | C | XML 1.0 well-formedness checker -- *references and DOCTYPE not yet* | W3C conformance suite; 264 of 1627 in-scope cases judged, the rest declined | 127 |
+| [xmlc](xmlc/) | C | XML 1.0 well-formedness checker -- *DOCTYPE not yet* | W3C conformance suite; 287 of 1627 in-scope cases judged, the rest declined | 144 |
 | [tlp](tlp/) | Py | metamorphic SQL logic-bug finder | 11 relations, none of them redundant -- measured, not argued | **130** |
 | [ed25519](ed25519/) | C | Ed25519 **and X25519**, built up from the field | a second Ed25519 in Python, the other curve form, and 669 Wycheproof vectors | 36 |
-| [terminfo](terminfo/) | C | compiled-terminfo reader -- *extended section and `tput` params not yet* | `infocmp`, and `tic` for the name tables | 10 |
+| [terminfo](terminfo/) | C | compiled-terminfo reader -- *extended section and `tput` params not yet* | `infocmp`, and `tic` for the name tables | 24 |
 
 Worth running once each:
 

@@ -400,6 +400,12 @@ README_COUNT_ALLOW = {
     # cc's Makefile runs two suites and reports 389; the README quotes them
     # separately, as 325 and 64, which is what the transcripts actually show.
     "cc",
+    # gitobj's total includes the loose objects of its sibling repositories,
+    # so it moves every time anything is committed anywhere in the tree. Its
+    # README explains the two numbers and quotes the stable one, 1639 from a
+    # clone of gitobj alone; pinning the other would mean re-editing the file
+    # after every commit in every other repository.
+    "gitobj",
 }
 
 SUMMARY_RE = re.compile(r"^([\d,]+) (?:passed|agree|scenarios)", re.M)
