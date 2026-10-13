@@ -366,8 +366,8 @@ About this directory, not the thirty-eight; each of those has its own list.
   rule instead of checked. `sqlr` substituted python3's binding to the same
   libsqlite3 3.46.1 and documented the substitution everywhere.
 - "Verify all 4096 (state,byte) pairs" was wrong instruction: the published DEC
-  table has **14 states, not 16**. `vtparse` used 3584 and said so rather than
-  inflating the denominator.
+  table has **14 states, not 16**. `vtparse` used 3584 and said so,
+  not inflating the denominator.
 - A build-audit script produced false passes. `git stash -u` does not stash
   *ignored* files, so a stale binary survives `git checkout` and makes `make`
   succeed without recompiling. The real audit removes artifacts before each build.

@@ -148,8 +148,8 @@ in differently-named directories produced different bytes. `.debug_line_str`
 grew by exactly the number of characters the second directory name was longer.
 And `httpd` returned no verdict at all, because a fifo left in its test tree
 made `shutil.copytree` raise and the tool die with a traceback, not an
-answer. Both are fixed; both were found by running it over all 38 rather than
-the handful its own README discussed.
+answer. Both are fixed; both were found by running it over all 38,
+not the handful its own README discussed.
 
 ## The repositories
 

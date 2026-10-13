@@ -9,8 +9,8 @@ Generates `portfolio.pdf` from the repositories themselves.
 The values go through `read` instead of being written into the line, because
 this file used to show them inline and `build.py` would print whatever it was
 given onto the cover. Example text now resolves to empty and gets the red
-"[ your name ]" block instead, so a forgotten value is loud rather than
-plausible, but a line that cannot be pasted wrongly beats a line that is
+"[ your name ]" block instead, so a forgotten value is loud,
+not plausible, but a line that cannot be pasted wrongly beats a line that is
 caught after being pasted wrongly.
 
 `repos.json` is extracted from the repos, commit counts from `git`, line counts

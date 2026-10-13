@@ -48,8 +48,8 @@ Ranked by how little this repo controls them, most independent first:
    instead is what credited `lnk` with 2,873 test lines, 2,456 of which were a
    gitignored generated file.
 4. The generated page. Every per-repo figure must appear in
-   `portfolio.html`, so a `build.py` that drops a field fails rather than
-   rendering a document that merely came from good data. Deleting one field
+   `portfolio.html`, so a `build.py` that drops a field fails,
+   not rendering a document that merely came from good data. Deleting one field
    turns 18 assertions red.
 5. Throwaway repos in a tempdir. The extractor's refusals: a member repo
    with no editorial text, an editorial entry whose repo is gone, an ignored
