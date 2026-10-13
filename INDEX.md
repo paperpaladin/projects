@@ -236,8 +236,8 @@ Every repo has a `PLAN.md` with at least the same five sections (16 of the 38
 add a sixth or seventh, such as `## Status, as of the last commit`). **Read it first when
 picking a repo back up after a gap.**
 
-- **Contract**: the interface, and what must not break.
-- **Hard invariant**: the one property that, if violated, means the project
+- Contract: the interface, and what must not break.
+- Hard invariant: the one property that, if violated, means the project
   failed:
 
   | repo | invariant |
@@ -261,11 +261,11 @@ picking a repo back up after a gap.**
   | srcdiff | no false negatives in HIGH, **and** few enough false positives that a real one is visible |
   | prof | profiling does not change the profiled program |
 
-- **Oracle**: ranked by how little the author controls them.
-- **Non-goals**: what keeps each project finishable. Some are permanent:
+- Oracle: ranked by how little the author controls them.
+- Non-goals: what keeps each project finishable. Some are permanent:
   backreferences in `rx` are incompatible with its invariant, so the answer is no,
   not later.
-- **Commit sequence**: `[x]` done, `[ ]` next, each carrying *why*, the files, and
+- Commit sequence: `[x]` done, `[ ]` next, each carrying *why*, the files, and
   the test that would prove it. Ordered; each entry is the next thing that moves an
   oracle.
 
@@ -273,105 +273,105 @@ picking a repo back up after a gap.**
 
 The single highest-value step per repo, from its plan:
 
-- **cc**: the preprocessor is **done**; `cc/PLAN.md` records Milestone 1 as
+- cc: the preprocessor is **done**; `cc/PLAN.md` records Milestone 1 as
   complete and `t/cpp.sh` scores 64 cases. It was the last real blocker on
   self-hosting and it did take longer than everything before it combined,
   because glibc's headers weaponise GNU C: `__attribute__`, statement
   expressions, `typeof` and `__builtin_*` all appear before you reach anything
   useful. Next is `c-testsuite` (PLAN item 18), still unticked.
-- **wasmi**: vendor the official WebAssembly spec testsuite and publish the real
+- wasmi: vendor the official WebAssembly spec testsuite and publish the real
   pass rate. 11,833 self-authored cases is a weaker claim than any external score,
   and the README says so.
-- **slab**: a free-span cache for large allocations, then a `PROT_NONE` tail so
+- slab: a free-span cache for large allocations, then a `PROT_NONE` tail so
   a large block can grow without copying. Those two are the whole remaining gap:
   `realloc`-grow is 81x glibc and large churn 8x, both syscall-bound. Per-thread
   magazines are done, which took four-thread churn from 21x to about even.
-- **inflate**: cost-based block boundaries. Lazy match evaluation is
+- inflate: cost-based block boundaries. Lazy match evaluation is
   **shipped** (`inflate.c` has `lazy_match` and a per-level `lazy` field), and
   the encoder builds its own Huffman trees, which took text from 1.30x
   `gzip -6` to 1.01x. What is left in the gap is the rest of the match
   search.
-- **srcdiff**: bulk mode: walk the top 1000 PyPI packages and publish an aggregate
+- srcdiff: bulk mode: walk the top 1000 PyPI packages and publish an aggregate
   finding with a measured false-positive rate. The xz test is done and it rewrote
   the tool (see below). Next structural gap: vendored files with no canonical copy
   on the host cannot be checked at all, and that is where an xz-shaped file would
   now hide.
-- **walkv**: `dm-log-writes` on the host. Mutation testing is done and it proved
+- walkv: `dm-log-writes` on the host. Mutation testing is done and it proved
   the point: removing `fsync` **entirely** leaves all 216 scenarios green, because
   the page cache outlives the process. Only a device-level replay can see that.
-- **lnk**: link against glibc. The blockers are known and ordered:
+- lnk: link against glibc. The blockers are known and ordered:
   `R_X86_64_GOTPCRELX`, archive member extraction with a pull-to-fixpoint loop,
   `.init_array`, the linker-defined `_end`/`__bss_start`, `PT_TLS` for `errno`, and
   `R_X86_64_IRELATIVE` for the ifunc `memcpy`.
-- **trace**: `-T` timing, the prerequisite for the three-generation overhead
+- trace: `-T` timing, the prerequisite for the three-generation overhead
   table the project exists to make. `-e` filtering and `-p` attach are both
   **shipped** (`trace.c` handles them, and the suite differentials each against
   strace).
-- **psh**: the `modernish` compliance suite. Shell functions are **shipped**
+- psh: the `modernish` compliance suite. Shell functions are **shipped**
   (`PLAN.md` item ticked), and positional parameters are a declared
   **non-goal**, not a next step: `$1` and `$#` expand to empty and zero, as
   dash does for a script invoked without arguments, and the README says what
   that costs. Here-documents are done, including `<<-` and the
   quoted-delimiter form, at 208 corpus scripts plus 4 refusal checks agreeing
   with `dash`.
-- **prof**: DWARF `.eh_frame` unwinding. Frame pointers are why it cannot profile
+- prof: DWARF `.eh_frame` unwinding. Frame pointers are why it cannot profile
   optimised libc.
-- **unrepro**: an `LD_PRELOAD` shim over `readdir` that reverses directory
+- unrepro: an `LD_PRELOAD` shim over `readdir` that reverses directory
   order, which is the largest remaining detection gap: a build that globs is
   order-dependent, and on ext4 the order is stable per directory, so the bug is
   invisible on the machine that has it. The no-op-versus-reproduced confusion is
   fixed, an output is now any file the build *rewrote*, by hash, mtime or
   ctime.
-- **vtparse**: grapheme cluster segmentation, then a `vttest` conformance table
+- vtparse: grapheme cluster segmentation, then a `vttest` conformance table
   across xterm/foot/alacritty.
-- **jail**: Landlock network rules; ABI 4 is available on this kernel and
+- jail: Landlock network rules; ABI 4 is available on this kernel and
   unused. `--rox`, `--rw-no-exec` and `--deny PATH` are all **done**: `--deny`
   is built out of sibling grants, because Landlock has no deny rule, and the
   suite carries 16 assertions for it.
-- **commitq**: split by hunk rather than by file, so one file touched for two
+- commitq: split by hunk rather than by file, so one file touched for two
   reasons becomes two commits.
 
 ## What does not work here
 
 About this directory, not the thirty-eight; each of those has its own list.
 
-- **`INDEX.md` drifts by design.** The commit totals, line totals and per-repo
+- `INDEX.md` drifts by design. The commit totals, line totals and per-repo
   test counts below are maintained by hand while `.portfolio/repos.json`
   measures the same things. They were eight commits and two thousand lines out
   of date when this became a repo. Item 06 in `PLAN.md` is to generate them or
   cut them.
-- **Only the HTML is checked, not the PDF.** `.portfolio/t/test_portfolio.py` asserts that
+- Only the HTML is checked, not the PDF. `.portfolio/t/test_portfolio.py` asserts that
   every figure appears in `portfolio.html`, because that is text. The PDF is
   what actually gets sent to anyone, and a stale `portfolio.pdf` sitting next
   to a fresh `portfolio.html` passes everything today.
-- **Nothing checks the PDF's geometry.** A colour validator checks colour.
+- Nothing checks the PDF's geometry. A colour validator checks colour.
   Three layout bugs, clipped arrow labels, annotations past the viewBox edge,
   a caption describing arrows that no longer existed, were found by rendering
   the document and looking at it, and would be found the same way again.
-- **Nothing checks the PDF's typography or geometry.** `render.sh` now refuses
+- Nothing checks the PDF's typography or geometry. `render.sh` now refuses
   to leave a PDF that is missing or older than the page it came from, and the
   suite reads the figures back out with `pdftotext`, but no check looks at
   where anything sits on the page or which fonts were embedded.
-- **A full regeneration takes minutes**, because it runs all thirty-eight suites.
+- A full regeneration takes minutes, because it runs all thirty-eight suites.
   `--keep-test-counts` makes it instant by inheriting the previous counts
   instead of measuring them, which is right for the test suite and wrong
   before publishing.
-- **The editorial prose is not checked by anything.** Four fields per repo,
+- The editorial prose is not checked by anything. Four fields per repo,
   blurb, oracle, invariant, group, are written by hand and carried across
   regenerations. If one of them stops being true, nothing says so.
 
 ## Four things the author got wrong, caught by the work
 
-- **`sqlite3` CLI was assumed installed.** It isn't. Inferred from a permission
+- `sqlite3` CLI was assumed installed. It isn't. Inferred from a permission
   rule instead of checked. `sqlr` substituted python3's binding to the same
   libsqlite3 3.46.1 and documented the substitution everywhere.
-- **"Verify all 4096 (state,byte) pairs"** was wrong instruction: the published DEC
+- "Verify all 4096 (state,byte) pairs" was wrong instruction: the published DEC
   table has **14 states, not 16**. `vtparse` used 3584 and said so rather than
   inflating the denominator.
-- **A build-audit script produced false passes.** `git stash -u` does not stash
+- A build-audit script produced false passes. `git stash -u` does not stash
   *ignored* files, so a stale binary survives `git checkout` and makes `make`
   succeed without recompiling. The real audit removes artifacts before each build.
-- **Five hand-computed test expectations were wrong** while the compiler was right,
+- Five hand-computed test expectations were wrong while the compiler was right,
   every time. That is why `cc/t/addcase.sh` exists: it takes the expected value
   from gcc, cross-checks against clang, and refuses the case if they disagree.
 
@@ -380,62 +380,62 @@ About this directory, not the thirty-eight; each of those has its own list.
 Across thirty-eight repos built largely in parallel, the defect was in the *test rig*
 far more often than in the code:
 
-- **`inflate`'s ASan target could not fail.** Reject tests assert exit code exactly
+- `inflate`'s ASan target could not fail. Reject tests assert exit code exactly
   1; ASan also exits 1. Found by deleting the classic `dist > o->n` bounds check
   and watching 146 tests pass while ASan printed a heap overflow to stderr. Fixing
   it revealed every malformed input had been leaking 192KB, invisible for the same
   reason.
-- **`dbginfo` resolved strings against the wrong base** and got back *different
+- `dbginfo` resolved strings against the wrong base and got back *different
   real strings*: no error, no marker, plausible output, wrong answer. clang emits
   `DW_AT_name` as `strx1` before declaring `str_offsets_base` on the same DIE.
-- **`dbginfo`'s ASan exit code collided** with its own "malformed input" status,
+- `dbginfo`'s ASan exit code collided with its own "malformed input" status,
   so robustness sweeps would have scored a heap overflow as a clean diagnostic.
-- **`tarx`'s symlink assertions were vacuous** because `diff -r` dereferences
+- `tarx`'s symlink assertions were vacuous because `diff -r` dereferences
   links. It also found a real security bug: setuid/setgid/sticky bits restored from
   an untrusted archive, where GNU tar correctly drops them.
-- **`walkv`'s torn-write scenarios never crashed.** The fsync boundary called the
+- `walkv`'s torn-write scenarios never crashed. The fsync boundary called the
   injection hook and discarded its return, so half the matrix reported a perfect
   prefix because it never ran.
-- **`walkv` then failed its own mutation test.** Of four planted defects only one
+- `walkv` then failed its own mutation test. Of four planted defects only one
   was caught: the matrix crashed, recovered, verified and *stopped*, so nothing
   ever wrote after a recovery and a subtly-wrong recovery was unobservable. Adding
   that one scenario took it from 83 to 163 and the defect now fails 20.
-- **`jail` built a flawless sandbox and applied it to the wrong process**: the
+- `jail` built a flawless sandbox and applied it to the wrong process: the
   rule loop reused the argument parser's index. Every internal invariant held;
   only a real program reporting a real errno could see it.
-- **`slab` found gcc deleting its own `calloc` zero-check**, because gcc knows what
+- `slab` found gcc deleting its own `calloc` zero-check, because gcc knows what
   `calloc` promises. Six mutants now prove the oracle has teeth.
-- **`wasmi` found zero arithmetic divergences**, so it mutation-tested its own
+- `wasmi` found zero arithmetic divergences, so it mutation-tested its own
   suite with 13 injected bugs: all 13 caught. Then gcc's `-Wsequence-point` found
   what 11,833 green cases could not: undefined behaviour that happened to compile
   the right way.
-- **`unrepro` reported REPRODUCIBLE on four repos** because `make` was a no-op.
+- `unrepro` reported REPRODUCIBLE on four repos because `make` was a no-op.
   Zero outputs is now `inconclusive`. The guard then started firing on the
   *opposite* case, which looks identical from outside: a perfectly reproducible
   build rewrites its products to the bytes already in the tree, so "did anything
   change" answers no and the tool refused to compare the outputs it had just
   rebuilt. An output is now any file the build **rewrote**.
-- **`inflate`'s length limiter had never executed.** Dynamic Huffman went in, all
+- `inflate`'s length limiter had never executed. Dynamic Huffman went in, all
   148 checks passed, and the ratio on the project's own source went from 1.30x to
   1.01x, and then raising the 15-bit code-length cap to 16 left the suite green,
   as did deleting the limiter outright, because not one of eleven fixtures
   produced a tree deeper than 14 bits. The fixture that forces it had to be
   constructed: Fibonacci frequencies, laid out so every three-byte window in the
   file is unique and LZ77 cannot blur them.
-- **`inflate`'s ratio assertion had no opinion about coding.** Its bound was 2x,
+- `inflate`'s ratio assertion had no opinion about coding. Its bound was 2x,
   which fixed Huffman codes already met at 1.30x, so it only ever guarded against
   a regression to storing everything.
-- **`slab`'s footprint test could not report an improvement.** It read
+- `slab`'s footprint test could not report an improvement. It read
   `getrusage(RUSAGE_CHILDREN).ru_maxrss` after each child, but that field is the
   maximum over every child already reaped, so running glibc then the preload and
   dividing gave `max(a,b)/a`: a ratio that can never fall below 1.00. It had
   teeth only in the direction of slab being worse, which is the direction that
   mattered, which is why it survived.
-- **`rx`'s unanchored-search implementation broke its own linear-time guarantee**
+- `rx`'s unanchored-search implementation broke its own linear-time guarantee
   by colliding with the generation marks that *are* the guarantee.
-- **`prof`'s one-shot `/proc/PID/maps` snapshot raced `ld.so`**, truncating libc
+- `prof`'s one-shot `/proc/PID/maps` snapshot raced `ld.so`, truncating libc
   frames non-deterministically.
-- **`lnk` aligned file offset and virtual address independently.** `BASE 0x400000`
+- `lnk` aligned file offset and virtual address independently. `BASE 0x400000`
   is divisible by every power of two up to 4MB, so they stayed in step by
   arithmetic luck until an 8MB-aligned array broke the congruence. The fix made the
   whole class unemittable rather than merely fixed.

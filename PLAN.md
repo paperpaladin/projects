@@ -36,33 +36,33 @@ document, because it borrows the credibility of the thing it misreports.
 
 Ranked by how little this repo controls them, most independent first:
 
-1. **`git`.** Commit counts come from `rev-list --count`, and the suite asserts
+1. `git`. Commit counts come from `rev-list --count`, and the suite asserts
    that every number in `repos.json` still equals what `git` says. Nothing here
    gets a vote on that.
-2. **The eighteen suites, run.** The test counts in the document are the last
+2. The eighteen suites, run. The test counts in the document are the last
    line each suite prints, captured by running it. A suite that fails or is
    missing lands in the field as `FAILING:` or `NO SUITE` rather than as a
    number that reads like a pass, and the suite here refuses to accept either
    in a document.
-3. **`git ls-files`.** Line counts cover tracked files only. Walking the tree
+3. `git ls-files`. Line counts cover tracked files only. Walking the tree
    instead is what credited `lnk` with 2,873 test lines, 2,456 of which were a
    gitignored generated file.
-4. **The generated page.** Every per-repo figure must appear in
+4. The generated page. Every per-repo figure must appear in
    `portfolio.html`, so a `build.py` that drops a field fails rather than
    rendering a document that merely came from good data. Deleting one field
    turns 18 assertions red.
-5. **Throwaway repos in a tempdir.** The extractor's refusals: a member repo
+5. Throwaway repos in a tempdir. The extractor's refusals: a member repo
    with no editorial text, an editorial entry whose repo is gone, an ignored
    file, a `hist/` snapshot, are driven against repos built for the purpose,
    so no test mutates one of the eighteen. Same method as `commitq`'s own
    suite.
-6. **Itself, twice.** Two runs must agree byte for byte, and the `repos.json`
+6. Itself, twice. Two runs must agree byte for byte, and the `repos.json`
    checked in must equal what `extract.py` produces right now. That last one
    is the catch-all: any drift at all, from any cause, turns it red.
 
 ## Non-goals
 
-- **Being one of the eighteen.** Those are programs measured against
+- Being one of the eighteen. Those are programs measured against
   authorities outside the author. A document has no such authority for its
   prose, and pretending otherwise would be the exact dishonesty the method
   exists to avoid. Only its *figures* are checkable, and those are checked.

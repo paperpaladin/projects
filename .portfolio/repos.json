@@ -1,7 +1,7 @@
 {
   "bigint": {
     "blurb": "Arbitrary-precision integers",
-    "commits": 18,
+    "commits": 19,
     "done": 17,
     "group": "systems",
     "invariant": "Every operation matches Python exactly, including floor division of negatives",
@@ -14,7 +14,7 @@
   },
   "cc": {
     "blurb": "C compiler for x86-64",
-    "commits": 35,
+    "commits": 36,
     "done": 25,
     "group": "toolchain",
     "invariant": "Self-host fixpoint: cmp cc2 cc3",
@@ -27,7 +27,7 @@
   },
   "cmark": {
     "blurb": "CommonMark parser and HTML renderer",
-    "commits": 20,
+    "commits": 21,
     "done": 18,
     "group": "formats",
     "invariant": "Output is byte-identical to the spec's expected HTML, nothing normalised",
@@ -40,7 +40,7 @@
   },
   "commitq": {
     "blurb": "Multi-repo commit gate and GUI",
-    "commits": 23,
+    "commits": 24,
     "done": 8,
     "group": "supply chain",
     "invariant": "No commit is ever created with a date other than now",
@@ -53,7 +53,7 @@
   },
   "corex": {
     "blurb": "ELF core dump reader",
-    "commits": 20,
+    "commits": 22,
     "done": 17,
     "group": "observability",
     "invariant": "Every value printed agrees with gdb, or it is not printed",
@@ -64,22 +64,9 @@
     "tests": "72 passed, 0 failed, 0 skipped",
     "todo": 5
   },
-  "derx": {
-    "blurb": "DER reader and X.509 printer",
-    "commits": 15,
-    "done": 11,
-    "group": "formats",
-    "invariant": "Every element matches asn1parse byte for byte, or is refused with a message",
-    "oracle": "openssl asn1parse and x509, as a diff",
-    "shortcuts": 3,
-    "src": 1339,
-    "test": 1167,
-    "tests": "216 passed, 0 failed, 0 skipped",
-    "todo": 11
-  },
-  "dwarfdump": {
+  "dbginfo": {
     "blurb": "DWARF debug-info parser",
-    "commits": 22,
+    "commits": 24,
     "done": 17,
     "group": "formats",
     "invariant": "Every fact printed agrees with readelf",
@@ -90,9 +77,22 @@
     "tests": "85 passed, 0 failed",
     "todo": 10
   },
+  "derx": {
+    "blurb": "DER reader and X.509 printer",
+    "commits": 16,
+    "done": 11,
+    "group": "formats",
+    "invariant": "Every element matches asn1parse byte for byte, or is refused with a message",
+    "oracle": "openssl asn1parse and x509, as a diff",
+    "shortcuts": 3,
+    "src": 1339,
+    "test": 1167,
+    "tests": "216 passed, 0 failed, 0 skipped",
+    "todo": 11
+  },
   "ed25519": {
     "blurb": "Ed25519 and X25519, built up from the field",
-    "commits": 12,
+    "commits": 13,
     "done": 9,
     "group": "formats",
     "invariant": "Every layer is differenced against an implementation sharing no code with it, because sign-then-verify is not evidence",
@@ -105,7 +105,7 @@
   },
   "gitobj": {
     "blurb": "git object database reader and writer",
-    "commits": 11,
+    "commits": 12,
     "done": 5,
     "group": "toolchain",
     "invariant": "Every object read hashes back to its own name, loose or packed, through the whole delta chain",
@@ -113,12 +113,12 @@
     "shortcuts": 3,
     "src": 858,
     "test": 660,
-    "tests": "2223 passed, 0 failed",
+    "tests": "1655 passed, 0 failed",
     "todo": 19
   },
   "httpd": {
     "blurb": "HTTP/1.1 static file server",
-    "commits": 19,
+    "commits": 20,
     "done": 18,
     "group": "systems",
     "invariant": "No request can read a byte outside the document root",
@@ -131,7 +131,7 @@
   },
   "inflate": {
     "blurb": "DEFLATE / gzip codec",
-    "commits": 22,
+    "commits": 23,
     "done": 21,
     "group": "formats",
     "invariant": "gzip accepts all we emit; we decode all it emits",
@@ -144,7 +144,7 @@
   },
   "jail": {
     "blurb": "Landlock sandbox",
-    "commits": 23,
+    "commits": 24,
     "done": 14,
     "group": "systems",
     "invariant": "An ungranted path is never reachable; the child cannot relax itself",
@@ -157,7 +157,7 @@
   },
   "jsonc": {
     "blurb": "Strict RFC 8259 JSON parser",
-    "commits": 20,
+    "commits": 21,
     "done": 17,
     "group": "formats",
     "invariant": "A crash can never score as a rejection; exit status outside {0,1} is a failure",
@@ -170,7 +170,7 @@
   },
   "lnk": {
     "blurb": "Static ELF linker",
-    "commits": 22,
+    "commits": 23,
     "done": 18,
     "group": "toolchain",
     "invariant": "Every executable emitted runs, or we refused to emit it",
@@ -183,7 +183,7 @@
   },
   "mydiff": {
     "blurb": "Myers diff and patch",
-    "commits": 20,
+    "commits": 21,
     "done": 13,
     "group": "toolchain",
     "invariant": "The loop closes both ways: our diff feeds GNU patch, GNU's diff feeds our -p",
@@ -196,7 +196,7 @@
   },
   "pngc": {
     "blurb": "PNG decoder, all colour types and Adam7",
-    "commits": 20,
+    "commits": 21,
     "done": 17,
     "group": "formats",
     "invariant": "A corrupt file is refused by CRC, never rendered as a wrong image",
@@ -209,7 +209,7 @@
   },
   "prof": {
     "blurb": "Sampling CPU profiler",
-    "commits": 22,
+    "commits": 23,
     "done": 18,
     "group": "observability",
     "invariant": "Profiling does not change the profiled program",
@@ -222,7 +222,7 @@
   },
   "psh": {
     "blurb": "POSIX shell subset",
-    "commits": 24,
+    "commits": 25,
     "done": 20,
     "group": "toolchain",
     "invariant": "Identical stdout and status to dash on every corpus script",
@@ -235,7 +235,7 @@
   },
   "rx": {
     "blurb": "Linear-time regex engine",
-    "commits": 8,
+    "commits": 9,
     "done": 5,
     "group": "systems",
     "invariant": "A pc enters a thread list at most once per input position",
@@ -248,7 +248,7 @@
   },
   "seccompc": {
     "blurb": "seccomp-BPF policy compiler",
-    "commits": 14,
+    "commits": 15,
     "done": 10,
     "group": "systems",
     "invariant": "A syscall the policy did not permit never runs, by any entry point",
@@ -261,7 +261,7 @@
   },
   "sha2": {
     "blurb": "SHA-2 family, HMAC and PBKDF2",
-    "commits": 19,
+    "commits": 20,
     "done": 18,
     "group": "formats",
     "invariant": "Byte-exact against published vectors; not constant-time, and says so first",
@@ -274,7 +274,7 @@
   },
   "slab": {
     "blurb": "LD_PRELOAD malloc replacement",
-    "commits": 20,
+    "commits": 21,
     "done": 18,
     "group": "systems",
     "invariant": "Two live allocations never overlap; every pointer aligned",
@@ -287,7 +287,7 @@
   },
   "sockv": {
     "blurb": "netlink socket enumerator",
-    "commits": 17,
+    "commits": 18,
     "done": 11,
     "group": "systems",
     "invariant": "Every socket the kernel reports is listed once with every field as given",
@@ -300,7 +300,7 @@
   },
   "sqlr": {
     "blurb": "SQLite file-format reader",
-    "commits": 20,
+    "commits": 21,
     "done": 17,
     "group": "formats",
     "invariant": "Byte-identical output to SQLite; malformed input errors, never crashes",
@@ -313,7 +313,7 @@
   },
   "srcdiff": {
     "blurb": "Supply-chain artifact auditor",
-    "commits": 7,
+    "commits": 8,
     "done": 6,
     "group": "supply chain",
     "invariant": "No false negatives in HIGH, few enough FPs to stay visible",
@@ -326,7 +326,7 @@
   },
   "tarx": {
     "blurb": "tar reader and writer",
-    "commits": 23,
+    "commits": 24,
     "done": 7,
     "group": "formats",
     "invariant": "GNU tar agrees both ways, and no member escapes the destination",
@@ -339,7 +339,7 @@
   },
   "terminfo": {
     "blurb": "compiled-terminfo reader",
-    "commits": 11,
+    "commits": 12,
     "done": 6,
     "group": "formats",
     "invariant": "Every capability reported is the one infocmp reports, because a positional format can be parsed perfectly and named wrongly",
@@ -352,7 +352,7 @@
   },
   "tlp": {
     "blurb": "metamorphic SQL logic-bug finder",
-    "commits": 16,
+    "commits": 17,
     "done": 13,
     "group": "formats",
     "invariant": "Every disagreement reported is a real one, and a run that finds nothing is distinguishable from a run that tested nothing",
@@ -365,7 +365,7 @@
   },
   "tomlc": {
     "blurb": "TOML 1.0.0 parser",
-    "commits": 24,
+    "commits": 25,
     "done": 18,
     "group": "formats",
     "invariant": "Valid documents parse to the expected value, not merely without error",
@@ -378,7 +378,7 @@
   },
   "trace": {
     "blurb": "ptrace syscall tracer",
-    "commits": 8,
+    "commits": 9,
     "done": 11,
     "group": "observability",
     "invariant": "Tracing does not change the traced program",
@@ -391,7 +391,7 @@
   },
   "tzf": {
     "blurb": "TZif timezone file reader",
-    "commits": 9,
+    "commits": 10,
     "done": 5,
     "group": "formats",
     "invariant": "Every instant answered agrees with both readers; malformed input is refused",
@@ -404,7 +404,7 @@
   },
   "unrepro": {
     "blurb": "Build-reproducibility differ",
-    "commits": 41,
+    "commits": 42,
     "done": 12,
     "group": "supply chain",
     "invariant": "Never report clean on a build that is not reproducible",
@@ -417,7 +417,7 @@
   },
   "utf8n": {
     "blurb": "Unicode normalisation, all four forms",
-    "commits": 18,
+    "commits": 19,
     "done": 7,
     "group": "formats",
     "invariant": "Normalising twice equals normalising once, for every form on every input",
@@ -430,7 +430,7 @@
   },
   "vtparse": {
     "blurb": "VT500 parser and wcwidth",
-    "commits": 22,
+    "commits": 23,
     "done": 9,
     "group": "formats",
     "invariant": "Never allocates, never reads past its byte, matches the table",
@@ -443,7 +443,7 @@
   },
   "walkv": {
     "blurb": "Write-ahead-log key-value store",
-    "commits": 10,
+    "commits": 11,
     "done": 10,
     "group": "systems",
     "invariant": "Recovered state is a prefix with no holes",
@@ -456,7 +456,7 @@
   },
   "wasmi": {
     "blurb": "WebAssembly interpreter",
-    "commits": 33,
+    "commits": 34,
     "done": 25,
     "group": "toolchain",
     "invariant": "A malformed module is rejected or traps, never corrupts the host",
@@ -469,7 +469,7 @@
   },
   "xmlc": {
     "blurb": "XML 1.0 well-formedness checker and canonicaliser",
-    "commits": 12,
+    "commits": 13,
     "done": 8,
     "group": "formats",
     "invariant": "Acceptance is exactly the XML 1.0 Fifth Edition grammar, and no input crashes, overreads or leaks",
@@ -482,7 +482,7 @@
   },
   "zipc": {
     "blurb": "ZIP archive reader and writer",
-    "commits": 8,
+    "commits": 9,
     "done": 1,
     "group": "formats",
     "invariant": "The central directory is authoritative, and no member can ever be written outside the destination",

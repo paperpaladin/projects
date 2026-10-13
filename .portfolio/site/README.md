@@ -5,7 +5,7 @@ dependencies. Open it in a browser and that is the whole thing.
 
 ## Before it goes anywhere public
 
-1. **Replace the name.** The first line of `<header>` is a placeholder and is
+1. Replace the name. The first line of `<header>` is a placeholder and is
    styled in the alert colour so it cannot be missed:
 
    ```html
@@ -17,7 +17,7 @@ dependencies. Open it in a browser and that is the whole thing.
    time this collection handed out a fill-in-the-blank command, the blank was
    pasted unfilled and rewrote 721 commits.
 
-2. **Run `../../cq id`**: values through `read` first, never inline, if
+2. Run `../../cq id`: values through `read` first, never inline, if
    you have not already. Every commit in every repo
    still carries `PLACEHOLDER <placeholder@invalid>`, and the site invites people
    to clone and run the suites. See the root `METHOD.md`.

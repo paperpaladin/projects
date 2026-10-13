@@ -438,6 +438,27 @@ def check_readme_counts():
                  bad)
 
 
+def check_repos_json_keys():
+    """repos.json must name exactly the repositories that are here.
+
+    Renaming a repository leaves its old name as a key and its new name
+    missing. extract.py refuses to run in that state, which is right, but it
+    refuses after ten minutes of running every suite and leaves a
+    repos.json.new behind. The whole collection's figures are then stale and
+    the gate fails 42 assertions for one cause. This is the same information,
+    four seconds in.
+    """
+    if not REPOS_JSON.exists():
+        return True
+    data = json.loads(REPOS_JSON.read_text())
+    here = {name_of(r) for r in repos() if r != ROOT}
+    bad = ["%s is a repository with no repos.json entry" % n
+           for n in sorted(here - set(data))]
+    bad += ["%s has a repos.json entry but is not a repository here" % n
+            for n in sorted(set(data) - here)]
+    return check("repos.json names exactly the repositories present", bad)
+
+
 def check_gitlinks():
     bad = []
     for repo in repos():
@@ -588,6 +609,7 @@ CHECKS = [
     check_readme,
     check_license,
     check_readme_counts,
+    check_repos_json_keys,
     check_abs_paths,
     check_siblings,
     check_placeholders,

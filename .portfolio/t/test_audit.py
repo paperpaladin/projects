@@ -318,6 +318,37 @@ with tempfile.TemporaryDirectory() as td:
     finally:
         audit.REPOS_JSON = _orig_dl
 
+# ------------------------------------------- repos.json names what is here
+#
+# Renaming dwarfdump to dbginfo left the old key in repos.json and the new
+# repository missing from it. extract.py refuses to run in that state, which
+# is correct, but it refuses ten minutes in, after running every suite, and
+# the gate then reported 42 failures for the one cause.
+with tempfile.TemporaryDirectory() as td:
+    root = make_collection(td)
+    (root / ".portfolio").mkdir(parents=True, exist_ok=True)
+    jp = root / ".portfolio" / "repos.json"
+    _orig = audit.REPOS_JSON
+    audit.REPOS_JSON = jp
+    try:
+        jp.write_text(json.dumps({"alpha": {}, "beta": {}}))
+        check("repos.json keys pass when they match the directories",
+              run(audit.check_repos_json_keys, root), True)
+
+        jp.write_text(json.dumps({"alpha": {}, "beta": {}, "oldname": {}}))
+        check("...and fail on an entry for a repository that is not here",
+              run(audit.check_repos_json_keys, root), False)
+
+        jp.write_text(json.dumps({"alpha": {}}))
+        check("...and fail on a repository with no entry",
+              run(audit.check_repos_json_keys, root), False)
+
+        audit.REPOS_JSON = root / ".portfolio" / "gone.json"
+        check("...and pass when there is no repos.json at all",
+              run(audit.check_repos_json_keys, root), True)
+    finally:
+        audit.REPOS_JSON = _orig
+
 # ------------------------------------------------- the exemption lists
 #
 # Two checks have allowlists: a path that is data rather than a location
