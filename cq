@@ -45,8 +45,8 @@ case "$cmd" in
   gui|serve)
     exec python3 "$HERE/commitq/serve.py" "$@" ;;
   id|identity)
-    name=${1:?usage: cq id "Your Name" you@example.com}
-    email=${2:?usage: cq id "Your Name" you@example.com}
+    name=${1:?usage: cq id <name> <email>  (put them in variables first; see METHOD.md)}
+    email=${2:?usage: cq id <name> <email>  (put them in variables first; see METHOD.md)}
     exec python3 "$CQ" identity --name "$name" --email "$email" --yes ;;
   -h|--help|help)
     sed -n '2,20p' "$0" | sed 's/^# \{0,1\}//' ;;

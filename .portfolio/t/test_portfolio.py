@@ -411,6 +411,38 @@ finally:
     extract.FAILURE_DIR = _orig_failure_dir
     _failure_tmp.cleanup()
 
+# ------------------------------------------- the cover name is not example text
+#
+# NAME= and GITHUB= are read from the environment and printed on the cover.
+# An empty NAME already produces a loud red "[ your name -- rebuild with
+# NAME=... ]" block, which is the correct behaviour and hard to miss. Example
+# text was not covered: NAME="Your Name" printed "Your Name" on the cover in
+# the normal style, which reads as finished rather than as missing. So example
+# text now resolves to empty and gets the red block too.
+#
+# Asserted through a real subprocess import of build.py with the environment
+# set, not by calling the helper: the helper can be perfectly correct while
+# AUTHOR is assigned from os.environ directly, which is what it did before.
+_B = str(ROOT / ".portfolio" / "build.py")
+_PROBE = (
+    "import importlib.util as u;"
+    "s=u.spec_from_file_location('b', %r);"
+    "m=u.module_from_spec(s);s.loader.exec_module(m);"
+    "print(repr(m.AUTHOR), repr(m.HANDLE))" % _B
+)
+for nm, gh, want_blank in [("Your Name", "yourhandle", True),
+                           ("your name", "USERNAME", True),
+                           ("  Name  ", "handle", True),
+                           ("", "", True),
+                           ("A Real Person", "arp", False),
+                           ("Your Nameless Friend", "yournameless", False)]:
+    env = dict(os.environ, NAME=nm, GITHUB=gh)
+    out = subprocess.run([sys.executable, "-c", _PROBE], capture_output=True,
+                         text=True, env=env, cwd=str(ROOT)).stdout.strip()
+    blank = out == "'' ''"
+    truthy("cover name %r/%r is %s" % (nm, gh, "suppressed" if want_blank
+                                       else "kept"),
+           blank == want_blank and bool(out), out)
 
 print("\n%d passed, %d failed" % (passed, failed))
 sys.exit(1 if failed else 0)

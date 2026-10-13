@@ -2,7 +2,16 @@
 
 Generates `portfolio.pdf` from the repositories themselves.
 
-    NAME="Your Name" GITHUB="yourhandle" ./render.sh
+    read -rp 'name:   ' NAME
+    read -rp 'handle: ' GITHUB
+    NAME="$NAME" GITHUB="$GITHUB" ./render.sh
+
+The values go through `read` rather than being written into the line, because
+this file used to show them inline and `build.py` would print whatever it was
+given onto the cover. Example text now resolves to empty and gets the red
+"[ your name ]" block instead, so a forgotten value is loud rather than
+plausible -- but a line that cannot be pasted wrongly beats a line that is
+caught after being pasted wrongly.
 
 `repos.json` is extracted from the repos -- commit counts from `git`, line counts
 from tracked files, test counts from actually running each suite -- so the

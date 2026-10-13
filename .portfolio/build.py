@@ -27,8 +27,26 @@ HERE = Path(__file__).resolve().parent
 DATA = json.loads((HERE / "repos.json").read_text())
 
 # Fill in, or pass NAME=... in the environment.
-AUTHOR = os.environ.get("NAME", "")
-HANDLE = os.environ.get("GITHUB", "")
+#
+# Example text counts as unset. The cover is the one place a reader looks
+# first, and "Your Name" printed there reads as finished rather than as
+# missing -- whereas the placeholder block below is red and says what to do.
+# This repo already learned the general version of this lesson expensively:
+# the documented `cq id` command was pasted with its example values still in
+# it and rewrote 721 commits. Same shape, lower stakes, same fix.
+EXAMPLE_NAMES = {"your name", "name", "yourname", "your-name", "firstname lastname",
+                 "first last", "placeholder", "author", "me"}
+EXAMPLE_HANDLES = {"yourhandle", "handle", "username", "yourusername", "user",
+                   "youruser", "placeholder", "me"}
+
+
+def _unless_example(value, examples):
+    value = (value or "").strip()
+    return "" if value.lower() in examples else value
+
+
+AUTHOR = _unless_example(os.environ.get("NAME", ""), EXAMPLE_NAMES)
+HANDLE = _unless_example(os.environ.get("GITHUB", ""), EXAMPLE_HANDLES)
 
 TOTAL_COMMITS = sum(v["commits"] for v in DATA.values())
 TOTAL_SRC = sum(v["src"] for v in DATA.values())

@@ -29,7 +29,11 @@ thirty-eight.
 
 ```sh
 cd path/to/projects
-./cq id "Your Name" "<username>@users.noreply.github.com"   # do this FIRST
+
+read -rp 'name:  ' GIT_NAME       # do this FIRST
+read -rp 'email: ' GIT_EMAIL
+./cq id "$GIT_NAME" "$GIT_EMAIL"
+
 ./cq a        # status + run every suite
 ./cq t        # what to work on next, stalest repo first
 ./cq gui      # http://127.0.0.1:8787
@@ -39,6 +43,13 @@ Every commit currently carries a placeholder author so nothing had to guess at
 yours. `cq id` rewrites every commit and fixes each repo's config. Safe now; don't do
 it after pushing. Use the `users.noreply.github.com` address -- commit emails are
 public and scraped.
+
+The values go through `read` rather than being written into the command,
+because this block used to show them inline and the example text got pasted
+verbatim with `--yes` behind it; 721 commits were rewritten to "Your Name".
+`cq id` now refuses values that look like unfilled example text, so the
+mistake is caught either way -- but a block that cannot be pasted wrongly is
+better than a block that is rejected after being pasted wrongly.
 
 ## Start with cc
 
@@ -76,7 +87,7 @@ since the last regeneration, not that something is wrong.
 | [unrepro](unrepro/) | Py | build-reproducibility differ | planted causes, 7/7 diagnosed | 109 |
 | [dwarfdump](dwarfdump/) | C | DWARF debug-info parser | `readelf` | 85 |
 | [jail](jail/) | C | Landlock sandbox | the kernel -- denied means EACCES | 77 |
-| [commitq](commitq/) | Py | multi-repo commit gate + GUI | throwaway repos in a tempdir | 134 |
+| [commitq](commitq/) | Py | multi-repo commit gate + GUI | throwaway repos in a tempdir | 153 |
 | [walkv](walkv/) | C | WAL key-value store | crash at every I/O boundary | 216 scenarios |
 | [slab](slab/) | C | LD_PRELOAD malloc replacement | real programs, identical output | 32 |
 | [trace](trace/) | C | ptrace syscall tracer, follows children | `strace -c` / `strace -f -c` | 43 |
@@ -96,7 +107,7 @@ since the last regeneration, not that something is wrong.
 | [seccompc](seccompc/) | C | seccomp policy compiler | the kernel | 125 |
 | [sockv](sockv/) | C | socket lister via netlink | the kernel | 83 |
 | [tzf](tzf/) | C | TZif reader, RFC 8536 | zoneinfo | 34 |
-| [gitobj](gitobj/) | C | git object database reader/writer | the object name is its own SHA-1 | 1,234 |
+| [gitobj](gitobj/) | C | git object database reader/writer | the object name is its own SHA-1 | 1,885 |
 | [zipc](zipc/) | C | ZIP reader -- *writing not yet* | Info-ZIP `unzip`/`zipinfo` and Python `zipfile`, read side | 69 |
 | [xmlc](xmlc/) | C | XML 1.0 well-formedness checker -- *prolog, comments, CDATA not yet* | W3C conformance suite; 121 of 1674 in-scope cases judged, the rest declined | 84 |
 | [tlp](tlp/) | Py | metamorphic SQL logic-bug finder | 11 relations, none of them redundant -- measured, not argued | **130** |
@@ -146,7 +157,10 @@ generated rather than typed:
 
 ```sh
 python3 .portfolio/extract.py > .portfolio/repos.json   # runs all 38 suites
-NAME="Your Name" GITHUB="yourhandle" .portfolio/render.sh
+
+read -rp 'name:   ' NAME
+read -rp 'handle: ' GITHUB
+NAME="$NAME" GITHUB="$GITHUB" .portfolio/render.sh
 ```
 
 `extract.py` reads commit counts from `git`, line counts from tracked files only,

@@ -159,13 +159,30 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   result is not an error, it is a confident `0`. Counting shortcut comments this
   way returns 3 instead of 170. Use `find ... -exec grep` for anything that has to
   cross a repo boundary, and treat a suspiciously round zero as this bug first.
+- **A test that can perform the failure it checks for eventually will.**
+  `commitq identity` rewrites the author on every commit in 39 repos. Its new
+  guard refuses obvious example text, and the test for the guard shelled out
+  to `commitq.py` with `cwd` set to the real collection, on the assumption
+  that `cwd` chose the tree. It does not: `ROOT` is
+  `Path(__file__).parent.parent`, fixed at import. So the mutation run -- the
+  run that proves the guard is load-bearing, with the guard deliberately
+  disabled -- rewrote all 37 project repos and reported "151 passed, 1
+  failed". `filter-branch -f` does not refuse when `refs/original` exists, it
+  overwrites it, so the undo survived only by luck. Anything that writes goes
+  against a fixture, and the question to ask of a destructive test is not "is
+  it correct" but "what does it do when the thing it tests is broken".
 - `/tmp` is **tmpfs** and does not survive a reboot. Never leave anything there.
 - `wasmi/hist/build.py` does `rmtree('.git')` and rebuilds that repo's history from
   scratch. It is the generator that produced wasmi's 31 commits. Do not run it
   casually.
-- All commits currently carry a placeholder author. Before any push:
-  `./cq id "Name" "<user>@users.noreply.github.com"`. That rewrites every commit
-  and is safe only while nothing has been pushed.
+- All commits currently carry a placeholder author. Before any push, put the
+  values in variables and then `./cq id "$GIT_NAME" "$GIT_EMAIL"` -- never
+  inline, because the inline form was pasted with the example text still in it
+  and rewrote 721 commits to "Your Name". `cq id` refuses obvious example text
+  now, and its suite asserts both directions: that the paste is refused, and
+  that a real address containing the same substrings ("superuser", "zhouyou")
+  is not. That rewrites every commit and is safe only while nothing has been
+  pushed.
 - Nothing has a git remote. Nothing has left this machine.
 - **`git add -A` at the root will commit a git worktree as a gitlink.** The
   `.gitignore` already lists every repo directory for this reason, and all of

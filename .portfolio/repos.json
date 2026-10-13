@@ -40,15 +40,15 @@
   },
   "commitq": {
     "blurb": "Multi-repo commit gate and GUI",
-    "commits": 20,
+    "commits": 21,
     "done": 8,
     "group": "supply chain",
     "invariant": "No commit is ever created with a date other than now",
     "oracle": "Throwaway repos in a temp directory",
     "shortcuts": 0,
-    "src": 1254,
-    "test": 814,
-    "tests": "134 passed, 0 failed",
+    "src": 1309,
+    "test": 939,
+    "tests": "153 passed, 0 failed",
     "todo": 9
   },
   "corex": {
@@ -113,7 +113,7 @@
     "shortcuts": 3,
     "src": 858,
     "test": 560,
-    "tests": "1234 passed, 0 failed",
+    "tests": "1885 passed, 0 failed",
     "todo": 19
   },
   "httpd": {
