@@ -12,12 +12,12 @@ you wrote, checking code you wrote, against a number you worked out yourself,
 proves only that you were consistent.
 
 That is not decoration. Most of the defects recorded here were in the test
-harness rather than in the code: a suite that passed because it was silently doing
+harness, not in the code: a suite that passed because it was silently doing
 nothing. When adding anything, the question is not "do the tests pass" but **"have
 I watched this harness fail?"**
 
 If you add a feature, add the check that an outside authority agrees. If no outside
-authority exists for it, say so in the README rather than inventing one.
+authority exists for it, say so in the README instead of inventing one.
 
 Four things learned by doing this repeatedly, all of them cheap to reuse:
 
@@ -304,7 +304,7 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   produced a spurious `commitq: FAILING` instead, because some suites share a
   scratch directory between runs and `prof` asserts sampling ratios.
 
-  Three classes, checked with a sweep over every `t/run.sh` rather than from
+  Three classes, checked with a sweep over every `t/run.sh`, not from
   memory, and the first sweep I did still missed nine of them, so the list
   below is the one to trust:
 
@@ -328,7 +328,7 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   second missed `S=`, `OUT=`, `work=` and trace's bare filenames.
 
   `extract.py` takes an exclusive `flock` on `.portfolio/.extract.lock` and
-  exits non-zero if another run holds it. Refusing rather than waiting: a
+  exits non-zero if another run holds it. Refusing, not waiting: a
   second concurrent invocation is a mistake, not a queue, and blocking would
   hide it for thirty minutes and then produce the right answer.
 

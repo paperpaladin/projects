@@ -7,13 +7,13 @@ managers, no dependency beyond `zlib`. Every repo has `make test` and it passes.
 Every commit is meant to build; nothing currently verifies that across the
 collection (see METHOD.md hard rule 2).
 
-Three rows are **unfinished** and are listed rather than hidden. `terminfo`
+Three rows are **unfinished** and are listed, not hidden. `terminfo`
 reads headers, booleans, numbers and the string table: 4584 string
 capabilities byte for byte against `infocmp`, but not the ncurses extended
 section, and not parameterised strings evaluated against `tput`. `xmlc`
 has elements, attributes, character data, comments, processing instructions,
 CDATA sections, the XML declaration and references, but not the DOCTYPE, so
-it declines 82% of the W3C suite rather than judging it, and
+it declines 82% of the W3C suite instead of judging it, and
 `zipc` reads archives but cannot write one. Each says so first in its own
 README or PLAN, and each refuses what it has not implemented instead of
 answering wrongly.
@@ -57,7 +57,7 @@ yours. `cq id` rewrites every commit and fixes each repo's config. Safe now; don
 it after pushing. Use the `users.noreply.github.com` address, commit emails are
 public and scraped.
 
-The values go through `read` rather than being written into the command,
+The values go through `read` instead of being written into the command,
 because this block used to show them inline and the example text got pasted
 verbatim with `--yes` behind it; 721 commits were rewritten to "Your Name".
 `cq id` now refuses values that look like unfilled example text, so the
@@ -158,7 +158,7 @@ that finds what a suite depends on which is not in its repository. All 38 pass
 it. Two did not when it was first written: `gitobj` required eight named
 sibling repositories to exist at `../<name>/.git`, and `wasmi/hist/build.py`
 pointed an `rmtree('.git')` at an absolute path on this machine, so running it
-from a clone would have destroyed the original's history rather than the
+from a clone would have destroyed the original's history, not the
 clone's.
 
 The audit's own checks are tested by `.portfolio/t/test_audit.py`, which runs
@@ -190,7 +190,7 @@ checked, see `PLAN.md` here for the contract.
 ## The PDF
 
 `.portfolio/` renders all thirty-eight into one document. Every figure in it is
-generated rather than typed:
+generated, not typed:
 
 ```sh
 python3 .portfolio/extract.py > .portfolio/repos.json   # runs all 38 suites
@@ -328,7 +328,7 @@ The single highest-value step per repo, from its plan:
   unused. `--rox`, `--rw-no-exec` and `--deny PATH` are all **done**: `--deny`
   is built out of sibling grants, because Landlock has no deny rule, and the
   suite carries 16 assertions for it.
-- commitq: split by hunk rather than by file, so one file touched for two
+- commitq: split by hunk, not by file, so one file touched for two
   reasons becomes two commits.
 
 ## What does not work here
@@ -438,7 +438,7 @@ far more often than in the code:
 - `lnk` aligned file offset and virtual address independently. `BASE 0x400000`
   is divisible by every power of two up to 4MB, so they stayed in step by
   arithmetic luck until an 8MB-aligned array broke the congruence. The fix made the
-  whole class unemittable rather than merely fixed.
+  whole class unemittable, not merely fixed.
 
 Not one of those was found by re-reading the code.
 
@@ -488,11 +488,11 @@ path length. It named the byte offset, the section, and the fix.
 
 The correlation was exact: **every repo compiling with `-g` was irreproducible,
 every repo without it was already clean.** That is independent confirmation the
-cause is DWARF path embedding rather than a plausible-looking guess.
+cause is DWARF path embedding, not a plausible-looking guess.
 
 `-ffile-prefix-map=$(CURDIR)=.` fixes all eight. `prof` needed it twice, once on
 `CFLAGS` and once on `TCFLAGS`, which builds the frame-pointer workload, and only
-a tool reporting *per output* rather than per repo made the remaining half visible.
+a tool reporting *per output*, not per repo made the remaining half visible.
 
 All 18 repos that existed when this was measured reported `REPRODUCIBLE across
 all varied conditions`. There has been no collection-wide re-run since; the

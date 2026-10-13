@@ -6,7 +6,7 @@ Generates `portfolio.pdf` from the repositories themselves.
     read -rp 'handle: ' GITHUB
     NAME="$NAME" GITHUB="$GITHUB" ./render.sh
 
-The values go through `read` rather than being written into the line, because
+The values go through `read` instead of being written into the line, because
 this file used to show them inline and `build.py` would print whatever it was
 given onto the cover. Example text now resolves to empty and gets the red
 "[ your name ]" block instead, so a forgotten value is loud rather than
@@ -33,7 +33,7 @@ The claim above was true of the design and false of the artifact: the shipped
 PDF carried 38 stale values, including test counts from five suites that had
 since grown and a commit total six behind. Two of the stale figures were not
 merely old but wrong in a way no edit would have caught, because they came from
-walking the tree rather than asking `git`:
+walking the tree instead of asking `git`:
 
 - `lnk` was credited with 2,873 test lines. 2,456 of those were
   `t/tmp.pages.c`, a generated file that is gitignored and was never part of

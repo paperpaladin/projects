@@ -9,7 +9,7 @@ libc, with `libm` in three of them and `libpthread` in one. The oracles are
 external programs, run at test time and compared against, not linked.
 
 Every repository has `make test`, and the number it prints comes from running
-it rather than from being typed in.
+it, not from being typed in.
 
 38 repositories, 49,257 lines of source and 33,393 of tests. The largest
 single suite is `utf8n`: 107 checks containing 806,840 assertions, against
@@ -33,7 +33,7 @@ git clone <this>/sqlr && cd sqlr && make test
 All 38 pass from a clone of themselves alone, with no sibling repository
 present and nothing cached. 547 seconds for the whole collection, median 7s,
 slowest 132s (`tzf`, which sweeps every zone file it can find). That is
-checked rather than claimed: `make audit-deep` in this repository clones each
+checked, not claimed: `make audit-deep` in this repository clones each
 one into a scratch directory with no neighbours and runs `make test` there.
 
 It was 37 of 38 until that check was first written. `gitobj`'s suite required
@@ -88,7 +88,7 @@ reproduce the technique against a clean 5.4.5 release: the genuine
 content of any kind. Detection keys on provenance and never on recognising a
 payload, which is the only reason it generalises past that one incident.
 `srcdiff`'s own README says so under "Why the sample is not the real one",
-along with the one false positive it leaves in rather than widening a
+along with the one false positive it leaves in instead of widening a
 normalisation rule until it disappears.
 
 Where no external authority exists, the oracle is a second independent
@@ -138,7 +138,7 @@ build paths, filesystem ordering, ASLR, locale, parallelism.
 
 Pointed at every sibling: **34 of 38 verify as REPRODUCIBLE.** The other four
 are the Python repos, where `make -B` produces nothing to compare and the tool
-reports *inconclusive* rather than counting an empty comparison as a pass,
+reports *inconclusive* instead of counting an empty comparison as a pass,
 which is a distinction it learned the hard way, having once printed
 `REPRODUCIBLE (0 output(s))` for a tree where `make` was a no-op.
 
@@ -147,7 +147,7 @@ all embedded the build directory in DWARF's `.debug_line_str`, so two builds
 in differently-named directories produced different bytes. `.debug_line_str`
 grew by exactly the number of characters the second directory name was longer.
 And `httpd` returned no verdict at all, because a fifo left in its test tree
-made `shutil.copytree` raise and the tool die with a traceback rather than an
+made `shutil.copytree` raise and the tool die with a traceback, not an
 answer. Both are fixed; both were found by running it over all 38 rather than
 the handful its own README discussed.
 
@@ -216,7 +216,7 @@ make self-host      # cc -> cc2 -> cc3, cmp cc2 cc3
 make diff-test      # every case against gcc and clang
 ```
 
-## Unfinished, and listed rather than hidden
+## Unfinished, and listed, not hidden
 
 Three are incomplete. Each says so in its own README before anything else,
 and each refuses what it has not implemented instead of answering wrongly:
@@ -230,7 +230,7 @@ outside the table" as for "capability absent".
 
 `xmlc` has elements, attributes, character data, comments, processing
 instructions, CDATA sections, the XML declaration and references. It does not
-have the DOCTYPE, so it declines 82% of the W3C suite rather than judging it.
+have the DOCTYPE, so it declines 82% of the W3C suite instead of judging it.
 287 judged, of which not-wf is 227/227 and invalid 58/58.
 
 `zipc` reads archives but cannot write one.

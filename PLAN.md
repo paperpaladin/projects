@@ -41,7 +41,7 @@ Ranked by how little this repo controls them, most independent first:
    gets a vote on that.
 2. The eighteen suites, run. The test counts in the document are the last
    line each suite prints, captured by running it. A suite that fails or is
-   missing lands in the field as `FAILING:` or `NO SUITE` rather than as a
+   missing lands in the field as `FAILING:` or `NO SUITE`, not as a
    number that reads like a pass, and the suite here refuses to accept either
    in a document.
 3. `git ls-files`. Line counts cover tracked files only. Walking the tree
@@ -90,7 +90,7 @@ Ranked by how little this repo controls them, most independent first:
       sent to anyone, and nothing currently proves the two agree: a stale
       `portfolio.pdf` next to a fresh `portfolio.html` passes everything today.
       `pdftotext` is installed and already used by hand to spot-check it.
-      done: four assertions, and item 03 fell out of it rather than needing
+      done: four assertions, and item 03 fell out of it instead of needing
       its own commit, the PDF must be no older than `repos.json` or than the
       page it was rendered from, which is the timestamp check 03 wanted. The
       figure check had to be written twice: matching a bare number passed with
