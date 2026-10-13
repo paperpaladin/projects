@@ -65,3 +65,6 @@ zipc/
 # here. Same effect, and it keeps machine-specific paths out of a file that
 # every clone reads. See the gitlink gotcha in METHOD.md for why any of it
 # has to be excluded at all.
+
+# The audit deny-list: terms that must not be published, so not published.
+.portfolio/denylist.txt

@@ -11,6 +11,7 @@
 #   cq s R        propose a commit split for R
 #   cq gui        start the localhost GUI
 #   cq id N E     rewrite the placeholder author to name N, email E
+#   cq au         pre-publication audit (--deep adds the clean-clone check)
 #   cq p          what each repo has pushed, and what is still local
 #                 (CQ_REDACT=1 hides the remote URL, which names your account)
 #   cq p R N      push the first N commits of R to origin (N=all for the rest)
@@ -109,6 +110,8 @@ case "$cmd" in
     [ -n "$sha" ] || { echo "cq: $repo has no commit number $n" >&2; exit 2; }
     echo "cq: $repo -> origin/$br, first $n of $total commits ($sha)"
     exec git -C "$dir" push origin "$sha:refs/heads/$br" ;;
+  au|audit)
+    exec python3 "$HERE/.portfolio/audit.py" "$@" ;;
   id|identity)
     name=${1:?usage: cq id <name> <email>  (put them in variables first; see METHOD.md)}
     email=${2:?usage: cq id <name> <email>  (put them in variables first; see METHOD.md)}
