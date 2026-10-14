@@ -67,7 +67,7 @@ Two repos were invisible for exactly that reason until they were given one:
 build and both pass their suites against external oracles. `ed25519` has since
 been finished through signing and verification against Project Wycheproof:
 `ed25519_sign` and `ed25519_verify` are both in `ed25519.h`. `terminfo` is
-still unfinished, but not in the way this said: it does read the string
+still unfinished, but not in the way this said. It does read the string
 table, 4584 string capabilities compared byte for byte against `infocmp`.
 What it lacks is the ncurses extended section and parameterised strings
 evaluated against `tput`. Their READMEs say so first. The lesson is that the
@@ -164,7 +164,7 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   guard refuses obvious example text, and the test for the guard shelled out
   to `commitq.py` with `cwd` set to the real collection, on the assumption
   that `cwd` chose the tree. It does not: `ROOT` is
-  `Path(__file__).parent.parent`, fixed at import. So the mutation run: the
+  `Path(__file__).parent.parent`, fixed at import. So the mutation run. The
   run that proves the guard is load-bearing, with the guard deliberately
   disabled, rewrote all 37 project repos and reported "151 passed, 1
   failed". `filter-branch -f` does not refuse when `refs/original` exists, it
@@ -338,7 +338,7 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   second missed `S=`, `OUT=`, `work=` and trace's bare filenames.
 
   `extract.py` takes an exclusive `flock` on `.portfolio/.extract.lock` and
-  exits non-zero if another run holds it. Refusing, not waiting: a
+  exits non-zero if another run holds it. Refusing, not waiting. A
   second concurrent invocation is a mistake, not a queue, and blocking would
   hide it for thirty minutes and then produce the right answer.
 
@@ -382,7 +382,7 @@ not-reproducible that now are.
 
 `cc` compiles itself: `make self-host` builds it with itself twice and
 asserts the two binaries are byte-identical AND that the stage-2 compiler
-passes the whole suite. The second half is not ceremony: at the first green
+passes the whole suite. The second half is not ceremony. At the first green
 `cmp cc2 cc3` the stage-2 compiler failed 15 cases, because a compiler that
 miscompiles itself consistently reaches a fixpoint without complaint.
 

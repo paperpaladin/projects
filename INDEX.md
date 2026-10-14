@@ -317,7 +317,7 @@ The single highest-value step per repo, from its plan:
 - prof: DWARF `.eh_frame` unwinding. Frame pointers are why it cannot profile
   optimised libc.
 - unrepro: an `LD_PRELOAD` shim over `readdir` that reverses directory
-  order, the largest remaining detection gap: a build that globs is
+  order, the largest remaining detection gap. A build that globs is
   order-dependent, and on ext4 the order is stable per directory, so the bug is
   invisible on the machine that has it. The no-op-versus-reproduced confusion is
   fixed, an output is now any file the build *rewrote*, by hash, mtime or
@@ -372,7 +372,7 @@ About this directory, not the thirty-eight. Each of those has its own list.
   *ignored* files, so a stale binary survives `git checkout` and makes `make`
   succeed without recompiling. The real audit removes artifacts before each build.
 - Five hand-computed test expectations were wrong while the compiler was right,
-  every time. That is why `cc/t/addcase.sh` exists: it takes the expected value
+  every time. That is why `cc/t/addcase.sh` exists. It takes the expected value
   from gcc, cross-checks against clang, and refuses the case if they disagree.
 
 ## The pattern: the harness is usually the bug
@@ -444,7 +444,7 @@ Not one of those was found by re-reading the code.
 
 ## The finding that rewrote a tool
 
-`srcdiff`'s whole claim was that it catches the xz-utils shape: code shipped in a
+`srcdiff`'s whole claim was that it catches the xz-utils shape. Code shipped in a
 release tarball that was never in git. Every test behind that claim was a
 four-file toy project with one planted divergence.
 

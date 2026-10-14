@@ -101,7 +101,7 @@ The hardest defect class in this collection is not wrong code. It is a test
 that passes while proving nothing, and every repository has produced at least
 one.
 
-`xmlc` reported `897/897`. That number was meaningless: the harness counted a
+`xmlc` reported `897/897`. That number was meaningless. The harness counted a
 "not implemented" exit the same as "well-formed", so the two thirds of the W3C
 suite the parser could not yet read were scored as passes. Separating the two
 turned `897/897` into `98/98 of 121 judged, 1553/1674 declined`, and dropped
@@ -124,7 +124,7 @@ accepted a timeout, a crash and a correct answer equally. It pins exit `1`
 now, requires the 1MB subject to be at least 1,000,000 bytes, and requires
 `timeout` to report `124` for the Python reference it is beating.
 
-`METHOD.md` is the standing list of these: the shapes a vacuous assertion
+`METHOD.md` is the standing list of these. The shapes a vacuous assertion
 takes in shell and Python, and the ones that have already cost real time
 here.
 
