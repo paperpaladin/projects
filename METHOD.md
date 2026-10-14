@@ -358,7 +358,7 @@ including the ones that were in the harness. Multi-paragraph is normal here.
 - `nohup CMD &` plus `run_in_background` reports completion immediately.
   The backgrounding shell exits as soon as it has forked, so the tool fires
   its completion notification for the launcher while the real process keeps
-  running. The output file is empty and exit status is 0, which reads exactly
+  running. Its output file is empty and exit status is 0, which reads exactly
   like a job that ran and produced nothing. Pick one: `run_in_background`
   alone, or `nohup ... &` with a `pgrep` check afterwards. The hazard here is
   specific: a 30-minute `extract.py` looked finished after two seconds, and

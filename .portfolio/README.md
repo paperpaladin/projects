@@ -29,8 +29,7 @@ not a silent omission, and so is an entry describing a repo that is no
 longer there.
 
 It had drifted anyway, because this script was documented and did not exist.
-The claim above was true of the design and false of the artifact. The shipped
-PDF carried 38 stale values, including test counts from five suites that had
+The claim above was true of the design and false of the artifact. Its shipped PDF carried 38 stale values, including test counts from five suites that had
 since grown and a commit total six behind. Two of the stale figures were not
 merely old but wrong in a way no edit would have caught, because they came from
 walking the tree instead of asking `git`:

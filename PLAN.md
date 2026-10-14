@@ -39,7 +39,7 @@ Ranked by how little this repo controls them, most independent first:
 1. `git`. Commit counts come from `rev-list --count`, and the suite asserts
    that every number in `repos.json` still equals what `git` says. Nothing here
    gets a vote on that.
-2. The eighteen suites, run. The test counts in the document are the last
+2. The eighteen suites, run. Test counts in the document are the last
    line each suite prints, captured by running it. A suite that fails or is
    missing lands in the field as `FAILING:` or `NO SUITE`, not as a
    number that reads like a pass, and the suite here refuses to accept either

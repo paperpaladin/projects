@@ -4,9 +4,7 @@ Thirty-eight programs, each checked against something that does not care
 whether I am right.
 
 Pure C or standard-library Python. No frameworks and no package managers. The
-only third-party library any of them links is `zlib`, in `walkv`. The rest is
-libc, with `libm` in three of them and `libpthread` in one. The oracles are
-external programs, run at test time and compared against, not linked.
+only third-party library any of them links is `zlib`, in `walkv`. Everything else is libc, with `libm` in three of them and `libpthread` in one. Those oracles are external programs, run at test time and compared against, not linked.
 
 Every repository has `make test`, and the number it prints comes from running
 it, not from being typed in.
