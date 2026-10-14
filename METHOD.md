@@ -114,8 +114,8 @@ starts claiming last week's numbers. It had drifted by 38 values once, because
    does NOT stash ignored files and so produces false passes.
 3. ASCII punctuation only. No em dashes, en dashes, curly quotes, ellipsis
    characters, arrows, multiplication signs or non-breaking spaces, in prose or in
-   code comments. Use `--` for a parenthetical break, `...` for an ellipsis,
-   `->` for an arrow, straight quotes.
+   code comments. Use `...` for an ellipsis, `->` for an arrow, and straight
+   quotes.
 
    This rule is about prose, not about bytes. Six files hold non-ASCII on
    purpose and a sweep must leave them alone: `tarx/t/run.sh`,
