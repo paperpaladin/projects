@@ -338,7 +338,7 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   second missed `S=`, `OUT=`, `work=` and trace's bare filenames.
 
   `extract.py` takes an exclusive `flock` on `.portfolio/.extract.lock` and
-  exits non-zero if another run holds it. Refusing, not waiting. A
+  exits non-zero if another run holds it. It refuses instead of waiting. A
   second concurrent invocation is a mistake, not a queue, and blocking would
   hide it for thirty minutes and then produce the right answer.
 
