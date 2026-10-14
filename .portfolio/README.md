@@ -46,7 +46,7 @@ only ever moves up is worth being suspicious of.
 
 ## Decisions worth knowing
 
-**Fonts are local only.** Headless chromium has no network, so a webfont would
+Fonts are local only. Headless chromium has no network, so a webfont would
 silently fall back and the PDF would not match the design. Noto Serif Condensed /
 Noto Serif / Hack are all installed here and embed correctly, confirmed by
 reading the font table out of the finished PDF.

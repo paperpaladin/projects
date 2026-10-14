@@ -57,7 +57,7 @@ reproducer). It should be a decision, never a habit.
 Pick work from the repo's `PLAN.md`. The unchecked `- [ ]` items are ordered, and
 each one records *why* it is next. 344 of them are queued.
 
-**Membership is having a `PLAN.md`.** That is the rule `extract.py` uses and the
+Membership is having a `PLAN.md`. That is the rule `extract.py` uses and the
 one `commitq`'s gateability guard asserts against, so a directory with a `.git`
 and no `PLAN.md` is outside the set, `notally-molly` is an unrelated Android
 fork and stays out.
@@ -313,12 +313,12 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   `terminfo` and `httpd` (`t/tmp`), and `trace`, which uses 61 fixed
   `t/*.tmp` filenames and no scratch variable at all.
 
-  **Keyed by the binary under test.** `inflate` and `pngc` use
+  Keyed by the binary under test. `inflate` and `pngc` use
   `t/tmp/$(basename "$IN")`, so `make test` and `make test-asan` can overlap
   safely but two runs of the *same* binary cannot. inflate's own comment at
   `t/run.sh:11` says so.
 
-  **Per-run, safe.** `cc`, `lnk` and `tarx` use `t/tmp.$$`; `sqlr` uses
+  Per-run, safe. `cc`, `lnk` and `tarx` use `t/tmp.$$`; `sqlr` uses
   `work.<pid>`; `prof` and `cc`'s fuzzer use `mktemp`.
 
   This note originally named cc, lnk, sqlr and tarx as the unsafe ones,
