@@ -179,6 +179,16 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   `git cat-file --batch-all-objects --batch`, which also sees the unreachable
   objects a rewrite leaves behind, there were 3364 of those after one.
   `cq au` does this.
+- `reflog expire` on the branches is not enough: HEAD has its own.
+  After a `filter-branch`, the old commits stay in the object database
+  until nothing points at them, and `git reflog expire --expire=now
+  refs/heads/main` leaves `logs/HEAD` still naming every one of them, so
+  `gc --prune=now` keeps them all and the rewrite looks as though it did
+  not take. `cq au` reads `cat-file --batch-all-objects`, which sees
+  unreachable objects, so it is the thing that notices. Expire HEAD as
+  well. Not `--all`, which blanks `git stash list`: terminfo has a stash
+  and it is the second time that was nearly lost.
+
 - A detector must not contain what it detects. The deny-list for that scan
   started as a literal regex in the checker, so the first run reported four
   occurrences in this repository: its own source. Whatever is being kept out
