@@ -4,7 +4,7 @@ Thirty-eight independent repositories, one method. Read this before touching any
 read `INDEX.md` for what each repo is, and the repo's own `PLAN.md` for what comes
 next in it.
 
-## The method, which is the point
+## The method, and the point
 
 Every project is measured against an authority it does not control. gcc and
 clang, the Linux kernel, `dash`, GNU tar, `readelf`, SQLite, Python's `re`. A test
@@ -89,7 +89,7 @@ starts claiming last week's numbers. It had drifted by 38 values once, because
 
 ## Hard rules
 
-1. Never fabricate commit dates. There is no `--date` flag in `commitq`, and
+1. There is no `--date` flag in `commitq`, and
    its suite asserts the invariant behaviourally: it sets
    `GIT_AUTHOR_DATE=2020-01-01` in the environment, runs a real commit, and
    requires the resulting date to be today. Do not add a `--date` flag. A
@@ -345,7 +345,7 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   The note that used to sit here said "finish every repo change first, then
   extract once": advice to someone who has already decided to be careful.
   It did not say that the second invocation silently destroys the first's
-  output, which is the part that would have stopped me. I wrote that note and
+  output, the part that would have stopped me. I wrote that note and
   then made the mistake twice. Prose is not an interlock.
 - `git checkout <file>` as a cleanup reflex deletes uncommitted work. It
   is the natural way to undo a one-line experimental edit, and it is also the

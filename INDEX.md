@@ -317,7 +317,7 @@ The single highest-value step per repo, from its plan:
 - prof: DWARF `.eh_frame` unwinding. Frame pointers are why it cannot profile
   optimised libc.
 - unrepro: an `LD_PRELOAD` shim over `readdir` that reverses directory
-  order, which is the largest remaining detection gap: a build that globs is
+  order, the largest remaining detection gap: a build that globs is
   order-dependent, and on ext4 the order is stable per directory, so the bug is
   invisible on the machine that has it. The no-op-versus-reproduced confusion is
   fixed, an output is now any file the build *rewrote*, by hash, mtime or
@@ -429,8 +429,8 @@ far more often than in the code:
   `getrusage(RUSAGE_CHILDREN).ru_maxrss` after each child, but that field is the
   maximum over every child already reaped, so running glibc then the preload and
   dividing gave `max(a,b)/a`: a ratio that can never fall below 1.00. It had
-  teeth only in the direction of slab being worse, which is the direction that
-  mattered, which is why it survived.
+  teeth only in the direction of slab being worse, the direction that
+  mattered, and that is why it survived.
 - `rx`'s unanchored-search implementation broke its own linear-time guarantee
   by colliding with the generation marks that *are* the guarantee.
 - `prof`'s one-shot `/proc/PID/maps` snapshot raced `ld.so`, truncating libc

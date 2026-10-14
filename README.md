@@ -48,7 +48,7 @@ missing depends on how much of the oracle that tool is.
 `corex` refuses to run without `gdb`, exiting 2 with one line saying why. gdb
 is the only oracle for every fact it checks and also the only way to obtain a
 core here, so a reduced run would report "0 passed, 0 failed" having checked
-nothing, which is the failure this collection is about.
+nothing, and that is the failure this collection is about.
 
 `trace` prints `SKIP strace not installed, differential oracle unavailable`
 and keeps going, because strace is one oracle among several there.
@@ -86,7 +86,7 @@ has been purged from the archives it would be fetched from, so the fixtures
 reproduce the technique against a clean 5.4.5 release: the genuine
 `build-to-host.m4`, serial left intact, one comment appended, no malicious
 content of any kind. Detection keys on provenance and never on recognising a
-payload, which is the only reason it generalises past that one incident.
+payload, the only reason it generalises past that one incident.
 `srcdiff`'s own README says so under "Why the sample is not the real one",
 along with the one false positive it leaves in instead of widening a
 normalisation rule until it disappears.
@@ -204,7 +204,7 @@ with the result, and checks the two binaries are byte-identical.
 
 That fixpoint proves the compiler is *stable*, not that it is *correct*. The
 first time `cmp cc2 cc3` came out green the stage-2 compiler still failed 15
-cases, which is why the suite then runs in full against the stage-2 binary.
+cases, so the suite then runs in full against the stage-2 binary.
 
 It has a preprocessor with the hide-set rules, function prototypes,
 bitfields, variadic functions checked against glibc's own `va_arg`, and it

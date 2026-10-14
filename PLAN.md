@@ -92,7 +92,7 @@ Ranked by how little this repo controls them, most independent first:
       `pdftotext` is installed and already used by hand to spot-check it.
       done: four assertions, and item 03 fell out of it instead of needing
       its own commit, the PDF must be no older than `repos.json` or than the
-      page it was rendered from, which is the timestamp check 03 wanted. The
+      page it was rendered from, the timestamp check 03 wanted. The
       figure check had to be written twice: matching a bare number passed with
       a planted commit count of 999, because "999" occurs inside some other
       figure on the page. It matches "N commits" now, which `pdftotext` keeps
