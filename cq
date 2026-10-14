@@ -14,7 +14,10 @@
 #   cq au         pre-publication audit (--deep adds the clean-clone check)
 #   cq p          what each repo has pushed, and what is still local
 #                 (CQ_REDACT=1 hides the remote URL, which names your account)
-#   cq p R N      push the first N commits of R to origin (N=all for the rest)
+#   cq p R N      push R's first N commits to origin. N counts from the repo's
+#                 first commit, so it is cumulative: having pushed 5, ask for
+#                 7 to send two more, not 2. The 'pushed' column of 'cq p' is
+#                 the number you are adding to.
 #
 # Install:  ln -s "$PWD/cq" ~/.local/bin/cq
 set -eu
