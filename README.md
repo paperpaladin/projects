@@ -4,7 +4,7 @@ Thirty-eight programs, each checked against something that does not care
 whether I am right.
 
 Pure C or standard-library Python. No frameworks and no package managers. The
-only third-party library any of them links is `zlib`, in `walkv`; the rest is
+only third-party library any of them links is `zlib`, in `walkv`. The rest is
 libc, with `libm` in three of them and `libpthread` in one. The oracles are
 external programs, run at test time and compared against, not linked.
 
@@ -148,7 +148,7 @@ in differently-named directories produced different bytes. `.debug_line_str`
 grew by exactly the number of characters the second directory name was longer.
 And `httpd` returned no verdict at all, because a fifo left in its test tree
 made `shutil.copytree` raise and the tool die with a traceback, not an
-answer. Both are fixed; both were found by running it over all 38,
+answer. Both are fixed. Both were found by running it over all 38,
 not the handful its own README discussed.
 
 ## The repositories

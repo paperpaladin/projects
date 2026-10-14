@@ -53,7 +53,7 @@ one as the landing page and does not render this one. This file is the
 maintainer's view: the plan state, the gotchas, and the commands above.
 
 Every commit currently carries a placeholder author so nothing had to guess at
-yours. `cq id` rewrites every commit and fixes each repo's config. Safe now; don't do
+yours. `cq id` rewrites every commit and fixes each repo's config. Safe now. Don't do
 it after pushing. Use the `users.noreply.github.com` address, commit emails are
 public and scraped.
 
@@ -183,7 +183,7 @@ than matched by a pattern, because a pattern would silently swallow a
 thirty-ninth project the day it appeared.
 
 It is not one of the thirty-eight and does not appear in the PDF. Those are
-programs judged by authorities outside the author; a document has no such
+programs judged by authorities outside the author. A document has no such
 authority for its prose. Only its figures are checkable, and those are
 checked, see `PLAN.md` here for the contract.
 
@@ -226,7 +226,7 @@ a state where running the tests means something.
 There is no `--date` flag anywhere, and `commitq`'s own suite asserts the
 invariant behaviourally: it sets `GIT_AUTHOR_DATE=2020-01-01`, commits, and
 requires the date to be today. It used to grep its own source for those
-variable names instead; that was deleted after all six greps passed while the
+variable names instead. That was deleted after all six greps passed while the
 invariant was false. `commitq.py` must now *contain* `GIT_AUTHOR_DATE`, since
 that is what it strips. The way to a dense graph is `cq t` plus small commits.
 
@@ -266,7 +266,7 @@ picking a repo back up after a gap.**
   backreferences in `rx` are incompatible with its invariant, so the answer is no,
   not later.
 - Commit sequence: `[x]` done, `[ ]` next, each carrying *why*, the files, and
-  the test that would prove it. Ordered; each entry is the next thing that moves an
+  the test that would prove it. Ordered. Each entry is the next thing that moves an
   oracle.
 
 ## Where each one goes next
@@ -324,7 +324,7 @@ The single highest-value step per repo, from its plan:
   ctime.
 - vtparse: grapheme cluster segmentation, then a `vttest` conformance table
   across xterm/foot/alacritty.
-- jail: Landlock network rules; ABI 4 is available on this kernel and
+- jail: Landlock network rules. ABI 4 is available on this kernel and
   unused. `--rox`, `--rw-no-exec` and `--deny PATH` are all done: `--deny`
   is built out of sibling grants, because Landlock has no deny rule, and the
   suite carries 16 assertions for it.
@@ -333,7 +333,7 @@ The single highest-value step per repo, from its plan:
 
 ## What does not work here
 
-About this directory, not the thirty-eight; each of those has its own list.
+About this directory, not the thirty-eight. Each of those has its own list.
 
 - `INDEX.md` drifts by design. The commit totals, line totals and per-repo
   test counts below are maintained by hand while `.portfolio/repos.json`

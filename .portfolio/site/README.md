@@ -12,7 +12,7 @@ dependencies. Open it in a browser and that is the whole thing.
    <div class="who ph">[ your name -- replace this line before publishing ]</div>
    ```
 
-   Put your own name in it and drop the `ph` class; the class is what turns
+   Put your own name in it and drop the `ph` class. The class is what turns
    off the red. Deliberately not written out here as a line to copy: the one
    time this collection handed out a fill-in-the-blank command, the blank was
    pasted unfilled and rewrote 721 commits.

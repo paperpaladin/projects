@@ -52,7 +52,7 @@ Four things learned by doing this repeatedly, all of them cheap to reuse:
 `cq c` is a gate. It runs the suite against the working tree before committing
 and refuses if red, or if the repo has no discoverable suite at all. `--no-verify`
 exists for deliberately committing a known-red state (bisecting, recording a
-reproducer); it should be a decision, never a habit.
+reproducer). It should be a decision, never a habit.
 
 Pick work from the repo's `PLAN.md`. The unchecked `- [ ]` items are ordered, and
 each one records *why* it is next. 344 of them are queued.
@@ -175,7 +175,7 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   and `git ls-files` read the working tree. A string edited out of a file and
   committed over is still in the blob underneath it, and still on the GitHub
   page for the previous commit. Removing something from history means
-  rewriting history; checking that it is gone means
+  rewriting history. Checking that it is gone means
   `git cat-file --batch-all-objects --batch`, which also sees the unreachable
   objects a rewrite leaves behind, there were 3364 of those after one.
   `cq au` does this.
@@ -241,7 +241,7 @@ including the ones that were in the harness. Multi-paragraph is normal here.
 - Backups: a sibling `projects-SNAPSHOT-FINAL/` directory holds a full tarball
   and a `git bundle` per repo. Refresh it after significant work.
 - Do not execute build scripts from downloaded third-party tarballs.
-- A flake is a defect; chase it with a loop that keeps the output.
+- A flake is a defect. Chase it with a loop that keeps the output.
   `unrepro`'s suite failed once during an `extract.py` run and then passed
   four times in a row, and I recorded it here as unreproduced with two
   guessed candidates: the locale-dependent `ls-order` case and the heavy
@@ -277,7 +277,7 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   thirteen (`cc`, `corex`, `dbginfo`, `lnk`, `slab`, `trace`) compile
   only *fixtures and workloads*, never the thing under test. So it listed six
   repos as safe to invoke directly when they are precisely the hazard it
-  warns about. `grep -E '\-o +[^ ]*REPO' REPO/t/run.sh` is the check; for the
+  warns about. `grep -E '\-o +[^ ]*REPO' REPO/t/run.sh` is the check. For the
   seven safe ones the .c under test appears as an input.
 
   `terminfo/t/run.sh` refuses to run when its source is newer than its binary
@@ -341,7 +341,7 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   is the natural way to undo a one-line experimental edit, and it is also the
   natural way to undo the two hours of edits sitting in the same file. I ran
   `git checkout -q t/oracle.py` to revert a `sed` probe against sqlr and lost
-  six uncommitted fixes in one keystroke; they were only recoverable because
+  six uncommitted fixes in one keystroke. They were only recoverable because
   the patch text was still in the conversation. Commit first, then experiment:
   `git stash` if the work is not commit-ready. Reverting an experiment is
   never urgent enough to skip that.
