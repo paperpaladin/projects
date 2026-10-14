@@ -459,6 +459,70 @@ def check_repos_json_keys():
     return check("repos.json names exactly the repositories present", bad)
 
 
+# Characters that occupy no width, or that look like a space without being
+# one. They carry no meaning a reader can see, which is exactly what makes
+# them a way to mark text, and they arrive by accident from any editor or
+# pasted source. Nothing here has ever had one; this check is so that stays
+# true and so the answer does not depend on me remembering to look.
+#
+# Scanned over every object, not the working tree. A file cleaned up today
+# leaves its old bytes in the blob underneath, which is the mistake this
+# whole module exists because of.
+INVISIBLE = {
+    0x200B: "zero width space",      0x200C: "zero width non-joiner",
+    0x200D: "zero width joiner",     0x2060: "word joiner",
+    0xFEFF: "byte order mark",       0x00AD: "soft hyphen",
+    0x2007: "figure space",          0x2009: "thin space",
+    0x202F: "narrow no-break space", 0x2028: "line separator",
+    0x2029: "paragraph separator",   0x200E: "left-to-right mark",
+    0x200F: "right-to-left mark",    0x2061: "function application",
+    0x2062: "invisible times",       0x2063: "invisible separator",
+    0x2064: "invisible plus",        0x180E: "mongolian vowel separator",
+    0x061C: "arabic letter mark",    0x034F: "combining grapheme joiner",
+}
+
+
+def check_invisible():
+    bad = []
+    for repo in repos():
+        # One `cat-file --batch` for the whole repository. A subprocess per
+        # object took sixteen seconds across the collection; this takes about
+        # one, and the audit is meant to be the fast check.
+        stream = subprocess.run(
+            ["git", "-C", str(repo), "cat-file", "--batch-all-objects",
+             "--batch"], capture_output=True).stdout
+        i = 0
+        while i < len(stream):
+            nl = stream.find(b"\n", i)
+            if nl < 0:
+                break
+            header = stream[i:nl].split(b" ")
+            if len(header) < 3:
+                break
+            sha, kind, size = header[0], header[1], int(header[2])
+            body = stream[nl + 1:nl + 1 + size]
+            i = nl + 1 + size + 1
+            if kind == b"tree":
+                continue
+            # Binary first. These codepoints encode as two bytes, and those
+            # pairs occur by chance in a PDF or a PNG: scanning raw bytes
+            # reported 143 soft hyphens and 126 arabic letter marks across
+            # the collection that were all compressed noise.
+            if b"\x00" in body[:8192]:
+                continue
+            try:
+                text = body.decode("utf-8")
+            except UnicodeDecodeError:
+                continue
+            for ch in set(text):
+                if ord(ch) in INVISIBLE:
+                    bad.append("%s %s: %s (U+%04X)"
+                               % (name_of(repo), sha.decode()[:12],
+                                  INVISIBLE[ord(ch)], ord(ch)))
+    return check("no invisible character in any object of any repository",
+                 sorted(set(bad)))
+
+
 def check_gitlinks():
     bad = []
     for repo in repos():
@@ -610,6 +674,7 @@ CHECKS = [
     check_license,
     check_readme_counts,
     check_repos_json_keys,
+    check_invisible,
     check_abs_paths,
     check_siblings,
     check_placeholders,

@@ -109,7 +109,7 @@ with tempfile.TemporaryDirectory() as td:
                audit.check_siblings, audit.check_placeholders,
                audit.check_gitlinks, audit.check_backup_refs,
                audit.check_authors, audit.check_secrets,
-               audit.check_branches):
+               audit.check_branches, audit.check_invisible):
         check("clean fixture passes %s" % fn.__name__, run(fn, root), True)
 
     # --- objects: the deny-list, and the history-not-worktree distinction
@@ -160,6 +160,52 @@ with tempfile.TemporaryDirectory() as td:
                    check=True)
     check("objects passes once the commit is gone and the blob is reclaimed",
           run(audit.check_objects, root, dl), True)
+
+    # --- invisible characters
+    # Same history-only lesson as above, and the same remedy, so this only
+    # plants it and checks both ends.
+    zw = make_repo(root, "zerowidth")
+    zwbase = git(zw, "rev-parse", "HEAD").strip()
+    (zw / "doc.md").write_text("a word\u200bbroken by nothing visible\n")
+    git(zw, "add", "-A")
+    subprocess.run(["git", "commit", "-qm", "add doc"], cwd=zw, check=True,
+                   env=DATES)
+    git(zw, "rm", "-q", "doc.md")
+    subprocess.run(["git", "commit", "-qm", "remove it"], cwd=zw, check=True,
+                   env=DATES)
+    check("invisible fails on a zero width space that survives only in "
+          "history", run(audit.check_invisible, root), False)
+
+    subprocess.run(["git", "-C", str(zw), "reset", "--hard", "-q", zwbase],
+                   check=True)
+    git(zw, "reflog", "expire", "--expire=now", "--expire-unreachable=now",
+        "--all")
+    subprocess.run(["git", "-C", str(zw), "gc", "--prune=now", "-q"],
+                   check=True)
+    check("invisible passes once that commit is gone",
+          run(audit.check_invisible, root), True)
+
+    # The false positive this check was first written with. U+00AD encodes as
+    # the two bytes c2 ad, and that pair turns up by chance in compressed
+    # data: a raw-byte scan of the real collection reported 143 soft hyphens
+    # and 126 arabic letter marks, every one of them inside a PDF, a PNG or a
+    # wasm fixture. Planting the exact pair in a file that declares itself
+    # binary with a NUL must not be a hit.
+    (zw / "fixture.bin").write_bytes(
+        b"\x89PNG\r\n\x1a\n\x00" + b"\xc2\xad" * 4 + b"\xe2\x80\x8b")
+    git(zw, "add", "-A")
+    subprocess.run(["git", "commit", "-qm", "add a binary fixture"], cwd=zw,
+                   check=True, env=DATES)
+    check("invisible ignores those byte pairs inside binary, which is the "
+          "false positive it was first written with",
+          run(audit.check_invisible, root), True)
+
+    # And the containing-what-it-detects trap, one directory over from the
+    # deny-list version of it: audit.py names these codepoints, so it must
+    # name them as escapes and never as the characters themselves.
+    src = (HERE.parent / "audit.py").read_text()
+    check("audit.py does not itself contain any character it rejects",
+          [c for c in set(src) if ord(c) in audit.INVISIBLE], [])
 
     # --- readme
     (root / "alpha" / "README.md").unlink()
