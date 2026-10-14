@@ -14,7 +14,7 @@
   },
   "cc": {
     "blurb": "C compiler for x86-64",
-    "commits": 45,
+    "commits": 46,
     "done": 25,
     "group": "toolchain",
     "invariant": "Self-host fixpoint: cmp cc2 cc3",
@@ -27,7 +27,7 @@
   },
   "cmark": {
     "blurb": "CommonMark parser and HTML renderer",
-    "commits": 30,
+    "commits": 31,
     "done": 18,
     "group": "formats",
     "invariant": "Output is byte-identical to the spec's expected HTML, nothing normalised",
@@ -66,7 +66,7 @@
   },
   "dbginfo": {
     "blurb": "DWARF debug-info parser",
-    "commits": 30,
+    "commits": 31,
     "done": 17,
     "group": "formats",
     "invariant": "Every fact printed agrees with readelf",
@@ -113,7 +113,7 @@
     "shortcuts": 3,
     "src": 858,
     "test": 660,
-    "tests": "1655 passed, 0 failed",
+    "tests": "1670 passed, 0 failed",
     "todo": 19
   },
   "httpd": {
@@ -235,7 +235,7 @@
   },
   "rx": {
     "blurb": "Linear-time regex engine",
-    "commits": 13,
+    "commits": 14,
     "done": 5,
     "group": "systems",
     "invariant": "A pc enters a thread list at most once per input position",
@@ -248,7 +248,7 @@
   },
   "seccompc": {
     "blurb": "seccomp-BPF policy compiler",
-    "commits": 21,
+    "commits": 23,
     "done": 10,
     "group": "systems",
     "invariant": "A syscall the policy did not permit never runs, by any entry point",
@@ -287,7 +287,7 @@
   },
   "sockv": {
     "blurb": "netlink socket enumerator",
-    "commits": 26,
+    "commits": 27,
     "done": 11,
     "group": "systems",
     "invariant": "Every socket the kernel reports is listed once with every field as given",
@@ -352,7 +352,7 @@
   },
   "tlp": {
     "blurb": "metamorphic SQL logic-bug finder",
-    "commits": 26,
+    "commits": 28,
     "done": 13,
     "group": "formats",
     "invariant": "Every disagreement reported is a real one, and a run that finds nothing is distinguishable from a run that tested nothing",
@@ -391,7 +391,7 @@
   },
   "tzf": {
     "blurb": "TZif timezone file reader",
-    "commits": 16,
+    "commits": 17,
     "done": 5,
     "group": "formats",
     "invariant": "Every instant answered agrees with both readers; malformed input is refused",
@@ -456,7 +456,7 @@
   },
   "wasmi": {
     "blurb": "WebAssembly interpreter",
-    "commits": 42,
+    "commits": 43,
     "done": 25,
     "group": "toolchain",
     "invariant": "A malformed module is rejected or traps, never corrupts the host",
