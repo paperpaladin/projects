@@ -1,20 +1,20 @@
 {
   "bigint": {
     "blurb": "Arbitrary-precision integers",
-    "commits": 23,
-    "done": 17,
+    "commits": 26,
+    "done": 20,
     "group": "systems",
     "invariant": "Every operation matches Python exactly, including floor division of negatives",
     "oracle": "Python's native int, which is itself arbitrary precision",
     "shortcuts": 5,
-    "src": 1147,
-    "test": 557,
-    "tests": "107571 agree, 0 disagree",
-    "todo": 11
+    "src": 1188,
+    "test": 839,
+    "tests": "107573 agree, 0 disagree",
+    "todo": 8
   },
   "cc": {
     "blurb": "C compiler for x86-64",
-    "commits": 40,
+    "commits": 41,
     "done": 25,
     "group": "toolchain",
     "invariant": "Self-host fixpoint: cmp cc2 cc3",
@@ -40,7 +40,7 @@
   },
   "commitq": {
     "blurb": "Multi-repo commit gate and GUI",
-    "commits": 27,
+    "commits": 28,
     "done": 8,
     "group": "supply chain",
     "invariant": "No commit is ever created with a date other than now",
@@ -50,6 +50,19 @@
     "test": 976,
     "tests": "156 passed, 0 failed",
     "todo": 9
+  },
+  "confine": {
+    "blurb": "What a process can actually do",
+    "commits": 3,
+    "done": 2,
+    "group": "observability",
+    "invariant": "A line says measured only if the operation was attempted this run",
+    "oracle": "A process built with unshare and setpriv, reported back exactly",
+    "shortcuts": 0,
+    "src": 176,
+    "test": 127,
+    "tests": "13 passed, 0 failed",
+    "todo": 10
   },
   "corex": {
     "blurb": "ELF core dump reader",
@@ -113,7 +126,7 @@
     "shortcuts": 3,
     "src": 858,
     "test": 660,
-    "tests": "1844 passed, 0 failed",
+    "tests": "1859 passed, 0 failed",
     "todo": 19
   },
   "httpd": {
@@ -300,7 +313,7 @@
   },
   "sqlr": {
     "blurb": "SQLite file-format reader",
-    "commits": 25,
+    "commits": 26,
     "done": 17,
     "group": "formats",
     "invariant": "Byte-identical output to SQLite; malformed input errors, never crashes",
@@ -456,7 +469,7 @@
   },
   "wasmi": {
     "blurb": "WebAssembly interpreter",
-    "commits": 37,
+    "commits": 38,
     "done": 25,
     "group": "toolchain",
     "invariant": "A malformed module is rejected or traps, never corrupts the host",

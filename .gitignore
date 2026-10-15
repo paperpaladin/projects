@@ -20,6 +20,7 @@ bigint/
 cc/
 cmark/
 commitq/
+confine/
 corex/
 derx/
 dbginfo/

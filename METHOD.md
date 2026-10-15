@@ -1,6 +1,6 @@
 # projects/: working instructions
 
-Thirty-eight independent repositories, one method. Read this before touching anything;
+Thirty-nine independent repositories, one method. Read this before touching anything;
 read `INDEX.md` for what each repo is, and the repo's own `PLAN.md` for what comes
 next in it.
 
@@ -42,7 +42,7 @@ Four things learned by doing this repeatedly, all of them cheap to reuse:
 ## How to work here
 
 ```sh
-./cq            # status across all 38
+./cq            # status across all 39
 ./cq t          # what to work on: stalest repo first, next planned item in each
 ./cq c REPO "message"    # runs that repo's tests, commits only if green
 ./cq a          # status + run every suite (slow: wasmi alone is ~3 min)
@@ -79,7 +79,7 @@ never counts it.
 `repos.json`, which is **generated, not written**:
 
 ```sh
-make portfolio        # runs all 38 suites, ~30 min, then moves repos.json
+make portfolio        # runs all 39 suites, ~30 min, then moves repos.json
 NAME="..." GITHUB="..." .portfolio/render.sh            # build.py, then chromium
 ```
 
@@ -127,7 +127,7 @@ starts claiming last week's numbers. It had drifted by 38 values once, because
    mistake once: see the stash on `notally-molly`, which downgraded typographic
    apostrophes and ellipses in thirty languages of Android UI text, where the
    ellipsis character is correct and `...` is wrong.
-4. All 38 must stay reproducible. Any new C repo needs
+4. All 39 must stay reproducible. Any new C repo needs
    `-ffile-prefix-map=$(CURDIR)=.` in `CFLAGS`, or `-g` writes the build directory
    into DWARF `.debug_line_str`. Check with
    `python3 unrepro/unrepro.py check ../REPO --cmd 'make -B'` on a clean tree.
@@ -371,13 +371,14 @@ including the ones that were in the harness. Multi-paragraph is normal here.
 
 ## State
 
-681 commits, 38 repos, all 38 suites green as of the last `make portfolio`.
+905 commits across 39 repos and 80 in this one, all 39 suites green as of
+the last `make portfolio`. 344 plan items are queued.
 `INDEX.md` has the per-repo invariant table and where each one goes next.
 
 Two things this line used to assert are not established: "every commit
 builds" (hard rule 2: nothing checks it) and "all builds reproducible",
 which was measured when the collection was 18 repos and has not been re-run
-across all 38. `unrepro`'s own README still lists four siblings as
+across all 39. `unrepro`'s own README still lists four siblings as
 not-reproducible that now are.
 
 `cc` compiles itself: `make self-host` builds it with itself twice and

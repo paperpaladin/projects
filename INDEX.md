@@ -1,6 +1,6 @@
 # projects
 
-Thirty-eight repositories. Every one is a working program with an **external
+Thirty-nine repositories. Every one is a working program with an **external
 oracle**, something outside the author's control that decides whether the code
 is right. Pure C or standard-library Python throughout; no frameworks, no package
 managers, no dependency beyond `zlib`. Every repo has `make test` and it passes.
@@ -23,7 +23,7 @@ and were invisible here until they acquired the `PLAN.md` that makes a
 directory a member, `ed25519` has since been finished through signing and
 verification against Project Wycheproof.
 
-`unrepro`: one of the thirty-eight, checks **reproducible builds** by
+`unrepro`: one of the thirty-nine, checks **reproducible builds** by
 building twice under deliberately different conditions (directory name, TZ,
 locale, umask, hostname, user, `-j`, `SOURCE_DATE_EPOCH`). Over the whole
 tree: **34 of 38 REPRODUCIBLE**, the other four being the Python repos where
@@ -169,7 +169,7 @@ explaining them.
 
 ## This directory is also a repo
 
-Thirty-nine repositories now, but still thirty-eight projects. The
+Forty repositories now, but still thirty-nine projects. The
 thirty-ninth is this
 directory: `INDEX.md`, `METHOD.md`, the `cq` wrapper and `.portfolio/`. All of
 it was tracked by nothing until it became a repo, for a reason worth naming:
@@ -178,22 +178,22 @@ was invisible to the tool whose entire job is to notice unverified work. It is
 listed first by `./cq` and gated by the same `cq c` as everything else; its
 suite is `.portfolio/t/test_portfolio.py`.
 
-The thirty-eight stay independent. They are named one by one in `.gitignore` rather
+The thirty-nine stay independent. They are named one by one in `.gitignore` rather
 than matched by a pattern, because a pattern would silently swallow a
 thirty-ninth project the day it appeared.
 
-It is not one of the thirty-eight and does not appear in the PDF. Those are
+It is not one of the thirty-nine and does not appear in the PDF. Those are
 programs judged by authorities outside the author. A document has no such
 authority for its prose. Only its figures are checkable, and those are
 checked, see `PLAN.md` here for the contract.
 
 ## The PDF
 
-`.portfolio/` renders all thirty-eight into one document. Every figure in it is
+`.portfolio/` renders all thirty-nine into one document. Every figure in it is
 generated, not typed:
 
 ```sh
-python3 .portfolio/extract.py > .portfolio/repos.json   # runs all 38 suites
+python3 .portfolio/extract.py > .portfolio/repos.json   # runs all 39 suites
 
 read -rp 'name:   ' NAME
 read -rp 'handle: ' GITHUB
@@ -232,7 +232,7 @@ that is what it strips. The way to a dense graph is `cq t` plus small commits.
 
 ## The PLAN.md convention
 
-Every repo has a `PLAN.md` with at least the same five sections (16 of the 38
+Every repo has a `PLAN.md` with at least the same five sections (16 of the 39
 add a sixth or seventh, such as `## Status, as of the last commit`). **Read it first when
 picking a repo back up after a gap.**
 
@@ -333,7 +333,7 @@ The single highest-value step per repo, from its plan:
 
 ## What does not work here
 
-About this directory, not the thirty-eight. Each of those has its own list.
+About this directory, not the thirty-nine. Each of those has its own list.
 
 - `INDEX.md` drifts by design. The commit totals, line totals and per-repo
   test counts below are maintained by hand while `.portfolio/repos.json`
@@ -352,7 +352,7 @@ About this directory, not the thirty-eight. Each of those has its own list.
   to leave a PDF that is missing or older than the page it came from, and the
   suite reads the figures back out with `pdftotext`, but no check looks at
   where anything sits on the page or which fonts were embedded.
-- A full regeneration takes minutes, because it runs all thirty-eight suites.
+- A full regeneration takes minutes, because it runs all thirty-nine suites.
   `--keep-test-counts` makes it instant by inheriting the previous counts
   instead of measuring them, which is right for the test suite and wrong
   before publishing.
@@ -495,7 +495,7 @@ a tool reporting *per output*, not per repo made the remaining half visible.
 
 All 18 repos that existed when this was measured reported `REPRODUCIBLE across
 all varied conditions`. There has been no collection-wide re-run since; the
-collection is 38 now, and `unrepro`'s own README carries a stale claim in the
+collection is 39 now, and `unrepro`'s own README carries a stale claim in the
 other direction (it lists `cc`, `walkv`, `rx` and `trace` as not reproducible,
 and all four are).
 

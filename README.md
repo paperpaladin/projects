@@ -1,6 +1,6 @@
 # projects
 
-Thirty-eight programs, each checked against something that does not care
+Thirty-nine programs, each checked against something that does not care
 whether I am right.
 
 Pure C or standard-library Python. No frameworks and no package managers. The
@@ -9,7 +9,7 @@ only third-party library any of them links is `zlib`, in `walkv`. Everything els
 Every repository has `make test`, and the number it prints comes from running
 it, not from being typed in.
 
-38 repositories, 49,257 lines of source and 33,393 of tests. The largest
+39 repositories, 49,936 lines of source and 34,067 of tests. The largest
 single suite is `utf8n`: 107 checks containing 806,840 assertions, against
 `NormalizationTest.txt` from UCD 18.0.0.
 
@@ -128,7 +128,7 @@ here.
 
 ## Reproducible builds
 
-`unrepro`, itself one of the thirty-eight, builds a project twice under
+`unrepro`, itself one of the thirty-nine, builds a project twice under
 deliberately different conditions (directory name, `TZ`, locale, `umask`,
 hostname, user, `-j`, `SOURCE_DATE_EPOCH`) and compares the outputs byte for
 byte. It diagnoses seven planted causes, 7 of 7: timestamps, `__DATE__`,
@@ -253,7 +253,7 @@ Several compose. `cc` and `lnk` together remove the binutils dependency.
 
 ## Layout
 
-Each of the thirty-eight is an independent repository with its own history,
+Each of the thirty-nine is an independent repository with its own history,
 `README.md`, `PLAN.md` and `make test`. This repository is what sits above
 them: `INDEX.md`, the working standards in `METHOD.md`, the `cq` wrapper
 around `commitq`, and `.portfolio/`, which regenerates the figures above from
