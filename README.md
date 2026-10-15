@@ -28,7 +28,7 @@ Python 3. Clone one, run its suite:
 git clone <this>/sqlr && cd sqlr && make test
 ```
 
-All 38 pass from a clone of themselves alone, with no sibling repository
+All 39 pass from a clone of themselves alone, with no sibling repository
 present and nothing cached. 547 seconds for the whole collection, median 7s,
 slowest 132s (`tzf`, which sweeps every zone file it can find). That is
 checked, not claimed: `make audit-deep` in this repository clones each

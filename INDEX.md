@@ -118,6 +118,7 @@ since the last regeneration, not that something is wrong.
 | [mydiff](mydiff/) | C | Myers diff and patch | GNU diff AND GNU patch | 996 |
 | [httpd](httpd/) | C | HTTP/1.1 static server | curl + RFC 9112 | 230 |
 | [corex](corex/) | C | ELF core dump reader | gdb, value by value | 72 |
+| [confine](confine/) | C | what a process can actually do | a process built with unshare and setpriv | 20 |
 | [derx](derx/) | C | ASN.1 DER / X.509 reader | openssl asn1parse | 10,822 elements |
 | [seccompc](seccompc/) | C | seccomp policy compiler | the kernel | 125 |
 | [sockv](sockv/) | C | socket lister via netlink | the kernel | 83 |
@@ -154,7 +155,7 @@ make audit-deep      # ~10 min: clone each repo ALONE and test it there
 ```
 
 `make audit-deep` is the one that matters before publishing, and the only one
-that finds what a suite depends on which is not in its repository. All 38 pass
+that finds what a suite depends on which is not in its repository. All 39 pass
 it. Two did not when it was first written: `gitobj` required eight named
 sibling repositories to exist at `../<name>/.git`, and `wasmi/hist/build.py`
 pointed an `rmtree('.git')` at an absolute path on this machine, so running it
@@ -255,6 +256,7 @@ picking a repo back up after a gap.**
   | dbginfo | every fact printed agrees with readelf |
   | jail | an ungranted path is never reachable, and the child cannot relax itself |
   | commitq | no commit is ever created with a date other than now |
+  | confine | a line says measured only if the operation was attempted this run |
   | walkv | recovered state is a prefix with no holes |
   | slab | two live allocations never overlap; every pointer correctly aligned |
   | trace | tracing does not change the traced program |
