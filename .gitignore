@@ -17,6 +17,7 @@
 # Not one of the eighteen: an upstream Android fork kept here for convenience.
 __pycache__/
 bigint/
+bpec/
 cc/
 cmark/
 commitq/

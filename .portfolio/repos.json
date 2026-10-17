@@ -12,17 +12,30 @@
     "tests": "107573 agree, 0 disagree",
     "todo": 8
   },
+  "bpec": {
+    "blurb": "Byte-level BPE, exact to the reference",
+    "commits": 4,
+    "done": 4,
+    "group": "formats",
+    "invariant": "The same token ids as the reference, in the same order",
+    "oracle": "The HuggingFace tokenizers library, token for token",
+    "shortcuts": 0,
+    "src": 1556,
+    "test": 314,
+    "tests": "17 passed, 0 failed",
+    "todo": 7
+  },
   "cc": {
     "blurb": "C compiler for x86-64",
-    "commits": 41,
-    "done": 25,
+    "commits": 43,
+    "done": 26,
     "group": "toolchain",
     "invariant": "Self-host fixpoint: cmp cc2 cc3",
     "oracle": "gcc AND clang must agree on every case",
     "shortcuts": 8,
-    "src": 4772,
-    "test": 2364,
-    "tests": "389 passed, 0 failed (2 suites)",
+    "src": 4800,
+    "test": 2530,
+    "tests": "393 passed, 0 failed (2 suites)",
     "todo": 6
   },
   "cmark": {
@@ -118,16 +131,16 @@
   },
   "gitobj": {
     "blurb": "git object database reader and writer",
-    "commits": 15,
-    "done": 5,
+    "commits": 16,
+    "done": 6,
     "group": "toolchain",
     "invariant": "Every object read hashes back to its own name, loose or packed, through the whole delta chain",
     "oracle": "The object name itself: git chose the filename, we recompute the SHA-1. Plus git verify-pack -v, field by field",
-    "shortcuts": 3,
-    "src": 858,
-    "test": 660,
-    "tests": "1859 passed, 0 failed",
-    "todo": 19
+    "shortcuts": 5,
+    "src": 967,
+    "test": 757,
+    "tests": "2049 passed, 0 failed",
+    "todo": 18
   },
   "httpd": {
     "blurb": "HTTP/1.1 static file server",
@@ -352,16 +365,16 @@
   },
   "terminfo": {
     "blurb": "compiled-terminfo reader",
-    "commits": 16,
-    "done": 6,
+    "commits": 17,
+    "done": 7,
     "group": "formats",
     "invariant": "Every capability reported is the one infocmp reports, because a positional format can be parsed perfectly and named wrongly",
     "oracle": "ncurses as a subprocess: infocmp for every capability of all 44 terminals on this machine, and tic asked where it puts each name so the tables are derived rather than typed",
     "shortcuts": 1,
-    "src": 650,
-    "test": 716,
-    "tests": "24 passed, 0 failed",
-    "todo": 2
+    "src": 877,
+    "test": 856,
+    "tests": "34 passed, 0 failed",
+    "todo": 1
   },
   "tlp": {
     "blurb": "metamorphic SQL logic-bug finder",
@@ -456,16 +469,16 @@
   },
   "walkv": {
     "blurb": "Write-ahead-log key-value store",
-    "commits": 15,
-    "done": 10,
+    "commits": 16,
+    "done": 11,
     "group": "systems",
     "invariant": "Recovered state is a prefix with no holes",
     "oracle": "A crash injected at every I/O boundary",
     "shortcuts": 1,
-    "src": 387,
-    "test": 480,
-    "tests": "219 scenarios checked, 0 failed",
-    "todo": 8
+    "src": 423,
+    "test": 598,
+    "tests": "349 scenarios checked, 0 failed",
+    "todo": 7
   },
   "wasmi": {
     "blurb": "WebAssembly interpreter",
@@ -495,15 +508,15 @@
   },
   "zipc": {
     "blurb": "ZIP archive reader and writer",
-    "commits": 11,
-    "done": 1,
+    "commits": 12,
+    "done": 7,
     "group": "formats",
     "invariant": "The central directory is authoritative, and no member can ever be written outside the destination",
     "oracle": "Info-ZIP unzip 6.00 and zip 3.0, bidirectionally, across every method and flag combination",
     "shortcuts": 3,
-    "src": 1067,
-    "test": 855,
-    "tests": "69 passed, 0 failed",
-    "todo": 16
+    "src": 1078,
+    "test": 917,
+    "tests": "76 passed, 0 failed",
+    "todo": 10
   }
 }
