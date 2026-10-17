@@ -1,7 +1,7 @@
 {
   "bigint": {
     "blurb": "Arbitrary-precision integers",
-    "commits": 26,
+    "commits": 27,
     "done": 20,
     "group": "systems",
     "invariant": "Every operation matches Python exactly, including floor division of negatives",
@@ -53,16 +53,16 @@
   },
   "confine": {
     "blurb": "What a process can actually do",
-    "commits": 3,
-    "done": 2,
+    "commits": 5,
+    "done": 3,
     "group": "observability",
     "invariant": "A line says measured only if the operation was attempted this run",
     "oracle": "A process built with unshare and setpriv, reported back exactly",
     "shortcuts": 0,
-    "src": 176,
-    "test": 127,
-    "tests": "13 passed, 0 failed",
-    "todo": 10
+    "src": 262,
+    "test": 216,
+    "tests": "20 passed, 0 failed",
+    "todo": 9
   },
   "corex": {
     "blurb": "ELF core dump reader",

@@ -68,4 +68,5 @@ zipc/
 # has to be excluded at all.
 
 # The audit deny-list: terms that must not be published, so not published.
+.portfolio/extract.log
 .portfolio/denylist.txt
