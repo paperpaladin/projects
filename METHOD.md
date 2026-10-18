@@ -302,9 +302,32 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   counted twice. It never turned red into green, but it inflated every
   red number it ever reported, including one recorded in a PLAN.
 
+- Backticks in a commit message are command substitution. `cq c REPO
+  "..."` passes the message as a double-quoted shell argument, and
+  commit messages here quote code constantly. A message saying "the
+  failure path called `no`, which is not a function" ran `no`, got
+  nothing, and committed "the failure path called , which is not a
+  function". The shell also printed `no: command not found`, which in
+  a long run reads as output from the tests.
+
+  Use plain quotes in a message, or pass it with
+  `git commit --amend -F file` from a file nothing interpolates.
+  Worth a scan after a long session: the tell is a sentence with a
+  word missing where a word plainly belongs.
 - A buffer larger than its data turns the sanitizer off. Found
-  THREE times in one session, independently, in `derx`, `bpec` and
-  `jsonc`. A read
+  SEVEN times in one session, independently: `derx`, `bpec`, `jsonc`,
+  `sqlr`, `mydiff`, and twice in `wasmi`. Every one was found by
+  somebody looking for the shape after being told it existed, and not
+  one by the sanitizer, which is the whole point.
+
+  `wasmi`'s pair is the clearest. Its locals-type array doubled, so an
+  over-read was not only invisible but PASSED: the garbage byte read
+  as 0, which is the validator's own code for the polymorphic unknown
+  type, so the module validated. And its linear memory was allocated
+  as `pages * 65536 + 1`, which is the most attacker-reachable buffer
+  in the program, since wasm addresses index it directly. The second
+  was found by scanning for the shape rather than revisiting the
+  function that had just been fixed, which is the search that works. A read
   buffer that doubles is 64 KB after reading 1 KB, so a read one byte
   past the end of the input lands 63 KB inside a live allocation and
   ASan says nothing. In `derx`, deleting a bounds check produced 33
@@ -351,6 +374,10 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   deletes `.git` and rebuilds the history from scratch, and removing
   its inputs or outputs without reading it is not a safe thing to do
   in passing.
+- A `rm -rf /tmp/PREFIX.*` sweep takes other people's files. One agent
+  cleaning up after `unrepro` removed a pre-existing `/tmp/unrepro.txt`
+  that was not its own. `/tmp` is shared, the glob does not know who
+  made what, and the file is gone. Delete the exact paths you created.
 - `/tmp` is tmpfs and does not survive a reboot. Never leave anything there.
   It is also shared: a fixed name there (`/tmp/vtparse-fuzz.bin`) means two
   concurrent runs feed each other their inputs, and a cleanup that sweeps

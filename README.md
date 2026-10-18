@@ -9,7 +9,7 @@ only third-party library any of them links is `zlib`, in `walkv`. Everything els
 Every repository has `make test`, and the number it prints comes from running
 it, not from being typed in.
 
-41 repositories, 55,006 lines of source and 38,317 of tests. The largest
+41 repositories, 61,120 lines of source and 43,299 of tests. The largest
 single suite is `utf8n`: 107 checks containing 806,840 assertions, against
 `NormalizationTest.txt` from UCD 18.0.0.
 
@@ -167,21 +167,21 @@ whose number has drifted from what the suite actually prints.
 |---|---|---|---|---|
 | [cc](cc/) | C | C compiler for x86-64, **self-hosting** | gcc and clang, and itself | **364** + 70 cpp |
 | [lnk](lnk/) | C | static ELF linker | the kernel runs it, or it does not | 49 |
-| [wasmi](wasmi/) | C | WebAssembly interpreter | expectations computed in Python | **11,833** |
-| [psh](psh/) | C | POSIX shell subset | `dash`, stdout and exit status | **212 agree** |
-| [rx](rx/) | C | linear-time regex engine | Python's `re` | **3000 agree** per seed |
+| [wasmi](wasmi/) | C | WebAssembly interpreter | V8, via node, for validation | **11,910** |
+| [psh](psh/) | C | POSIX shell subset | `dash`, stdout and exit status | **251 agree** |
+| [rx](rx/) | C | linear-time regex engine | Python's `re` | **3020 agree** per seed |
 | [inflate](inflate/) | C | DEFLATE/gzip codec | `gzip -d` accepts our output | 169 |
-| [tarx](tarx/) | C | tar reader/writer | GNU `tar`, bidirectional | 119 |
-| [sqlr](sqlr/) | C | SQLite file-format reader | libsqlite3 itself | 123 agree |
-| [vtparse](vtparse/) | C | VT500 parser + wcwidth | published table, **3584/3584** | 101 |
-| [unrepro](unrepro/) | Py | build-reproducibility differ | planted causes, 7/7 diagnosed | 114 |
+| [tarx](tarx/) | C | tar reader/writer | GNU `tar`, bidirectional | 172 |
+| [sqlr](sqlr/) | C | SQLite file-format reader | libsqlite3 itself | 171 agree |
+| [vtparse](vtparse/) | C | VT500 parser + wcwidth | published table, **3584/3584** | 118 |
+| [unrepro](unrepro/) | Py | build-reproducibility differ | planted causes, 7/7 diagnosed | 121 |
 | [dbginfo](dbginfo/) | C | DWARF debug-info parser | `readelf` | 118 |
-| [jail](jail/) | C | Landlock sandbox | the kernel: denied means EACCES | 77 |
+| [jail](jail/) | C | Landlock sandbox | the kernel: denied means EACCES | 101 |
 | [commitq](commitq/) | Py | multi-repo commit gate + GUI | throwaway repos in a tempdir | 173 |
 | [walkv](walkv/) | C | WAL key-value store | crash at every I/O boundary | 349 scenarios |
 | [slab](slab/) | C | LD_PRELOAD malloc replacement | real programs, identical output | 32 |
-| [trace](trace/) | C | ptrace syscall tracer, follows children | `strace -c` / `strace -f -c` | 43 |
-| [srcdiff](srcdiff/) | Py | finds shipped code absent from the repo | **real xz artifacts** + live PyPI | 30 |
+| [trace](trace/) | C | ptrace syscall tracer, follows children | `strace -c` / `strace -f -c` | 62 |
+| [srcdiff](srcdiff/) | Py | finds shipped code absent from the repo | **real xz artifacts** + live PyPI | 56 |
 | [prof](prof/) | C | sampling profiler | a planted hot loop, known 10:1 ratios | 15 |
 | [cmark](cmark/) | C | CommonMark parser | the spec's own spec.json | **652/652** |
 | [tomlc](tomlc/) | C | TOML 1.0.0 parser | toml-test + stdlib tomllib | **709/709** |
@@ -190,13 +190,13 @@ whose number has drifted from what the suite actually prints.
 | [pngc](pngc/) | C | PNG decoder | PngSuite | 162 + 14 refused |
 | [jsonc](jsonc/) | C | RFC 8259 JSON parser | JSONTestSuite | 95/95, 188/188 |
 | [bigint](bigint/) | C | arbitrary-precision integers | Python's native int | **107,573 agree** |
-| [mydiff](mydiff/) | C | Myers diff and patch | GNU diff AND GNU patch | 996 |
+| [mydiff](mydiff/) | C | Myers diff and patch | GNU diff AND GNU patch | 2104 |
 | [httpd](httpd/) | C | HTTP/1.1 static server | curl + RFC 9112 | 258 |
 | [corex](corex/) | C | ELF core dump reader | gdb, value by value | 80 |
 | [derx](derx/) | C | ASN.1 DER / X.509 reader | openssl asn1parse | 10,822 elements |
 | [seccompc](seccompc/) | C | seccomp policy compiler | the kernel | 130 |
-| [sockv](sockv/) | C | socket lister via netlink | the kernel | 83 |
-| [tzf](tzf/) | C | TZif reader, RFC 8536 | zoneinfo | 34 |
+| [sockv](sockv/) | C | socket lister via netlink | the kernel | 139 |
+| [tzf](tzf/) | C | TZif reader, RFC 8536 | zoneinfo | 35 |
 | [gitobj](gitobj/) | C | git object database reader/writer | the object name is its own SHA-1 | **1,862** alone |
 | [zipc](zipc/) | C | ZIP reader and writer | Info-ZIP `unzip`/`zipinfo`, Python `zipfile` | 120 |
 | [xmlc](xmlc/) | C | XML 1.0 well-formedness checker, with the internal DTD subset | W3C conformance suite | 219 |
@@ -204,7 +204,7 @@ whose number has drifted from what the suite actually prints.
 | [ed25519](ed25519/) | C | Ed25519 **and X25519**, built from the field up | a second implementation in Python, the other curve form, 669 Wycheproof vectors | 43 |
 | [terminfo](terminfo/) | C | compiled-terminfo reader, with `tput`-checked parameterised strings | `infocmp`, and `tic` for the name tables | 40 |
 | [bpec](bpec/) | C | byte-level BPE tokeniser, exact ids | the HuggingFace `tokenizers` library, token for token | 46 |
-| [confine](confine/) | C | what a process can actually do | a process built with unshare and setpriv | 20 |
+| [confine](confine/) | C | what a process can actually do | a process built with unshare and setpriv | 25 |
 | [profiled](profiled/) | C | seccomp policy derived from watching a program run | the kernel, and `strace` as a second observer | 60 |
 
 ## Start with cc

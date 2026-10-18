@@ -533,6 +533,46 @@ def check_gitlinks():
     return check("no repository records a gitlink", bad)
 
 
+# wasmi/hist holds 19 build artifacts of the `c*` sources beside them,
+# about 600 KB, committed before this check existed. They are left
+# alone deliberately: that directory belongs to a `build.py` which
+# deletes `.git` and rebuilds the whole history, and removing its
+# outputs without reading it is not a safe thing to do in passing.
+# Named here rather than matched by a pattern, so a NEW binary landing
+# in that directory is still caught.
+ELF_ALLOW = {("wasmi", "hist/b%d" % i) for i in range(1, 18)}
+ELF_ALLOW |= {("wasmi", "hist/b4bug"), ("wasmi", "hist/b9bug")}
+
+
+def check_tracked_binaries():
+    """A compiled binary in git is almost always an accident.
+
+    `cq c` stages the whole tree, so any build artifact missing from
+    .gitignore gets committed. It happened twice in one day: a 288 KB
+    bpec-asan, whose .gitignore listed only the release binary beside
+    it, and a confine test helper built in the repo while debugging.
+    Both were found by a hand sweep, which is the wrong way to find
+    the same thing twice.
+
+    ELF only. A compiled object is recognisable from its first four
+    bytes, and that is a fact about the file rather than a guess from
+    its name, so a binary called `data` is caught too.
+    """
+    bad = []
+    for repo in repos():
+        rn = name_of(repo)
+        for rel in git(repo, "ls-files").split("\n"):
+            if not rel or (rn, rel) in ELF_ALLOW:
+                continue
+            f = repo / rel
+            try:
+                if f.is_file() and f.open("rb").read(4) == b"\x7fELF":
+                    bad.append("%s: %s" % (rn, rel))
+            except OSError:
+                continue
+    return check("no repository tracks a compiled binary", bad)
+
+
 def check_backup_refs():
     """refs/original is a live undo before a push and dead weight after one.
 
@@ -679,6 +719,7 @@ CHECKS = [
     check_siblings,
     check_placeholders,
     check_gitlinks,
+    check_tracked_binaries,
     check_backup_refs,
     check_authors,
     check_secrets,

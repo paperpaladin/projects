@@ -109,8 +109,31 @@ with tempfile.TemporaryDirectory() as td:
                audit.check_siblings, audit.check_placeholders,
                audit.check_gitlinks, audit.check_backup_refs,
                audit.check_authors, audit.check_secrets,
-               audit.check_branches, audit.check_invisible):
+               audit.check_branches, audit.check_invisible,
+               audit.check_tracked_binaries):
         check("clean fixture passes %s" % fn.__name__, run(fn, root), True)
+
+    DATES_EARLY = dict(os.environ, GIT_AUTHOR_DATE="2001-01-01T00:00:00Z",
+                       GIT_COMMITTER_DATE="2001-01-01T00:00:00Z")
+
+    # --- a tracked compiled binary
+    #
+    # Recognised by its first four bytes rather than by its name, so
+    # the planted one is called "data" with no extension: a check
+    # matching names would pass this and miss exactly the file that
+    # gets committed by accident.
+    binrepo = make_repo(root, "hasbin")
+    (binrepo / "data").write_bytes(b"\x7fELF\x02\x01\x01" + b"\0" * 57)
+    git(binrepo, "add", "-A")
+    subprocess.run(["git", "commit", "-qm", "oops"], cwd=binrepo, check=True,
+                   env=DATES_EARLY)
+    check("a tracked ELF is caught however it is named",
+          run(audit.check_tracked_binaries, root), False)
+    git(binrepo, "rm", "-q", "data")
+    subprocess.run(["git", "commit", "-qm", "remove it"], cwd=binrepo,
+                   check=True, env=DATES_EARLY)
+    check("...and passes once it is gone",
+          run(audit.check_tracked_binaries, root), True)
 
     # --- objects: the deny-list, and the history-not-worktree distinction
     dl = Path(td) / "denylist.txt"
