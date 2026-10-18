@@ -14,29 +14,29 @@
   },
   "bpec": {
     "blurb": "Byte-level BPE, exact to the reference",
-    "commits": 4,
-    "done": 4,
+    "commits": 7,
+    "done": 8,
     "group": "formats",
     "invariant": "The same token ids as the reference, in the same order",
     "oracle": "The HuggingFace tokenizers library, token for token",
-    "shortcuts": 0,
-    "src": 1556,
-    "test": 314,
-    "tests": "17 passed, 0 failed",
-    "todo": 7
+    "shortcuts": 2,
+    "src": 1960,
+    "test": 711,
+    "tests": "36 passed, 0 failed",
+    "todo": 3
   },
   "cc": {
     "blurb": "C compiler for x86-64",
-    "commits": 43,
-    "done": 26,
+    "commits": 46,
+    "done": 27,
     "group": "toolchain",
     "invariant": "Self-host fixpoint: cmp cc2 cc3",
     "oracle": "gcc AND clang must agree on every case",
     "shortcuts": 8,
-    "src": 4800,
-    "test": 2530,
-    "tests": "393 passed, 0 failed (2 suites)",
-    "todo": 6
+    "src": 4901,
+    "test": 2669,
+    "tests": "434 passed, 0 failed (2 suites)",
+    "todo": 5
   },
   "cmark": {
     "blurb": "CommonMark parser and HTML renderer",
@@ -139,7 +139,7 @@
     "shortcuts": 5,
     "src": 967,
     "test": 757,
-    "tests": "2049 passed, 0 failed",
+    "tests": "2146 passed, 0 failed",
     "todo": 18
   },
   "httpd": {
@@ -245,6 +245,19 @@
     "test": 319,
     "tests": "15 passed, 0 failed, 0 skipped",
     "todo": 12
+  },
+  "profiled": {
+    "blurb": "Derive a seccomp policy by watching a program run",
+    "commits": 2,
+    "done": 3,
+    "group": "observability",
+    "invariant": "A syscall absent from the profile is killed, and the kernel says so",
+    "oracle": "The kernel: a denied syscall kills the process, read from wait4",
+    "shortcuts": 1,
+    "src": 242,
+    "test": 338,
+    "tests": "17 passed, 0 failed",
+    "todo": 8
   },
   "psh": {
     "blurb": "POSIX shell subset",

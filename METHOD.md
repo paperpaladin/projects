@@ -1,6 +1,6 @@
 # projects/: working instructions
 
-Thirty-nine independent repositories, one method. Read this before touching anything;
+Forty-one independent repositories, one method. Read this before touching anything;
 read `INDEX.md` for what each repo is, and the repo's own `PLAN.md` for what comes
 next in it.
 
@@ -42,7 +42,7 @@ Four things learned by doing this repeatedly, all of them cheap to reuse:
 ## How to work here
 
 ```sh
-./cq            # status across all 39
+./cq            # status across all 41
 ./cq t          # what to work on: stalest repo first, next planned item in each
 ./cq c REPO "message"    # runs that repo's tests, commits only if green
 ./cq a          # status + run every suite (slow: wasmi alone is ~3 min)
@@ -79,13 +79,25 @@ never counts it.
 `repos.json`, which is **generated, not written**:
 
 ```sh
-make portfolio        # runs all 39 suites, ~30 min, then moves repos.json
+make portfolio        # runs all 41 suites, ~30 min, then moves repos.json
 NAME="..." GITHUB="..." .portfolio/render.sh            # build.py, then chromium
 ```
 
-Refresh it after any commit that changes a test count, or the document quietly
-starts claiming last week's numbers. It had drifted by 38 values once, because
+Refresh it after any commit that changes a test count, or the document
+quietly starts claiming last week's numbers. It had drifted by 38 values once, because
 `extract.py` was documented in the README and did not exist.
+
+The drift check only catches a row whose last cell is a plain integer,
+so `| **1,639** alone |` and `| 216 scenarios |` sailed past it while
+the suites had moved to 2,146 and 349. Four rows were stale that way at
+once. Compare the tables against `repos.json` directly, not just by
+reading what `extract.py` warns about.
+
+Note also that `extract.py` enumerates repositories once at startup, so
+a repository created while it runs is not in the output. Add its
+editorial entry to `repos.json` by hand and re-run with
+`--keep-test-counts`, which re-uses the counts already measured and
+runs only the new one's suite.
 
 ## Hard rules
 
@@ -117,17 +129,30 @@ starts claiming last week's numbers. It had drifted by 38 values once, because
    code comments. Use `...` for an ellipsis, `->` for an arrow, and straight
    quotes.
 
-   This rule is about prose, not about bytes. Six files hold non-ASCII on
-   purpose and a sweep must leave them alone: `tarx/t/run.sh`,
-   `sqlr/t/oracle.py` and `gitobj/t/run.sh` carry non-ASCII *test data*
-   (filenames and strings whose whole point is that they are not ASCII: the
-   last creates a filename with a diaeresis), and `commitq`'s block characters
-   and middot are UI glyphs. Replacing those does not tidy anything, it deletes the
+   This rule is about prose, not about bytes. Nine files hold non-ASCII on
+   purpose and a sweep must leave them alone. The list is from a sweep, not
+   from memory, because the version here used to say six while describing a
+   set that was already nine: it named `commitq.py` alone where `README.md`
+   and `serve.py` carry the same glyphs.
+
+       find . -path ./notally-molly -prune -o -type f \
+         \( -name '*.c' -o -name '*.h' -o -name '*.py' -o -name '*.sh' \
+            -o -name '*.md' \) -print | grep -v '/scratch/\|/\.git/\|/hist/' \
+         | xargs env LC_ALL=C grep -lP '[^\x00-\x7F]'
+
+   `tarx/t/run.sh`, `sqlr/t/oracle.py` and `gitobj/t/run.sh` carry non-ASCII
+   *test data* (filenames and strings whose whole point is that they are not
+   ASCII: the last creates a filename with a diaeresis). `commitq.py`,
+   `commitq/README.md` and `commitq/serve.py` hold block characters and a
+   middot, which are UI glyphs. `bpec/bpec.c`, `bpec/t/encode_cmp.py` and
+   `bpec/t/split_cmp.py` hold the byte-level alphabet's own notation, where
+   U+0120 is literally how that encoding writes a space, plus corpus strings
+   in several scripts. Replacing those does not tidy anything, it deletes the
    test. A blanket sweep over user-facing strings is already recorded as a
    mistake once: see the stash on `notally-molly`, which downgraded typographic
    apostrophes and ellipses in thirty languages of Android UI text, where the
    ellipsis character is correct and `...` is wrong.
-4. All 39 must stay reproducible. Any new C repo needs
+4. All 41 must stay reproducible. Any new C repo needs
    `-ffile-prefix-map=$(CURDIR)=.` in `CFLAGS`, or `-g` writes the build directory
    into DWARF `.debug_line_str`. Check with
    `python3 unrepro/unrepro.py check ../REPO --cmd 'make -B'` on a clean tree.
@@ -155,12 +180,12 @@ including the ones that were in the harness. Multi-paragraph is normal here.
 
 - `grep -r` silently skips every repo. The shell used here replaces `grep`
   with a ugrep wrapper that passes `--ignore-files`, so it honours `.gitignore`,
-  and this directory's `.gitignore` lists all 39 repo directories by name. The
+  and this directory's `.gitignore` lists every repo directory by name. The
   result is a confident `0`, with no error anywhere. Counting shortcut comments this
   way returns 3 instead of 170. Use `find ... -exec grep` for anything that has to
   cross a repo boundary, and treat a suspiciously round zero as this bug first.
 - A test that can perform the failure it checks for eventually will.
-  `commitq identity` rewrites the author on every commit in 39 repos. Its new
+  `commitq identity` rewrites the author on every commit in all of them. Its new
   guard refuses obvious example text, and the test for the guard shelled out
   to `commitq.py` with `cwd` set to the real collection, on the assumption
   that `cwd` chose the tree. It does not: `ROOT` is
@@ -319,9 +344,15 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   below is the one to trust:
 
   Fixed path, any two concurrent runs collide. `cmark`, `jsonc`, `tomlc`,
-  `xmlc`, `corex`, `ed25519`, `sha2`, `utf8n` (all `scratch/`), `derx` and
-  `terminfo` and `httpd` (`t/tmp`), and `trace`, which uses 61 fixed
-  `t/*.tmp` filenames and no scratch variable at all.
+  `xmlc`, `corex`, `ed25519`, `sha2`, `utf8n` and `bpec` (all `scratch/`),
+  `derx` and `terminfo` and `httpd` (`t/tmp`), and `trace`, which uses 61
+  fixed `t/*.tmp` filenames and no scratch variable at all.
+
+  `bpec` is the sharpest of them because its `scratch/` holds the venv
+  and both pinned tokenizer files, not just temporaries, so `make test`
+  and `make test-asan` cannot overlap and neither can overlap an
+  `extract.py` run. Its ASan pass takes long enough that the temptation
+  to start something else in the meantime is real.
 
   Keyed by the binary under test. `inflate` and `pngc` use
   `t/tmp/$(basename "$IN")`, so `make test` and `make test-asan` can overlap
@@ -371,14 +402,16 @@ including the ones that were in the harness. Multi-paragraph is normal here.
 
 ## State
 
-905 commits across 39 repos and 80 in this one, all 39 suites green as of
-the last `make portfolio`. 344 plan items are queued.
+926 commits across 41 repos and 84 in this one. 344 plan items are queued.
+All 41 suites were green together in the `make portfolio` of 17 October
+2026, and the root's own three suites pass: 14 audit checks, 52 audit
+tests, 276 in `t/`.
 `INDEX.md` has the per-repo invariant table and where each one goes next.
 
 Two things this line used to assert are not established: "every commit
 builds" (hard rule 2: nothing checks it) and "all builds reproducible",
 which was measured when the collection was 18 repos and has not been re-run
-across all 39. `unrepro`'s own README still lists four siblings as
+across all 41. `unrepro`'s own README still lists four siblings as
 not-reproducible that now are.
 
 `cc` compiles itself: `make self-host` builds it with itself twice and

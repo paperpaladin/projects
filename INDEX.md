@@ -1,6 +1,6 @@
 # projects
 
-Thirty-nine repositories. Every one is a working program with an **external
+Forty-one projects, in forty-two repositories. Every one is a working program with an **external
 oracle**, something outside the author's control that decides whether the code
 is right. Pure C or standard-library Python throughout; no frameworks, no package
 managers, no dependency beyond `zlib`. Every repo has `make test` and it passes.
@@ -23,7 +23,7 @@ and were invisible here until they acquired the `PLAN.md` that makes a
 directory a member, `ed25519` has since been finished through signing and
 verification against Project Wycheproof.
 
-`unrepro`: one of the thirty-nine, checks **reproducible builds** by
+`unrepro`: one of the forty-one, checks **reproducible builds** by
 building twice under deliberately different conditions (directory name, TZ,
 locale, umask, hostname, user, `-j`, `SOURCE_DATE_EPOCH`). Over the whole
 tree: **34 of 38 REPRODUCIBLE**, the other four being the Python repos where
@@ -90,7 +90,7 @@ since the last regeneration, not that something is wrong.
 
 | repo | lang | what it is | the oracle | tests |
 |---|---|---|---|---|
-| [cc](cc/) | C | C compiler for x86-64, **self-hosting** | gcc and clang, and itself | **325** + 64 cpp |
+| [cc](cc/) | C | C compiler for x86-64, **self-hosting** | gcc and clang, and itself | **364** + 70 cpp |
 | [lnk](lnk/) | C | static ELF linker | the kernel runs it, or it doesn't | 29 |
 | [wasmi](wasmi/) | C | WebAssembly interpreter | expectations computed in Python | **11,833** |
 | [psh](psh/) | C | POSIX shell subset | `dash`, stdout and exit status | **212 agree** |
@@ -103,7 +103,7 @@ since the last regeneration, not that something is wrong.
 | [dbginfo](dbginfo/) | C | DWARF debug-info parser | `readelf` | 85 |
 | [jail](jail/) | C | Landlock sandbox | the kernel, denied means EACCES | 77 |
 | [commitq](commitq/) | Py | multi-repo commit gate + GUI | throwaway repos in a tempdir | 156 |
-| [walkv](walkv/) | C | WAL key-value store | crash at every I/O boundary | 216 scenarios |
+| [walkv](walkv/) | C | WAL key-value store | crash at every I/O boundary | 349 scenarios |
 | [slab](slab/) | C | LD_PRELOAD malloc replacement | real programs, identical output | 32 |
 | [trace](trace/) | C | ptrace syscall tracer, follows children | `strace -c` / `strace -f -c` | 43 |
 | [srcdiff](srcdiff/) | Py | finds shipped code absent from the repo | **real xz artifacts** + live PyPI | 30 |
@@ -114,21 +114,23 @@ since the last regeneration, not that something is wrong.
 | [sha2](sha2/) | C | SHA-2, HMAC, PBKDF2 | NIST CAVP vectors | 2561 vectors |
 | [pngc](pngc/) | C | PNG decoder | PngSuite | 162 + 14 refused |
 | [jsonc](jsonc/) | C | RFC 8259 JSON parser | JSONTestSuite | 95/95, 188/188 |
-| [bigint](bigint/) | C | Arbitrary-precision integers | Python's native int | **107,571 agree** |
+| [bigint](bigint/) | C | Arbitrary-precision integers | Python's native int | **107,573 agree** |
 | [mydiff](mydiff/) | C | Myers diff and patch | GNU diff AND GNU patch | 996 |
 | [httpd](httpd/) | C | HTTP/1.1 static server | curl + RFC 9112 | 230 |
 | [corex](corex/) | C | ELF core dump reader | gdb, value by value | 72 |
 | [confine](confine/) | C | what a process can actually do | a process built with unshare and setpriv | 20 |
+| [bpec](bpec/) | C | byte-level BPE tokeniser, exact ids | the HuggingFace `tokenizers` library, token for token | 36 |
+| [profiled](profiled/) | C | seccomp policy from watching a program run, *apply and check not yet* | the kernel, and `strace` as a second observer | 17 |
 | [derx](derx/) | C | ASN.1 DER / X.509 reader | openssl asn1parse | 10,822 elements |
 | [seccompc](seccompc/) | C | seccomp policy compiler | the kernel | 125 |
 | [sockv](sockv/) | C | socket lister via netlink | the kernel | 83 |
 | [tzf](tzf/) | C | TZif reader, RFC 8536 | zoneinfo | 34 |
-| [gitobj](gitobj/) | C | git object database reader/writer | the object name is its own SHA-1 | **1,639** alone |
-| [zipc](zipc/) | C | ZIP reader, *writing not yet* | Info-ZIP `unzip`/`zipinfo` and Python `zipfile`, read side | 69 |
+| [gitobj](gitobj/) | C | git object database reader/writer | the object name is its own SHA-1 | **2,146** alone |
+| [zipc](zipc/) | C | ZIP reader, *writing not yet* | Info-ZIP `unzip`/`zipinfo` and Python `zipfile`, read side | 76 |
 | [xmlc](xmlc/) | C | XML 1.0 well-formedness checker, *DOCTYPE not yet* | W3C conformance suite; 287 of 1627 in-scope cases judged, the rest declined | 144 |
 | [tlp](tlp/) | Py | metamorphic SQL logic-bug finder | 11 relations, none of them redundant, measured, not argued | **130** |
 | [ed25519](ed25519/) | C | Ed25519 **and X25519**, built up from the field | a second Ed25519 in Python, the other curve form, and 669 Wycheproof vectors | 36 |
-| [terminfo](terminfo/) | C | compiled-terminfo reader, *extended section and `tput` params not yet* | `infocmp`, and `tic` for the name tables | 24 |
+| [terminfo](terminfo/) | C | compiled-terminfo reader, *extended section and `tput` params not yet* | `infocmp`, and `tic` for the name tables | 34 |
 
 Worth running once each:
 
@@ -170,8 +172,7 @@ explaining them.
 
 ## This directory is also a repo
 
-Forty repositories now, but still thirty-nine projects. The
-thirty-ninth is this
+Forty-two repositories now, but forty-one projects. The extra one is this
 directory: `INDEX.md`, `METHOD.md`, the `cq` wrapper and `.portfolio/`. All of
 it was tracked by nothing until it became a repo, for a reason worth naming:
 `commitq.repos()` only ever looked *downward* from the root, so the root itself
@@ -179,18 +180,18 @@ was invisible to the tool whose entire job is to notice unverified work. It is
 listed first by `./cq` and gated by the same `cq c` as everything else; its
 suite is `.portfolio/t/test_portfolio.py`.
 
-The thirty-nine stay independent. They are named one by one in `.gitignore` rather
+The forty-one stay independent. They are named one by one in `.gitignore` rather
 than matched by a pattern, because a pattern would silently swallow a
 thirty-ninth project the day it appeared.
 
-It is not one of the thirty-nine and does not appear in the PDF. Those are
+It is not one of the forty-one and does not appear in the PDF. Those are
 programs judged by authorities outside the author. A document has no such
 authority for its prose. Only its figures are checkable, and those are
 checked, see `PLAN.md` here for the contract.
 
 ## The PDF
 
-`.portfolio/` renders all thirty-nine into one document. Every figure in it is
+`.portfolio/` renders all forty-one into one document. Every figure in it is
 generated, not typed:
 
 ```sh
@@ -257,6 +258,7 @@ picking a repo back up after a gap.**
   | jail | an ungranted path is never reachable, and the child cannot relax itself |
   | commitq | no commit is ever created with a date other than now |
   | confine | a line says measured only if the operation was attempted this run |
+  | bpec | the same integers as the reference, not the same count or the same decoded text |
   | walkv | recovered state is a prefix with no holes |
   | slab | two live allocations never overlap; every pointer correctly aligned |
   | trace | tracing does not change the traced program |
@@ -335,7 +337,7 @@ The single highest-value step per repo, from its plan:
 
 ## What does not work here
 
-About this directory, not the thirty-nine. Each of those has its own list.
+About this directory, not the forty-one. Each of those has its own list.
 
 - `INDEX.md` drifts by design. The commit totals, line totals and per-repo
   test counts below are maintained by hand while `.portfolio/repos.json`
@@ -354,7 +356,7 @@ About this directory, not the thirty-nine. Each of those has its own list.
   to leave a PDF that is missing or older than the page it came from, and the
   suite reads the figures back out with `pdftotext`, but no check looks at
   where anything sits on the page or which fonts were embedded.
-- A full regeneration takes minutes, because it runs all thirty-nine suites.
+- A full regeneration takes minutes, because it runs all forty-one suites.
   `--keep-test-counts` makes it instant by inheriting the previous counts
   instead of measuring them, which is right for the test suite and wrong
   before publishing.

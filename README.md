@@ -1,6 +1,6 @@
 # projects
 
-Thirty-nine programs, each checked against something that does not care
+Forty-one programs, each checked against something that does not care
 whether I am right.
 
 Pure C or standard-library Python. No frameworks and no package managers. The
@@ -128,7 +128,7 @@ here.
 
 ## Reproducible builds
 
-`unrepro`, itself one of the thirty-nine, builds a project twice under
+`unrepro`, itself one of the forty-one, builds a project twice under
 deliberately different conditions (directory name, `TZ`, locale, `umask`,
 hostname, user, `-j`, `SOURCE_DATE_EPOCH`) and compares the outputs byte for
 byte. It diagnoses seven planted causes, 7 of 7: timestamps, `__DATE__`,
@@ -156,7 +156,7 @@ whose number has drifted from what the suite actually prints.
 
 | repo | lang | what it is | the oracle | tests |
 |---|---|---|---|---|
-| [cc](cc/) | C | C compiler for x86-64, **self-hosting** | gcc and clang, and itself | **325** + 64 cpp |
+| [cc](cc/) | C | C compiler for x86-64, **self-hosting** | gcc and clang, and itself | **364** + 70 cpp |
 | [lnk](lnk/) | C | static ELF linker | the kernel runs it, or it does not | 29 |
 | [wasmi](wasmi/) | C | WebAssembly interpreter | expectations computed in Python | **11,833** |
 | [psh](psh/) | C | POSIX shell subset | `dash`, stdout and exit status | **212 agree** |
@@ -169,7 +169,7 @@ whose number has drifted from what the suite actually prints.
 | [dbginfo](dbginfo/) | C | DWARF debug-info parser | `readelf` | 85 |
 | [jail](jail/) | C | Landlock sandbox | the kernel: denied means EACCES | 77 |
 | [commitq](commitq/) | Py | multi-repo commit gate + GUI | throwaway repos in a tempdir | 156 |
-| [walkv](walkv/) | C | WAL key-value store | crash at every I/O boundary | 216 scenarios |
+| [walkv](walkv/) | C | WAL key-value store | crash at every I/O boundary | 349 scenarios |
 | [slab](slab/) | C | LD_PRELOAD malloc replacement | real programs, identical output | 32 |
 | [trace](trace/) | C | ptrace syscall tracer, follows children | `strace -c` / `strace -f -c` | 43 |
 | [srcdiff](srcdiff/) | Py | finds shipped code absent from the repo | **real xz artifacts** + live PyPI | 30 |
@@ -180,7 +180,7 @@ whose number has drifted from what the suite actually prints.
 | [sha2](sha2/) | C | SHA-2, HMAC, PBKDF2 | NIST CAVP vectors | 2561 vectors |
 | [pngc](pngc/) | C | PNG decoder | PngSuite | 162 + 14 refused |
 | [jsonc](jsonc/) | C | RFC 8259 JSON parser | JSONTestSuite | 95/95, 188/188 |
-| [bigint](bigint/) | C | arbitrary-precision integers | Python's native int | **107,571 agree** |
+| [bigint](bigint/) | C | arbitrary-precision integers | Python's native int | **107,573 agree** |
 | [mydiff](mydiff/) | C | Myers diff and patch | GNU diff AND GNU patch | 996 |
 | [httpd](httpd/) | C | HTTP/1.1 static server | curl + RFC 9112 | 230 |
 | [corex](corex/) | C | ELF core dump reader | gdb, value by value | 72 |
@@ -188,12 +188,15 @@ whose number has drifted from what the suite actually prints.
 | [seccompc](seccompc/) | C | seccomp policy compiler | the kernel | 125 |
 | [sockv](sockv/) | C | socket lister via netlink | the kernel | 83 |
 | [tzf](tzf/) | C | TZif reader, RFC 8536 | zoneinfo | 34 |
-| [gitobj](gitobj/) | C | git object database reader/writer | the object name is its own SHA-1 | **1,639** alone |
-| [zipc](zipc/) | C | ZIP reader (writing not yet) | Info-ZIP `unzip`/`zipinfo`, Python `zipfile` | 69 |
+| [gitobj](gitobj/) | C | git object database reader/writer | the object name is its own SHA-1 | **2,146** alone |
+| [zipc](zipc/) | C | ZIP reader (writing not yet) | Info-ZIP `unzip`/`zipinfo`, Python `zipfile` | 76 |
 | [xmlc](xmlc/) | C | XML 1.0 well-formedness checker (DOCTYPE not yet) | W3C conformance suite | 144 |
 | [tlp](tlp/) | Py | metamorphic SQL logic-bug finder | 11 relations, none redundant, measured | **130** |
 | [ed25519](ed25519/) | C | Ed25519 **and X25519**, built from the field up | a second implementation in Python, the other curve form, 669 Wycheproof vectors | 36 |
-| [terminfo](terminfo/) | C | compiled-terminfo reader (extended section and `tput` params not yet) | `infocmp`, and `tic` for the name tables | 24 |
+| [terminfo](terminfo/) | C | compiled-terminfo reader (extended section and `tput` params not yet) | `infocmp`, and `tic` for the name tables | 34 |
+| [bpec](bpec/) | C | byte-level BPE tokeniser, exact ids | the HuggingFace `tokenizers` library, token for token | 36 |
+| [confine](confine/) | C | what a process can actually do | a process built with unshare and setpriv | 20 |
+| [profiled](profiled/) | C | seccomp policy from watching a program run (apply and check not yet) | the kernel, and `strace` as a second observer | 17 |
 
 ## Start with cc
 
@@ -253,7 +256,7 @@ Several compose. `cc` and `lnk` together remove the binutils dependency.
 
 ## Layout
 
-Each of the thirty-nine is an independent repository with its own history,
+Each of the forty-one is an independent repository with its own history,
 `README.md`, `PLAN.md` and `make test`. This repository is what sits above
 them: `INDEX.md`, the working standards in `METHOD.md`, the `cq` wrapper
 around `commitq`, and `.portfolio/`, which regenerates the figures above from
