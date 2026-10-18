@@ -196,7 +196,7 @@ whose number has drifted from what the suite actually prints.
 | [terminfo](terminfo/) | C | compiled-terminfo reader (extended section and `tput` params not yet) | `infocmp`, and `tic` for the name tables | 34 |
 | [bpec](bpec/) | C | byte-level BPE tokeniser, exact ids | the HuggingFace `tokenizers` library, token for token | 36 |
 | [confine](confine/) | C | what a process can actually do | a process built with unshare and setpriv | 20 |
-| [profiled](profiled/) | C | seccomp policy from watching a program run (apply and check not yet) | the kernel, and `strace` as a second observer | 17 |
+| [profiled](profiled/) | C | seccomp policy derived from watching a program run | the kernel, and `strace` as a second observer | 37 |
 
 ## Start with cc
 

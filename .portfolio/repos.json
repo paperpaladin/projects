@@ -248,16 +248,16 @@
   },
   "profiled": {
     "blurb": "Derive a seccomp policy by watching a program run",
-    "commits": 2,
-    "done": 3,
+    "commits": 4,
+    "done": 6,
     "group": "observability",
     "invariant": "A syscall absent from the profile is killed, and the kernel says so",
     "oracle": "The kernel: a denied syscall kills the process, read from wait4",
     "shortcuts": 1,
-    "src": 242,
-    "test": 338,
-    "tests": "17 passed, 0 failed",
-    "todo": 8
+    "src": 531,
+    "test": 530,
+    "tests": "37 passed, 0 failed",
+    "todo": 6
   },
   "psh": {
     "blurb": "POSIX shell subset",

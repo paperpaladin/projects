@@ -120,7 +120,7 @@ since the last regeneration, not that something is wrong.
 | [corex](corex/) | C | ELF core dump reader | gdb, value by value | 72 |
 | [confine](confine/) | C | what a process can actually do | a process built with unshare and setpriv | 20 |
 | [bpec](bpec/) | C | byte-level BPE tokeniser, exact ids | the HuggingFace `tokenizers` library, token for token | 36 |
-| [profiled](profiled/) | C | seccomp policy from watching a program run, *apply and check not yet* | the kernel, and `strace` as a second observer | 17 |
+| [profiled](profiled/) | C | seccomp policy derived from watching a program run | the kernel, and `strace` as a second observer | 37 |
 | [derx](derx/) | C | ASN.1 DER / X.509 reader | openssl asn1parse | 10,822 elements |
 | [seccompc](seccompc/) | C | seccomp policy compiler | the kernel | 125 |
 | [sockv](sockv/) | C | socket lister via netlink | the kernel | 83 |
