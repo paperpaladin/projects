@@ -7,16 +7,19 @@ managers, no dependency beyond `zlib`. Every repo has `make test` and it passes.
 Every commit is meant to build; nothing currently verifies that across the
 collection (see METHOD.md hard rule 2).
 
-Three rows are unfinished and are listed, not hidden. `terminfo`
-reads headers, booleans, numbers and the string table: 4584 string
-capabilities byte for byte against `infocmp`, but not the ncurses extended
-section, and not parameterised strings evaluated against `tput`. `xmlc`
-has elements, attributes, character data, comments, processing instructions,
-CDATA sections, the XML declaration and references, but not the DOCTYPE, so
-it declines 82% of the W3C suite instead of judging it, and
-`zipc` reads archives but cannot write one. Each says so first in its own
-README or PLAN, and each refuses what it has not implemented instead of
-answering wrongly.
+The three rows this used to list as unfinished are finished.
+`terminfo` reads the ncurses extended section and evaluates
+parameterised strings against `tput`: 3834 evaluations across 43
+terminals, reaching 18 of the stack language's operators, with 9 more
+covered by a `tic`-compiled probe entry because no installed terminal
+uses them. `xmlc` has the DOCTYPE and the internal subset, and now
+judges the W3C suite instead of declining 82% of it: 1623 cases
+judged where there were 287. `zipc` writes archives that Info-ZIP and
+Python's `zipfile` both accept and extract identically.
+
+What remains unfinished in each is in its own README, stated first,
+and each still refuses what it has not implemented rather than
+answering wrongly. That is the part that does not change.
 
 `terminfo` and `ed25519` were both built in sessions that were interrupted,
 and were invisible here until they acquired the `PLAN.md` that makes a
@@ -91,18 +94,18 @@ since the last regeneration, not that something is wrong.
 | repo | lang | what it is | the oracle | tests |
 |---|---|---|---|---|
 | [cc](cc/) | C | C compiler for x86-64, **self-hosting** | gcc and clang, and itself | **364** + 70 cpp |
-| [lnk](lnk/) | C | static ELF linker | the kernel runs it, or it doesn't | 29 |
+| [lnk](lnk/) | C | static ELF linker | the kernel runs it, or it doesn't | 49 |
 | [wasmi](wasmi/) | C | WebAssembly interpreter | expectations computed in Python | **11,833** |
 | [psh](psh/) | C | POSIX shell subset | `dash`, stdout and exit status | **212 agree** |
 | [rx](rx/) | C | linear-time regex engine | Python's `re` | **3000 agree** per seed |
-| [inflate](inflate/) | C | DEFLATE/gzip codec | `gzip -d` accepts our output | 162 |
+| [inflate](inflate/) | C | DEFLATE/gzip codec | `gzip -d` accepts our output | 169 |
 | [tarx](tarx/) | C | tar reader/writer | GNU `tar`, bidirectional | 119 |
 | [sqlr](sqlr/) | C | SQLite file-format reader | libsqlite3 itself | 123 agree |
 | [vtparse](vtparse/) | C | VT500 parser + wcwidth | published table, **3584/3584** | 101 |
 | [unrepro](unrepro/) | Py | build-reproducibility differ | planted causes, 7/7 diagnosed | 114 |
-| [dbginfo](dbginfo/) | C | DWARF debug-info parser | `readelf` | 85 |
+| [dbginfo](dbginfo/) | C | DWARF debug-info parser | `readelf` | 118 |
 | [jail](jail/) | C | Landlock sandbox | the kernel, denied means EACCES | 77 |
-| [commitq](commitq/) | Py | multi-repo commit gate + GUI | throwaway repos in a tempdir | 156 |
+| [commitq](commitq/) | Py | multi-repo commit gate + GUI | throwaway repos in a tempdir | 173 |
 | [walkv](walkv/) | C | WAL key-value store | crash at every I/O boundary | 349 scenarios |
 | [slab](slab/) | C | LD_PRELOAD malloc replacement | real programs, identical output | 32 |
 | [trace](trace/) | C | ptrace syscall tracer, follows children | `strace -c` / `strace -f -c` | 43 |
@@ -116,21 +119,21 @@ since the last regeneration, not that something is wrong.
 | [jsonc](jsonc/) | C | RFC 8259 JSON parser | JSONTestSuite | 95/95, 188/188 |
 | [bigint](bigint/) | C | Arbitrary-precision integers | Python's native int | **107,573 agree** |
 | [mydiff](mydiff/) | C | Myers diff and patch | GNU diff AND GNU patch | 996 |
-| [httpd](httpd/) | C | HTTP/1.1 static server | curl + RFC 9112 | 230 |
-| [corex](corex/) | C | ELF core dump reader | gdb, value by value | 72 |
+| [httpd](httpd/) | C | HTTP/1.1 static server | curl + RFC 9112 | 258 |
+| [corex](corex/) | C | ELF core dump reader | gdb, value by value | 80 |
 | [confine](confine/) | C | what a process can actually do | a process built with unshare and setpriv | 20 |
-| [bpec](bpec/) | C | byte-level BPE tokeniser, exact ids | the HuggingFace `tokenizers` library, token for token | 36 |
-| [profiled](profiled/) | C | seccomp policy derived from watching a program run | the kernel, and `strace` as a second observer | 37 |
+| [bpec](bpec/) | C | byte-level BPE tokeniser, exact ids | the HuggingFace `tokenizers` library, token for token | 46 |
+| [profiled](profiled/) | C | seccomp policy derived from watching a program run | the kernel, and `strace` as a second observer | 60 |
 | [derx](derx/) | C | ASN.1 DER / X.509 reader | openssl asn1parse | 10,822 elements |
-| [seccompc](seccompc/) | C | seccomp policy compiler | the kernel | 125 |
+| [seccompc](seccompc/) | C | seccomp policy compiler | the kernel | 130 |
 | [sockv](sockv/) | C | socket lister via netlink | the kernel | 83 |
 | [tzf](tzf/) | C | TZif reader, RFC 8536 | zoneinfo | 34 |
-| [gitobj](gitobj/) | C | git object database reader/writer | the object name is its own SHA-1 | **2,146** alone |
-| [zipc](zipc/) | C | ZIP reader, *writing not yet* | Info-ZIP `unzip`/`zipinfo` and Python `zipfile`, read side | 76 |
-| [xmlc](xmlc/) | C | XML 1.0 well-formedness checker, *DOCTYPE not yet* | W3C conformance suite; 287 of 1627 in-scope cases judged, the rest declined | 144 |
+| [gitobj](gitobj/) | C | git object database reader/writer | the object name is its own SHA-1 | **1,862** alone |
+| [zipc](zipc/) | C | ZIP reader and writer | Info-ZIP `unzip`/`zipinfo` and Python `zipfile`, read side | 120 |
+| [xmlc](xmlc/) | C | XML 1.0 well-formedness checker, with the internal DTD subset | W3C conformance suite; 1623 of 1624 in-scope cases judged | 219 |
 | [tlp](tlp/) | Py | metamorphic SQL logic-bug finder | 11 relations, none of them redundant, measured, not argued | **130** |
-| [ed25519](ed25519/) | C | Ed25519 **and X25519**, built up from the field | a second Ed25519 in Python, the other curve form, and 669 Wycheproof vectors | 36 |
-| [terminfo](terminfo/) | C | compiled-terminfo reader, *extended section and `tput` params not yet* | `infocmp`, and `tic` for the name tables | 34 |
+| [ed25519](ed25519/) | C | Ed25519 **and X25519**, built up from the field | a second Ed25519 in Python, the other curve form, and 669 Wycheproof vectors | 43 |
+| [terminfo](terminfo/) | C | compiled-terminfo reader, with `tput`-checked parameterised strings | `infocmp`, and `tic` for the name tables | 40 |
 
 Worth running once each:
 
@@ -264,6 +267,27 @@ picking a repo back up after a gap.**
   | trace | tracing does not change the traced program |
   | srcdiff | no false negatives in HIGH, and few enough false positives that a real one is visible |
   | prof | profiling does not change the profiled program |
+  | bigint | every operation matches Python exactly, including floor division of negatives |
+  | cmark | output is byte-identical to the spec's expected HTML, nothing normalised |
+  | corex | every value printed agrees with gdb, or it is not printed |
+  | derx | every element matches asn1parse byte for byte, or is refused with a message |
+  | ed25519 | every layer is differenced against an implementation sharing no code with it, because sign-then-verify is not evidence |
+  | gitobj | every object read hashes back to its own name, loose or packed, through the whole delta chain |
+  | httpd | no request can read a byte outside the document root |
+  | jsonc | a crash can never score as a rejection; exit status outside {0,1} is a failure |
+  | mydiff | the loop closes both ways: our diff feeds GNU patch, GNU's diff feeds our -p |
+  | pngc | a corrupt file is refused by CRC, never rendered as a wrong image |
+  | profiled | a syscall absent from the profile is killed, and the kernel says so |
+  | seccompc | a syscall the policy did not permit never runs, by any entry point |
+  | sha2 | byte-exact against published vectors; not constant-time, and says so first |
+  | sockv | every socket the kernel reports is listed once with every field as given |
+  | terminfo | every capability reported is the one infocmp reports, because a positional format can be parsed perfectly and named wrongly |
+  | tlp | every disagreement reported is a real one, and a run that finds nothing is distinguishable from a run that tested nothing |
+  | tomlc | valid documents parse to the expected value, not merely without error |
+  | tzf | every instant answered agrees with both readers; malformed input is refused |
+  | utf8n | normalising twice equals normalising once, for every form on every input |
+  | xmlc | acceptance is exactly the XML 1.0 Fifth Edition grammar, and no input crashes, overreads or leaks |
+  | zipc | the central directory is authoritative, and no member can ever be written outside the destination |
 
 - Oracle: ranked by how little the author controls them.
 - Non-goals: what keeps each project finishable. Some are permanent:

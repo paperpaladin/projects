@@ -62,15 +62,29 @@ one `commitq`'s gateability guard asserts against, so a directory with a `.git`
 and no `PLAN.md` is outside the set, `notally-molly` is an unrelated Android
 fork and stays out.
 
+`cq t` used a different rule from the other two until it was fixed: it
+walked every git repository under the root, so it offered work on
+`notally-molly` every run, described as "plan is empty", which reads
+as an invitation to write one for the single directory these
+instructions say in bold never to modify. It filters on `PLAN.md` now
+and prints what it left out, because a filter that hides its own
+exclusions repeats the silence described below.
+
+It also said "plan is empty" for a finished plan. `plan_items()`
+returns only the unchecked items, so a completed plan and an unwritten
+one both produce an empty list, and only `plan_done()` separates them.
+Three repositories were reading as unplanned when they were done.
+
 Two repos were invisible for exactly that reason until they were given one:
 `ed25519` and `terminfo`, both built in sessions that were interrupted. Both
 build and both pass their suites against external oracles. `ed25519` has since
 been finished through signing and verification against Project Wycheproof:
-`ed25519_sign` and `ed25519_verify` are both in `ed25519.h`. `terminfo` is
-still unfinished, but not in the way this said. It does read the string
-table, 4584 string capabilities compared byte for byte against `infocmp`.
-What it lacks is the ncurses extended section and parameterised strings
-evaluated against `tput`. Their READMEs say so first. The lesson is that the
+`ed25519_sign` and `ed25519_verify` are both in `ed25519.h`. `terminfo` is finished now, and this used to say otherwise. It reads
+the string table, 4584 string capabilities byte for byte against
+`infocmp`, AND the ncurses extended section, AND parameterised strings
+evaluated against `tput`: 3834 evaluations across 43 terminals,
+reaching 18 of the stack language's operators, with 9 more covered by
+a `tic`-compiled probe entry because no installed terminal uses them. The lesson is that the
 membership rule is silent: a repo with no `PLAN.md` is not reported as missing,
 it simply does not appear, so `cq t` never offers work on it and the portfolio
 never counts it.
@@ -115,15 +129,27 @@ runs only the new one's suite.
    that is the variable `git_env()` strips from every git subprocess. Only
    `add_argument("--date"` is still grepped for absence. `INDEX.md` carried the
    same stale description.
-2. Every commit must build. This is the intent, and it is not currently
-   verified. There is no harness that checks out each commit and rebuilds: the
-   only script that ever did is `bigint/scratch/audit.sh`, which is untracked
-   and hardcoded to one repo. Treat the claim as an aspiration until something
-   establishes it collection-wide.
+2. Every commit must build, and `cq buildall` is the thing that checks
+   it. **847 of 847 commits build**, with 196 more having nothing to
+   build, measured 18 October 2026. It was an aspiration in this rule
+   for as long as nothing ran it.
+   It creates a fresh git worktree per commit with `git worktree add
+   --detach` and builds the DEFAULT target there, not `make test`: those
+   are different claims and the second is an order of magnitude slower.
+   `cq buildall REPO` does one repository, `--last N` the most recent N
+   commits of each.
 
-   When writing that harness: delete build artifacts between commits so a
-   stale binary cannot fake a pass, and do not reach for `git stash -u`, which
-   does NOT stash ignored files and so produces false passes.
+   The two traps this used to warn about are closed by construction
+   rather than by care. A stale binary cannot fake a pass because the
+   worktree is new and holds no object file, generated header or fetched
+   corpus. And nothing stashes, so `git stash -u` not stashing ignored
+   files cannot bite.
+
+   The false pass is a case in `commitq`'s suite rather than a sentence
+   here: a three-commit fixture whose middle commit does not compile, run
+   both ways. The harness reports 2 of 3 and names the commit. Built in
+   place with the previous commit's binary left behind and newer than the
+   source, `make` reports success on the broken one.
 3. ASCII punctuation only. No em dashes, en dashes, curly quotes, ellipsis
    characters, arrows, multiplication signs or non-breaking spaces, in prose or in
    code comments. Use `...` for an ellipsis, `->` for an arrow, and straight
@@ -238,6 +264,93 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   among several there. `corex` exits 2 with one line, because `gdb` is the
   only oracle for every fact it checks and the only way to obtain a core, so a
   reduced run would print "0 passed, 0 failed" having checked nothing.
+- Assert that the new path ran. Adding a second implementation and
+  comparing it against the first proves nothing if the new one is not
+  actually wired in: the comparison then runs the old code twice and
+  agrees with itself. In `ed25519` the guard is an operation counter,
+  and it earned itself immediately, because two mutations that point
+  the new entry point back at the old implementation fail ONLY the
+  count checks. Every value comparison passes under both.
+
+- A seeded check can pass with the seed ignored. `derx`'s first
+  determinism assertion compared two fuzzer logs, and the logs differ
+  on the line that echoes the seed back, so it passed while `--seed`
+  was deliberately unwired. The fix was to compare a digest of the
+  generated material rather than the report about it. Whenever a test
+  asserts "same seed, same output", ask what it would do if the seed
+  were ignored entirely.
+
+- A claim can be false before you arrive and pass anyway on a
+  degenerate fixture. `inflate` asserted that output never grows as
+  the compression level rises. It had never been true: 2 of 480 level
+  pairs over 60 real files already grew. It passed because the only
+  fixture was twenty copies of one file, and editing a comment in that
+  file broke it. Before strengthening a property, check it against
+  something other than the fixture it was written for.
+
+- A truncated failure list hides the worst failure. `bigint` prints
+  the first 20 disagreements and appends the driver's exit status
+  last, so when the driver died of SIGFPE partway through a chunk, all
+  20 slots went to knock-on wrong answers and the crash was never
+  mentioned. Terminal failures sort first now. Any report with a cap
+  needs an order, not just a limit.
+
+- A guard against a crashed comparator must not also fire on an
+  ordinary disagreement. `dbginfo`'s fired on `rc != 0`, which is also
+  what its comparison script returns for a normal mismatch, so every
+  genuine failure printed a second self-contradicting line and was
+  counted twice. It never turned red into green, but it inflated every
+  red number it ever reported, including one recorded in a PLAN.
+
+- A buffer larger than its data turns the sanitizer off. Found
+  THREE times in one session, independently, in `derx`, `bpec` and
+  `jsonc`. A read
+  buffer that doubles is 64 KB after reading 1 KB, so a read one byte
+  past the end of the input lands 63 KB inside a live allocation and
+  ASan says nothing. In `derx`, deleting a bounds check produced 33
+  wrong answers and zero sanitizer reports; in `bpec`, a deliberate
+  one-past-the-end read produced zero reports untrimmed and two after
+  a `realloc` down to the exact length. Both repos had been reporting
+  clean ASan runs for weeks over an area smaller than it looked.
+
+  The fix is one `realloc` after the read loop. The check is to plant
+  the over-read and require ASan to see it, which `bpec/t/run.sh`
+  does as an ordinary case, so reintroducing a rounded-up buffer
+  turns the suite red rather than quietly turning the sanitizer off.
+
+  `jsonc` is the one that says how little a single fix is worth. Its
+  `slurp` had already been trimmed and documented; the string decode
+  buffer one function away had the same shape, rounded a 6-byte
+  string up to a 16-byte allocation, and was equally blind. The fix
+  did not travel. Look for the shape, not for the function that was
+  named last time.
+
+  `jsonc` also shows the other half of the answer. An arena makes
+  this permanent, because every object lives inside one big block and
+  no sanitizer can see a write cross from one to the next. Its
+  `-DJSONC_ARENA_DEBUG` gives every object its own exactly sized
+  allocation, and the suite runs both ways, so the speed and the
+  sanitizer coverage are both kept instead of one being traded for
+  the other quietly.
+
+  The sweep for candidates is crude and the result is a list of
+  suspects, not of defects: 23 of the 31 C files here grow a buffer
+  by doubling and only two ever shrink one to an exact size. Those
+  two are `psh` and `tomlc`. The rest are unverified.
+- `cq c` stages the whole tree, so anything not in `.gitignore` gets
+  committed. A 288 KB `bpec-asan` binary was tracked for exactly this
+  reason, with `.gitignore` listing only the release binary next to
+  it, and a subagent swept a `.msg.tmp` into a `derx` commit the same
+  way. Check with: tracked files whose first four bytes are
+  `7f454c46` are ELF.
+
+  That sweep also finds 19 tracked binaries under `wasmi/hist`,
+  `b1` through `b17` plus two bug variants, about 600 KB. They are
+  build artifacts of the `c*` sources beside them. They are left
+  alone deliberately: that directory belongs to `build.py`, which
+  deletes `.git` and rebuilds the history from scratch, and removing
+  its inputs or outputs without reading it is not a safe thing to do
+  in passing.
 - `/tmp` is tmpfs and does not survive a reboot. Never leave anything there.
   It is also shared: a fixed name there (`/tmp/vtparse-fuzz.bin`) means two
   concurrent runs feed each other their inputs, and a cleanup that sweeps
@@ -332,6 +445,27 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   explanation. It cost three debugging detours in one session, once sending me
   after a non-existent bug in code whose patch had been killed before it
   wrote. Kill by PID from `pgrep -af`, in a separate call.
+
+  The dual of it bit later in the same session and deserves its own
+  sentence. `until ! pgrep -f PATTERN; do sleep 15; done` never exits,
+  because the waiting shell's own command line contains the pattern
+  and so matches it. The symptom is not an error: it is a watcher
+  reporting that a job is still running hours after it finished, and
+  then a second watcher started for the same reason, also never
+  exiting. Two were sitting there while the run they watched had been
+  green for an hour, and one of them made a four-hour figure out of a
+  one-hour job. Use `pgrep -x NAME` for an exact binary name, or wait
+  on a PID.
+- The root suite cannot be green while any member repo is being
+  edited. `test_portfolio.py` runs `extract.py` twice and requires the
+  output to equal the checked-in `repos.json` byte for byte, and
+  `measure()` counts lines in the WORKING TREE, not in HEAD. So a
+  parallel agent part-way through editing `zipc.c` moves `src` by
+  ninety lines and the root suite fails with "repos.json is stale:
+  re-run extract.py", which is true and not the point. Sync the
+  portfolio last, after everything else has committed. Nothing is
+  wrong when this happens; the counts are simply of a tree that is
+  still moving.
 - A second `extract.py` now REFUSES, and it used to destroy `repos.json`.
   Two runs both write `repos.json.new` and both `mv` it, so one can move a
   half-written file over the real one, which happened, leaving the file
@@ -408,11 +542,29 @@ All 41 suites were green together in the `make portfolio` of 17 October
 tests, 276 in `t/`.
 `INDEX.md` has the per-repo invariant table and where each one goes next.
 
-Two things this line used to assert are not established: "every commit
-builds" (hard rule 2: nothing checks it) and "all builds reproducible",
-which was measured when the collection was 18 repos and has not been re-run
-across all 41. `unrepro`'s own README still lists four siblings as
-not-reproducible that now are.
+"Every commit builds" is established, not asserted: `cq buildall` says
+847 of 847, with 196 commits having nothing to build. It creates a
+fresh git worktree per commit, reads the Makefile as it was AT that
+commit, and builds `all` where there is one.
+
+The first run of it reported 937 of 1040, and almost every one of the
+103 was the tool being wrong rather than a commit being broken. Bare
+`make` runs the first target, which in `commitq` and `srcdiff` is
+`test`, so it ran their suites and recorded the result as whether the
+commit built; and it read today's Makefile rather than the commit's,
+so 86 root commits that never had one were all reported broken. Worth
+remembering before believing any number this harness or another one
+prints on its first run.
+
+"All builds reproducible" is still not established. It was measured when
+the collection was 18 repos and has not been re-run across all 41.
+`profiled` was checked individually when it was added and is
+reproducible; the sweep is the thing that has not happened.
+
+This paragraph also used to say `unrepro`'s README still listed four
+siblings as not-reproducible after they were fixed. That was true once
+and is not now: its README carries the whole arc, including the
+re-measurement showing all four reproducible.
 
 `cc` compiles itself: `make self-host` builds it with itself twice and
 asserts the two binaries are byte-identical AND that the stage-2 compiler
