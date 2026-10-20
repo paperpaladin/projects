@@ -560,6 +560,41 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   appends a second line and `$((q+n))` dies with "syntax error in expression".
   Drop the `|| echo 0`: the count is already printed. This cost a detour in
   `prof` and then, in the same session as the fix, a second one at the root.
+- A rate limit that the rate-limit API does not report. `gh repo create`
+  begins failing after roughly a dozen repositories with "You have created
+  too many repositories, too quickly", an hourly cooldown enforced by
+  GitHub's abuse system. `gh api rate_limit` reports 4989/5000 core requests
+  remaining while every create is being refused, because the two limits are
+  unrelated. An hour went into trusting that number over the error text.
+  When an API says no, read what it said; do not ask a different endpoint
+  whether it meant it.
+- Creating a remote and pushing to it authenticate by different paths.
+  `gh repo create` uses gh's own stored token; `git push` goes through
+  git's credential helper, which `~/.gitconfig` here hardcodes as
+  `!/usr/bin/gh auth git-credential`. When gh lives anywhere else, every
+  creation succeeds and every push fails, and what is left on GitHub is a
+  row of repositories that exist and are empty. Worse, `gh repo list`
+  reports `diskUsage: 0KB` for a *correctly* pushed repository too, because
+  that figure is computed asynchronously -- so the obvious check for "did
+  the content arrive" gives a false alarm. Ask for the branches instead.
+- Do not put `/run/host/usr/bin` on `PATH` to reach a host binary from
+  inside the toolbox container. That directory also holds the host's `git`,
+  built against host libraries, which cannot find its own `remote-https`
+  helper here and fails every push with `remote helper 'https' aborted
+  session`. Call the host binary by absolute path and leave `PATH` alone.
+- `--force-with-lease` refusing with `stale info` is not a reason to reach
+  for `--force`. It means the local clone has no remote-tracking ref for
+  that branch, so git has no basis on which to judge the lease -- which is
+  exactly the case where you have the least idea what is on the remote.
+  `git fetch` first, then compare: in `sqlr` the remote's tree turned out to
+  be byte-identical to a local commit, so nothing was lost by replacing it.
+  That comparison takes a minute and is the whole reason the lease exists.
+- A batch script over N repositories must not be `set -e` and nothing else.
+  One transient failure on the eleventh of forty-two ended the run and its
+  message scrolled off the screen, so the visible symptom was "it stopped"
+  with no cause. Run each item in a function called with `|| record-and-
+  continue`, and print the names of everything that failed in one block at
+  the end, where it cannot scroll past.
 
 ## State
 
