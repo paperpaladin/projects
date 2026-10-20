@@ -40,13 +40,13 @@
   },
   "cmark": {
     "blurb": "CommonMark parser and HTML renderer",
-    "commits": 26,
-    "done": 18,
+    "commits": 27,
+    "done": 19,
     "group": "formats",
     "invariant": "Output is byte-identical to the spec's expected HTML, nothing normalised",
     "oracle": "The specification's own spec.json: 652 exact markdown/HTML pairs",
     "shortcuts": 2,
-    "src": 3689,
+    "src": 3741,
     "test": 226,
     "tests": "22 passed, 0 failed",
     "todo": 0
@@ -92,16 +92,16 @@
   },
   "dbginfo": {
     "blurb": "DWARF debug-info parser",
-    "commits": 30,
-    "done": 18,
+    "commits": 32,
+    "done": 19,
     "group": "formats",
     "invariant": "Every fact printed agrees with readelf",
     "oracle": "readelf --debug-dump",
     "shortcuts": 4,
-    "src": 1831,
+    "src": 1860,
     "test": 738,
     "tests": "118 passed, 0 failed",
-    "todo": 9
+    "todo": 10
   },
   "derx": {
     "blurb": "DER reader and X.509 printer",
@@ -139,7 +139,7 @@
     "shortcuts": 6,
     "src": 1153,
     "test": 958,
-    "tests": "2303 passed, 0 failed",
+    "tests": "2365 passed, 0 failed",
     "todo": 17
   },
   "httpd": {
@@ -209,13 +209,13 @@
   },
   "mydiff": {
     "blurb": "Myers diff and patch",
-    "commits": 27,
-    "done": 14,
+    "commits": 28,
+    "done": 15,
     "group": "toolchain",
     "invariant": "The loop closes both ways: our diff feeds GNU patch, GNU's diff feeds our -p",
     "oracle": "GNU diff byte-identical, and GNU patch applies our output",
     "shortcuts": 3,
-    "src": 1346,
+    "src": 1373,
     "test": 1010,
     "tests": "2104 passed, 0 failed",
     "todo": 3
@@ -235,16 +235,16 @@
   },
   "prof": {
     "blurb": "Sampling CPU profiler",
-    "commits": 32,
-    "done": 18,
+    "commits": 36,
+    "done": 21,
     "group": "observability",
     "invariant": "Profiling does not change the profiled program",
     "oracle": "A planted hot loop with known 10:1 ratios",
-    "shortcuts": 6,
-    "src": 752,
-    "test": 319,
-    "tests": "15 passed, 0 failed, 0 skipped",
-    "todo": 12
+    "shortcuts": 9,
+    "src": 1786,
+    "test": 862,
+    "tests": "29 passed, 0 failed, 0 skipped",
+    "todo": 9
   },
   "profiled": {
     "blurb": "Derive a seccomp policy by watching a program run",
@@ -313,16 +313,16 @@
   },
   "slab": {
     "blurb": "LD_PRELOAD malloc replacement",
-    "commits": 25,
-    "done": 18,
+    "commits": 30,
+    "done": 23,
     "group": "systems",
     "invariant": "Two live allocations never overlap; every pointer aligned",
     "oracle": "Real programs must produce identical output",
-    "shortcuts": 7,
-    "src": 795,
-    "test": 1121,
-    "tests": "32 passed, 0 failed, 0 skipped",
-    "todo": 11
+    "shortcuts": 8,
+    "src": 1341,
+    "test": 2660,
+    "tests": "60 passed, 0 failed, 0 skipped",
+    "todo": 7
   },
   "sockv": {
     "blurb": "netlink socket enumerator",
@@ -430,16 +430,16 @@
   },
   "tzf": {
     "blurb": "TZif timezone file reader",
-    "commits": 17,
-    "done": 6,
+    "commits": 18,
+    "done": 7,
     "group": "formats",
     "invariant": "Every instant answered agrees with both readers; malformed input is refused",
     "oracle": "zdump and Python's zoneinfo must both agree",
     "shortcuts": 4,
-    "src": 998,
+    "src": 1048,
     "test": 1087,
     "tests": "35 passed, 0 failed",
-    "todo": 7
+    "todo": 6
   },
   "unrepro": {
     "blurb": "Build-reproducibility differ",
@@ -456,16 +456,16 @@
   },
   "utf8n": {
     "blurb": "Unicode normalisation, all four forms",
-    "commits": 23,
-    "done": 7,
+    "commits": 29,
+    "done": 18,
     "group": "formats",
     "invariant": "Normalising twice equals normalising once, for every form on every input",
     "oracle": "NormalizationTest.txt from the UCD: 806,840 assertions",
-    "shortcuts": 3,
-    "src": 3421,
-    "test": 1310,
-    "tests": "107 passed, 0 failed",
-    "todo": 10
+    "shortcuts": 2,
+    "src": 3947,
+    "test": 2038,
+    "tests": "118 passed, 0 failed",
+    "todo": 3
   },
   "vtparse": {
     "blurb": "VT500 parser and wcwidth",
@@ -482,15 +482,15 @@
   },
   "walkv": {
     "blurb": "Write-ahead-log key-value store",
-    "commits": 16,
-    "done": 11,
+    "commits": 18,
+    "done": 12,
     "group": "systems",
     "invariant": "Recovered state is a prefix with no holes",
     "oracle": "A crash injected at every I/O boundary",
     "shortcuts": 1,
-    "src": 423,
-    "test": 598,
-    "tests": "349 scenarios checked, 0 failed",
+    "src": 576,
+    "test": 1102,
+    "tests": "704 scenarios checked, 0 failed",
     "todo": 7
   },
   "wasmi": {

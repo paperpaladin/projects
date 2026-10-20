@@ -50,6 +50,7 @@ how the gitobj and wasmi defects above were found. It takes about ten minutes.
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -432,7 +433,13 @@ def check_readme_counts():
             continue
         ran = int(m.group(0).replace(",", ""))
         if ran not in quoted:
-            bad.append("%s: README says %s, the suite ran %d"
+            # "the suite ran" was a lie: nothing is run here, repos.json
+            # is read. The difference matters because the usual cause is a
+            # stale repos.json rather than a wrong README, and the old
+            # wording sent a reader off to run the suite by hand and find
+            # it already agreed with its README.
+            bad.append("%s: README says %s, repos.json records %d"
+                       " (regenerate it with extract.py if a suite grew)"
                        % (name, "/".join(str(q) for q in quoted), ran))
     return check("every README's quoted count matches what its suite runs",
                  bad)
@@ -708,6 +715,105 @@ def check_clean_clone():
                  "alone", bad)
 
 
+# The three faces the document was designed in. Noto Serif Condensed sets
+# headings, Noto Serif sets body text, Hack sets code and every figure
+# label. All three are local: headless chromium has no network, so a
+# webfont would fall back silently.
+#
+# Each entry must APPEAR in the finished PDF, not merely be permitted in
+# it. That is the whole point. If Noto Serif Condensed stops being
+# installed, chromium falls back down the CSS stack to plain Noto Serif --
+# which is itself an intended face, so a check that only forbade strangers
+# would pass while every heading in the document had quietly lost its
+# width. Requiring presence is what catches that; forbidding strangers is
+# what catches a fall-through to Liberation or DejaVu.
+#
+# Both failures were produced for real before this was written, by
+# rendering through the same chromium and reading the same pdffonts:
+# `font-family: "NoSuchFaceAtAll", sans-serif` yields LiberationSans, and
+# a page using only Hack and Noto Serif yields a table with no condensed
+# face in it. t/test_portfolio.py renders both again and requires this
+# function to reject them, so the check cannot rot into a tautology.
+INTENDED_FACES = {
+    "Hack": "code, figures and table cells",
+    "NotoSerif": "body text",
+    "NotoSerif-Condensed": "headings",
+}
+
+
+def pdf_font_families(pdffonts_output):
+    """Map family -> list of (full name, embedded?) from pdffonts output.
+
+    pdffonts prefixes an embedded subset with six letters and a plus,
+    `BAAAAA+NotoSerif-CondensedBold`, which says nothing about the face and
+    changes between renders. The width variant is carried in the style
+    token rather than the family token -- `NotoSerif-CondensedBold` is the
+    condensed family in bold, while `NotoSerif-Bold` is not condensed at
+    all -- so the two have to be separated by reading the style, not by
+    splitting on the hyphen and hoping.
+    """
+    out = {}
+    for line in pdffonts_output.split("\n"):
+        fields = line.split()
+        # The header is two lines and BOTH have seven fields, so the field
+        # count alone is not enough -- the rule of dashes under the column
+        # titles sailed through the first version of this filter and was
+        # reported as a substituted font. Its first character is the tell.
+        if len(fields) < 7 or fields[0] == "name" or fields[0][0] == "-":
+            continue
+        name = fields[0].split("+", 1)[-1]
+        # fields[-5] and not `"yes" in fields[-5:-2]`: the last three flag
+        # columns are emb, sub and uni, and the loose version was true when
+        # ANY of them said yes -- so a font that was not embedded passed as
+        # long as it was subsetted. Counting from the end rather than the
+        # start because the type column is sometimes "CID TrueType" and
+        # sometimes "TrueType", which shifts every index after it.
+        embedded = fields[-5] == "yes"
+        base, _, style = name.partition("-")
+        family = base + ("-Condensed" if style.startswith("Condensed") else "")
+        out.setdefault(family, []).append((name, embedded))
+    return out
+
+
+def font_problems(pdffonts_output):
+    """Everything wrong with a PDF's font table, as a list of strings."""
+    found = pdf_font_families(pdffonts_output)
+    bad = []
+    for family in sorted(set(found) - set(INTENDED_FACES)):
+        bad.append("%s is in the PDF and is not one of the three designed"
+                   " faces -- the render substituted it"
+                   % ", ".join(n for n, _ in found[family]))
+    for family in sorted(set(INTENDED_FACES) - set(found)):
+        bad.append("%s (%s) does not appear in the PDF at all, so whatever"
+                   " is set in it now is a silent substitution"
+                   % (family, INTENDED_FACES[family]))
+    for family in sorted(found):
+        for name, embedded in found[family]:
+            if not embedded:
+                bad.append("%s is not embedded, so the PDF renders with"
+                           " whatever the reader happens to have" % name)
+    return bad
+
+
+def check_pdf_fonts():
+    label = "the PDF is set in the three designed faces, all embedded"
+    pdf = HERE / "portfolio.pdf"
+    if not pdf.exists():
+        notes.append("no portfolio.pdf, so its fonts were not checked")
+        return True
+    if not shutil.which("pdffonts"):
+        # Loudly: a skipped check is not a passing one, and the whole
+        # reason this exists is that a substitution is silent.
+        notes.append("pdffonts is not installed, so the PDF's fonts were"
+                     " NOT checked -- install poppler-utils")
+        return True
+    r = subprocess.run(["pdffonts", str(pdf)], capture_output=True, text=True)
+    if r.returncode != 0:
+        return check(label, ["pdffonts could not read portfolio.pdf: %s"
+                             % r.stderr.strip()])
+    return check(label, font_problems(r.stdout))
+
+
 CHECKS = [
     check_objects,
     check_readme,
@@ -724,6 +830,7 @@ CHECKS = [
     check_authors,
     check_secrets,
     check_branches,
+    check_pdf_fonts,
 ]
 
 

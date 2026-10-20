@@ -47,8 +47,24 @@ only ever moves up is worth being suspicious of.
 
 Fonts are local only. Headless chromium has no network, so a webfont would
 silently fall back and the PDF would not match the design. Noto Serif Condensed /
-Noto Serif / Hack are all installed here and embed correctly, confirmed by
-reading the font table out of the finished PDF.
+Noto Serif / Hack are all installed here and embed correctly, and the audit now
+reads the font table out of the finished PDF on every run rather than leaving
+that confirmation in somebody's shell history.
+
+It checks three things, because the interesting failure is not the obvious one.
+A face falling out of the design entirely shows up as a stranger in the table --
+Liberation, DejaVu, whatever fontconfig offers next. But if Noto Serif Condensed
+stops being installed, chromium falls back down the CSS stack to plain Noto
+Serif, which is itself one of the three, so forbidding strangers would pass
+while every heading had quietly lost its width. So each of the three faces must
+be PRESENT, not merely permitted. The third check is that each is embedded; the
+first version of it accepted a font that was not, because it tested whether any
+of the emb/sub/uni columns said yes rather than the one that matters.
+
+Both substitutions are produced for real in the suite, by rendering throwaway
+pages through the same chromium and reading them with the same pdffonts. A
+check against a silent failure is worth very little if nobody has watched it
+go red.
 
 The two data-fill colours were validated, not chosen by eye. `#0E8F85` and
 `#A1551D` pass all six checks against the paper surface (CVD Delta-E 12.6,

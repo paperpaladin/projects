@@ -16,13 +16,17 @@
 # rather than a broken commit.
 # Not one of the eighteen: an upstream Android fork kept here for convenience.
 __pycache__/
+auditp/
 bigint/
 bpec/
+bpfdis/
 cc/
+classv/
 cmark/
 commitq/
 confine/
 corex/
+cpdetect/
 derx/
 dbginfo/
 ed25519/
@@ -34,6 +38,7 @@ jsonc/
 lnk/
 mydiff/
 notally-molly/
+ociv/
 pngc/
 prof/
 psh/

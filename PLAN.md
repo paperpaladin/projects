@@ -112,7 +112,7 @@ Ranked by how little this repo controls them, most independent first:
       assertion on the message, not the one on the exit status: with the file
       missing, `-ot` is false and `ls` fails under `set -e`, so the status is
       still 1 and only the wording says what went wrong. 116 to 121.
-- [ ] 04 verify the embedded fonts are the three intended faces
+- [x] 04 verify the embedded fonts are the three intended faces
       why: the README says the fonts were confirmed by reading the font table
       out of the finished PDF, and that confirmation lives in shell history. If
       a face stops being installed the render silently substitutes and the

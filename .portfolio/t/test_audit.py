@@ -18,6 +18,7 @@ read git rather than files.
 """
 import json
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -442,6 +443,92 @@ for lst, what in ((audit.ABS_ALLOW, "ABS_ALLOW"),
 for repo_name in sorted(audit.README_COUNT_ALLOW):
     check("README_COUNT_ALLOW entry %s names a real repository" % repo_name,
           repo_name in real, True)
+
+# ---------------------------------------------------------------------------
+# The font check, against PDFs chromium actually produces.
+#
+# This one cannot be tested by planting a defect in a fixture repository,
+# because what it reads is a rendered PDF. The substitutions are therefore
+# produced for real: the same chromium that renders the portfolio, the same
+# pdffonts that reads it, and two HTML pages whose font stacks reproduce the
+# two ways the typography can silently change.
+#
+# `font-family: "Missing", sans-serif` is the fall-through that lands outside
+# the design entirely -- Liberation or DejaVu, whatever fontconfig offers.
+# The second page asks only for Hack and Noto Serif, which is what the
+# document looks like if Noto Serif Condensed stops being installed: every
+# face in it is still one of the three, which is precisely why forbidding
+# strangers is not enough on its own.
+
+def render_pdf(tmp, name, style, body):
+    html = Path(tmp) / (name + ".html")
+    pdf = Path(tmp) / (name + ".pdf")
+    html.write_text("<style>%s</style><body>%s</body>" % (style, body))
+    r = subprocess.run(
+        ["chromium", "--headless", "--disable-gpu", "--no-sandbox",
+         "--no-pdf-header-footer", "--print-to-pdf=%s" % pdf,
+         "file://%s" % html],
+        capture_output=True, text=True, timeout=180)
+    if not pdf.exists():
+        return None
+    del r
+    f = subprocess.run(["pdffonts", str(pdf)], capture_output=True, text=True)
+    return f.stdout
+
+
+if not shutil.which("chromium") or not shutil.which("pdffonts"):
+    # Loudly. A skipped test is not a passing one, and this is the test that
+    # keeps a silent-substitution check from becoming a tautology.
+    print("note chromium or pdffonts is missing, so the font check was NOT"
+          " exercised against real substitutions")
+else:
+    with tempfile.TemporaryDirectory() as _tmp:
+        _stranger = render_pdf(_tmp, "stranger",
+                               'body{font-family:"NoSuchFaceAtAll",sans-serif}',
+                               "fell outside the design")
+        _narrow = render_pdf(_tmp, "narrow",
+                             'body{font-family:"Hack"}'
+                             'p{font-family:"Noto Serif"}',
+                             "code<p>body text</p>")
+
+        check("a fall-through to a face outside the design is rejected",
+              any("not one of the three designed faces" in b
+                  for b in audit.font_problems(_stranger or "")), True)
+
+        # The specific point: every face in this PDF IS one of the three.
+        check("that PDF contains no stranger-free excuse",
+              any("is in the PDF and is not one of the three" in b
+                  for b in audit.font_problems(_narrow or "")), False)
+        check("a missing condensed face is rejected even though every face"
+              " present is intended",
+              any("NotoSerif-Condensed" in b and "does not appear" in b
+                  for b in audit.font_problems(_narrow or "")), True)
+
+        # And the positive direction, so the check is not simply always red.
+        _real = PORTFOLIO_PDF = audit.HERE / "portfolio.pdf"
+        if _real.exists():
+            _out = subprocess.run(["pdffonts", str(_real)],
+                                  capture_output=True, text=True).stdout
+            check("the shipped portfolio.pdf passes the font check",
+                  audit.font_problems(_out), [])
+            check("all three designed faces are found in it",
+                  sorted(audit.pdf_font_families(_out)),
+                  ["Hack", "NotoSerif", "NotoSerif-Condensed"])
+
+# A font that is present but not embedded is the third failure, and it needs
+# no renderer: it is a column in the table pdffonts prints. The row below is
+# the shipped PDF's own first line with "yes" changed to "no" in the embedded
+# column, which is the one thing about this input that is synthetic, and it is
+# synthetic because chromium cannot be asked to reference a font it did not
+# embed.
+check("a font that is present but not embedded is rejected",
+      any("is not embedded" in b for b in audit.font_problems(
+          "name                 type          encoding    emb sub uni object ID\n"
+          "-------------------- ------------- ----------- --- --- --- ---------\n"
+          "AAAAAA+Hack-Bold     CID TrueType  Identity-H  no  yes yes       4 0\n"
+          "BAAAAA+NotoSerif-CondensedBold CID TrueType Identity-H yes yes yes 5 0\n"
+          "CAAAAA+NotoSerif-Regular CID TrueType Identity-H yes yes yes 6 0\n")),
+      True)
 
 print("\n%d passed, %d failed" % (passed, failed))
 sys.exit(1 if failed else 0)

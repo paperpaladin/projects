@@ -314,11 +314,71 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   `git commit --amend -F file` from a file nothing interpolates.
   Worth a scan after a long session: the tell is a sentence with a
   word missing where a word plainly belongs.
-- A buffer larger than its data turns the sanitizer off. Found
-  SEVEN times in one session, independently: `derx`, `bpec`, `jsonc`,
-  `sqlr`, `mydiff`, and twice in `wasmi`. Every one was found by
-  somebody looking for the shape after being told it existed, and not
-  one by the sanitizer, which is the whole point.
+- A buffer larger than its data turns the sanitizer off. **EIGHTEEN
+  distinct buffers, in twelve repositories.** Nine were found one at a
+  time by people who had been told the shape existed: `derx`, `bpec`,
+  `jsonc`, `sqlr`, `mydiff` (its undiscarded sequences), twice in
+  `wasmi`, `walkv` (a 1025-byte `char key[MAX_KEY + 1]` holding a
+  two-byte key) and `utf8n` (512KB holding 400KB). Not one was found by
+  the sanitizer, which is the whole point.
+
+  The other nine were found in an afternoon by a `grep`, after nine
+  hand-found ones had failed to suggest that a sweep was worth running:
+  `prof` 2, `cmark` 3, `tzf` 2, `dbginfo` 1, and `mydiff` again in
+  `slurp`. The lesson is not about buffers. Nine independent discoveries
+  of one shape is overwhelming evidence that the shape is systemic, and
+  the correct response to the third or fourth was a mechanical search of
+  every repository, not a ninth careful fix. A defect class found
+  repeatedly by hand is a search you have not written yet.
+
+  Four things that sweep got wrong or nearly missed, which is what the
+  next one should start from:
+
+  **It is not only doubling buffers.** `tzf`'s `footer_parse` copied a
+  25-byte TZ string into `char buf[128]`. Same blindness, no growth
+  pattern, invisible to a grep for `cap *= 2`. Any buffer declared
+  larger than what goes in it will do.
+
+  **The fix does not travel.** `mydiff` was fixed once already, in the
+  sequences it compares, and the commit says so. Nobody looked one
+  function away at `slurp`, which holds the untrusted input. `cmark` had
+  three: the input, the inline parser's subject, and every node the
+  renderer escapes. Sweep the file, not the function.
+
+  **A README can claim a verification that never happened.** `cmark`'s
+  README had said for months that "a deliberate heap overread in
+  `escape_html` is reported by ASan with a line number". It was false
+  when written. Four separate inputs were planted and ASan reported
+  nothing for any of them, because all four render out of a doubled
+  buffer. The claim was not optimistic, it was untested.
+
+  **The gate is the only witness.** With `dbginfo`'s fix reverted, its
+  suite printed `118 passed, 0 failed` beside the new target's FAIL.
+  Nothing else in the harness could see the difference, which is exactly
+  what you would expect and exactly why the number is no comfort.
+
+  Where it stops: ASan can see the end of a file and not the end of a
+  section. A read walking off `.debug_info` into `.debug_abbrev` is
+  still inside one live allocation, and sizing the file buffer exactly
+  does nothing about it. `jsonc`'s answer -- copy each region into its
+  own exact allocation behind a debug flag and run the suite both ways
+  -- is the pattern; `dbginfo` has it queued. `cmark` has two cases that
+  no allocation size can reach, because it shortens a length without
+  touching the buffer, and says so in its README rather than pretending
+  otherwise.
+
+  A negative result is still a result. `dbginfo` ran 3,600 mutants and
+  89 real binaries through a now-sighted sanitizer and found nothing:
+  the blind spot was real, the bug behind it was not. Report that as
+  measured, not as reassurance.
+
+  Keep this number current. `walkv` and `utf8n` were found hours apart
+  and BOTH were reported as "the eighth", because each had read this
+  paragraph while it still said seven; four more in the same afternoon
+  each called themselves "the tenth". A stale count here does not just
+  misinform, it is the number people cite back, so it propagates into
+  commit messages and READMEs that are then wrong about the collection
+  they belong to.
 
   `wasmi`'s pair is the clearest. Its locals-type array doubled, so an
   over-read was not only invisible but PASSED: the garbage byte read
@@ -357,9 +417,22 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   the other quietly.
 
   The sweep for candidates is crude and the result is a list of
-  suspects, not of defects: 23 of the 31 C files here grow a buffer
-  by doubling and only two ever shrink one to an exact size. Those
-  two are `psh` and `tomlc`. The rest are unverified.
+  suspects, not of defects. It has since been run properly and acted
+  on: `psh` and `tomlc` are no longer the only repositories that shrink
+  a buffer to its data. `walkv`, `utf8n`, `prof`, `cmark`, `tzf`,
+  `dbginfo` and `mydiff` all do now, each with a `make overread` target
+  that compiles a planted one-past-the-end read and FAILS unless the
+  sanitizer reports it. Every one of those targets was watched to go red
+  with the fix reverted, so the gate is known to be load-bearing rather
+  than assumed to be.
+
+  Copy that target when adding the fix anywhere else. The exit code
+  matters: pick one the program cannot produce by other means, so a
+  report cannot be confused with a segfault, a usage error or a clean
+  refusal. `tzf` uses 86 for that reason and says so.
+
+  What the sweep still cannot see: a fixed-size array that is simply
+  bigger than its contents, which is how `tzf`'s second instance hid.
 - `cq c` stages the whole tree, so anything not in `.gitignore` gets
   committed. A 288 KB `bpec-asan` binary was tracked for exactly this
   reason, with `.gitignore` listing only the release binary next to
@@ -509,6 +582,16 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   `derx` and `terminfo` and `httpd` (`t/tmp`), and `trace`, which uses 61
   fixed `t/*.tmp` filenames and no scratch variable at all.
 
+  `walkv` was in this list and is not any more: it used a fixed `t/db` plus
+  nine fixed `t/*.tmp`, and a backgrounded `make mutants` overlapping a
+  foreground `make test` produced 164 invented failures including "prefix
+  went backwards: 3 -> 1". That is the single output a crash-consistency
+  project most wants to believe, arriving from a collision rather than a
+  bug. It now uses `t/w$$.*` with an EXIT trap, and two concurrent runs
+  both report 704 passed. The lesson is not about `walkv`: a suite whose
+  whole purpose is to detect corruption cannot tell corruption it caused
+  from corruption another process caused.
+
   `bpec` is the sharpest of them because its `scratch/` holds the venv
   and both pinned tokenizer files, not just temporaries, so `make test`
   and `make test-asan` cannot overlap and neither can overlap an
@@ -595,6 +678,25 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   with no cause. Run each item in a function called with `|| record-and-
   continue`, and print the names of everything that failed in one block at
   the end, where it cannot scroll past.
+- An oracle that asks one question about a megabyte cannot notice a defect
+  in one byte of it. `utf8n` deleted its ill-formed-byte comparison and all
+  109 assertions still passed, because the hostile-input check handed the
+  oracle a single 400kB buffer and asked whether the answer was right --
+  and a buffer that size always contains something that forces the same
+  answer whether the deleted comparison runs or not. The assertion was
+  true, the property it was meant to pin was gone. It took 17 hand-written
+  cases and a 50,000-window sweep to make the mutant die. Granularity is
+  part of an oracle's strength: one comparison over a corpus is a weaker
+  instrument than ten thousand over its windows, even though it reports a
+  bigger number.
+- A summary line that is printed unconditionally is not a result. `utf8n`'s
+  oracle roster printed `ran, table diffed byte for byte` whether or not the
+  diff had agreed, so the most reassuring sentence in the output was
+  independent of the thing it described. This is the same defect as `wasmi`'s
+  reject suite, which declared fifteen rejections while rejecting nothing,
+  and it is worth a specific habit: for every line that says a check passed,
+  find the branch that would print something else, and if there is no such
+  branch the line is decoration.
 
 ## State
 
