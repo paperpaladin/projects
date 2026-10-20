@@ -252,7 +252,14 @@ def check_license():
 # =====================================================================
 # 4. absolute paths in code
 # =====================================================================
-ABS = re.compile(r"/home/[A-Za-z0-9_.-]+/|(?<![A-Za-z0-9_.-])/tmp/[A-Za-z0-9_.-]")
+# Both halves need the lookbehind. Only the /tmp half had it, so a path
+# rooted somewhere else that merely contained the characters was reported:
+# ociv builds a container image under a mktemp root and writes
+# "$R/m0/home/user/.ssh", which is a path inside the image and not on this
+# machine. The /home half matched it anyway. An asymmetry like that is worth
+# distrusting on sight; the guard was added to one branch and not the other.
+ABS = re.compile(r"(?<![A-Za-z0-9_.$}-])/home/[A-Za-z0-9_.-]+/"
+                 r"|(?<![A-Za-z0-9_.$}-])/tmp/[A-Za-z0-9_.-]")
 CODE_SUFFIX = {".py", ".sh", ".c", ".h", ".mk", ""}
 
 # Deliberate, with the reason. An entry here is a claim that the path is data
@@ -267,6 +274,11 @@ ABS_ALLOW = {
     # Exempting it is correct, and it is also the file that guarantees the rest
     # of this exemption list is not hiding a real one.
     ("projects", ".portfolio/t/test_audit.py"),
+    # Paths that go INSIDE synthetic audit records. An audit record's whole
+    # content is paths, and a corpus that avoided /tmp would not exercise the
+    # part of the parser that handles them. The file writes nothing to any of
+    # these; they are strings it embeds in generated log lines.
+    ("auditp", "t/gen.py"),
 }
 
 # Same reason, for the placeholder check: the fixture for "a pasteable command
@@ -561,10 +573,21 @@ def check_tracked_binaries():
     Both were found by a hand sweep, which is the wrong way to find
     the same thing twice.
 
-    ELF only. A compiled object is recognisable from its first four
-    bytes, and that is a fact about the file rather than a guess from
-    its name, so a binary called `data` is caught too.
+    It was ELF only, and said so, and that was not enough. A CPython
+    .pyc sat tracked in certlint from its fourth commit and another in
+    bpec, both swept in from a t/__pycache__ directory nobody had put
+    in .gitignore. Neither is ELF. The collection now also builds Java,
+    where a stray .class is the same accident with a different magic
+    number.
+
+    Recognised from the first bytes rather than the name, so a binary
+    called `data` is caught too. .wasm is deliberately NOT here: wasmi
+    is a WebAssembly interpreter and its tracked .wasm files are its
+    test inputs, so the rule would need 23 exemptions to say nothing.
     """
+    kinds = [(b"\x7fELF", "ELF"),
+             (b"\xca\xfe\xba\xbe", "Java class"),
+             (b"!<ar", "ar archive")]
     bad = []
     for repo in repos():
         rn = name_of(repo)
@@ -573,10 +596,23 @@ def check_tracked_binaries():
                 continue
             f = repo / rel
             try:
-                if f.is_file() and f.open("rb").read(4) == b"\x7fELF":
-                    bad.append("%s: %s" % (rn, rel))
+                if not f.is_file():
+                    continue
+                head = f.open("rb").read(4)
             except OSError:
                 continue
+            for magic, what in kinds:
+                if head.startswith(magic):
+                    bad.append("%s: %s (%s)" % (rn, rel, what))
+                    break
+            else:
+                # Python bytecode has no fixed magic across versions: the
+                # first two bytes change every release. The carriage
+                # return and newline at offset 2 do not, and are there to
+                # corrupt the file if it is ever sent through a text-mode
+                # transfer.
+                if rel.endswith((".pyc", ".pyo")) and head[2:4] == b"\r\n":
+                    bad.append("%s: %s (Python bytecode)" % (rn, rel))
     return check("no repository tracks a compiled binary", bad)
 
 
@@ -643,13 +679,38 @@ SECRET = re.compile(
     r"|xox[baprs]-[A-Za-z0-9-]{10,}")             # Slack
 
 
+# A repository whose job is to FIND credentials has to contain things shaped
+# like credentials, and ociv is one: it reports secrets left behind in an
+# image layer after a later layer deleted them. Allowing it by path would be
+# the usual move and is the wrong one here, because this check reads objects
+# rather than the working tree, which is the whole reason it catches a secret
+# that was committed and then removed.
+#
+# So the exemption is by content, and only for content that cannot be a real
+# credential: a token whose body is entirely zeros, and a PEM header whose key
+# material says it is not a key. Anything else in any repository still fails.
+# A fixture that wants to be exempt has to be written to be obviously fake,
+# which is a better habit than an allowlist entry anyway.
+def is_unusable_as_a_credential(match, following):
+    body = match.split("_", 1)[-1]
+    if body and set(body) == {"0"}:
+        return True
+    if match.startswith("-----BEGIN") and "notarealkey" in following:
+        return True
+    return False
+
+
 def check_secrets():
     bad = []
     for repo in repos():
         out = subprocess.run(
             ["git", "-C", str(repo), "cat-file", "--batch-all-objects", "--batch"],
             capture_output=True).stdout
-        for m in SECRET.finditer(out.decode("utf-8", "replace")):
+        text = out.decode("utf-8", "replace")
+        for m in SECRET.finditer(text):
+            if is_unusable_as_a_credential(m.group(0),
+                                           text[m.end():m.end() + 40]):
+                continue
             bad.append("%s: %s..." % (name_of(repo), m.group(0)[:12]))
     return check("no credential pattern in any object of any repository", bad)
 

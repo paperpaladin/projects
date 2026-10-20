@@ -530,5 +530,45 @@ check("a font that is present but not embedded is rejected",
           "CAAAAA+NotoSerif-Regular CID TrueType Identity-H yes yes yes 6 0\n")),
       True)
 
+# The credential check has one exemption, for repositories whose subject is
+# finding credentials. An exemption nobody has tried to abuse is a hole of
+# unknown size, so these are the four cases that matter: the two shapes it is
+# meant to let through, and the two nearly identical ones it must not.
+
+def secret_allowed(text):
+    """True if audit would let this text through the credential check."""
+    m = audit.SECRET.search(text)
+    if m is None:
+        return True
+    return audit.is_unusable_as_a_credential(m.group(0),
+                                             text[m.end():m.end() + 40])
+
+
+# Assembled at run time rather than written out. The strings below are
+# byte-for-byte what the check sees, but no blob in this repository contains
+# one, so the credential scan does not report its own test fixtures. The
+# alternative was to exempt this file by path, and the scan reads objects
+# rather than the working tree precisely so that a secret which was committed
+# and later deleted is still found; a path exemption would not survive that.
+TOKEN = "ghp_" + "0" * 36
+PEM = "-" * 5 + "BEGIN OPENSSH PRIVATE " + "KEY" + "-" * 5
+AWS = "AKIA" + "IOSFODNN7EXAMPLE"
+SLACK = "xoxb-" + "0" * 12 + "-abcdefghij"
+
+check("a token whose body is all zeros is allowed",
+      secret_allowed("token=" + TOKEN), True)
+check("a PEM header over key material saying it is not a key is allowed",
+      secret_allowed(PEM + "\nnotarealkey\n"), True)
+
+# One zero changed to a one. Nothing else differs.
+check("a token with one non-zero character is NOT allowed",
+      secret_allowed("token=" + TOKEN[:-1] + "1"), False)
+check("a PEM header over anything else is NOT allowed",
+      secret_allowed(PEM + "\nb3BlbnNzaC1rZXk\n"), False)
+
+# And the shapes the exemption says nothing about must still fail.
+check("an AWS key id is NOT allowed", secret_allowed(AWS), False)
+check("a Slack token is NOT allowed", secret_allowed(SLACK), False)
+
 print("\n%d passed, %d failed" % (passed, failed))
 sys.exit(1 if failed else 0)

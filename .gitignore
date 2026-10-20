@@ -21,6 +21,7 @@ bigint/
 bpec/
 bpfdis/
 cc/
+certlint/
 classv/
 cmark/
 commitq/
@@ -30,15 +31,18 @@ cpdetect/
 derx/
 dbginfo/
 ed25519/
+extv/
 gitobj/
 httpd/
 inflate/
 jail/
+jarv/
 jsonc/
 lnk/
 mydiff/
 notally-molly/
 ociv/
+pcapd/
 pngc/
 prof/
 psh/
