@@ -244,6 +244,37 @@ def check_readme():
                  bad)
 
 
+# Existing is not the same as written. cpdetect's README was the single
+# word "placeholder" and satisfied the check above for a day, which is
+# worse than having none: the gate reported a page that was there while
+# the repository's front door said nothing at all.
+#
+# A length floor rather than a word list, because the failure is an empty
+# page and not a particular word. 400 bytes is about six lines; the
+# shortest real README here is several times that. The stub words are
+# checked too, since a 400-byte stub is just as possible.
+STUB_WORDS = ("placeholder", "tbd", "to be written", "coming soon", "todo:")
+
+
+def check_readme_written():
+    bad = []
+    for repo in repos():
+        text = read_text(repo / "README.md")
+        if text is None:
+            continue
+        body = text.strip()
+        if len(body) < 400:
+            bad.append("%s: README is %d bytes, which is not a description"
+                       % (name_of(repo), len(body)))
+            continue
+        head = body[:400].lower()
+        for w in STUB_WORDS:
+            if w in head:
+                bad.append("%s: README opens with %r" % (name_of(repo), w))
+                break
+    return check("every README says something", bad)
+
+
 def check_license():
     bad = [name_of(r) for r in repos() if "LICENSE" not in set(tracked(r))]
     return check("every repository has a LICENSE", bad)
@@ -675,7 +706,13 @@ SECRET = re.compile(
     r"gh[pousr]_[A-Za-z0-9]{16,}"                 # GitHub tokens
     r"|github_pat_[A-Za-z0-9_]{20,}"
     r"|AKIA[0-9A-Z]{16}"                          # AWS key id
-    r"|-----BEGIN [A-Z ]*PRIVATE KEY-----"
+    # BEGIN and END both. The pattern matched only BEGIN, so sshkeyv
+    # carried "-----END OPENSSH PRIVATE KEY-----" in its working tree and
+    # in nineteen objects while this check reported nothing. A footer on
+    # its own is not a key, but it is just as reliable a sign that key
+    # material is being written somewhere nearby, and it costs one word
+    # to look for.
+    r"|-----(BEGIN|END) [A-Z ]*PRIVATE KEY-----"
     r"|xox[baprs]-[A-Za-z0-9-]{10,}")             # Slack
 
 
@@ -878,6 +915,7 @@ def check_pdf_fonts():
 CHECKS = [
     check_objects,
     check_readme,
+    check_readme_written,
     check_license,
     check_readme_counts,
     check_repos_json_keys,

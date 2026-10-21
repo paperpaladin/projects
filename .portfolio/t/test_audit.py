@@ -570,5 +570,31 @@ check("a PEM header over anything else is NOT allowed",
 check("an AWS key id is NOT allowed", secret_allowed(AWS), False)
 check("a Slack token is NOT allowed", secret_allowed(SLACK), False)
 
+# The README-is-written check, both directions. It exists because
+# cpdetect's README was the single word "placeholder" and the
+# does-a-README-exist check was perfectly happy with it.
+
+def readme_ok(text):
+    """True if audit's written-README check would accept this text."""
+    with tempfile.TemporaryDirectory() as d:
+        r = Path(d)
+        (r / "README.md").write_text(text)
+        before = audit.failed
+        saved, audit.ROOT = audit.ROOT, r
+        try:
+            audit.check_readme_written()
+        finally:
+            audit.ROOT = saved
+        return audit.failed == before
+
+
+check("a one word README is rejected", readme_ok("placeholder"), False)
+check("an empty README is rejected", readme_ok(""), False)
+check("a README that opens with TODO: is rejected",
+      readme_ok("# tool\n\nTODO: write this.\n" + "x" * 500), False)
+check("a real README is accepted",
+      readme_ok("# tool\n\n" + ("This reads a thing and checks it against "
+                                 "another thing. " * 12)), True)
+
 print("\n%d passed, %d failed" % (passed, failed))
 sys.exit(1 if failed else 0)

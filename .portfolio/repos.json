@@ -1,4 +1,17 @@
 {
+  "auditp": {
+    "blurb": "Linux kernel audit log parser and event correlator",
+    "commits": 24,
+    "done": 27,
+    "group": "observability",
+    "invariant": "Every field agrees with ausearch or is counted as a refusal; the JSON form carries bytes no encoding can represent",
+    "oracle": "ausearch and aureport, compared field by field, with syscall numbers cross-checked against the kernel's own table",
+    "shortcuts": 0,
+    "src": 0,
+    "test": 5213,
+    "tests": "92 passed, 0 failed",
+    "todo": 7
+  },
   "bigint": {
     "blurb": "Arbitrary-precision integers",
     "commits": 28,
@@ -14,7 +27,7 @@
   },
   "bpec": {
     "blurb": "Byte-level BPE, exact to the reference",
-    "commits": 11,
+    "commits": 12,
     "done": 11,
     "group": "formats",
     "invariant": "The same token ids as the reference, in the same order",
@@ -24,6 +37,19 @@
     "test": 1120,
     "tests": "46 passed, 0 failed",
     "todo": 0
+  },
+  "bpfdis": {
+    "blurb": "eBPF object disassembler and static verifier model",
+    "commits": 36,
+    "done": 34,
+    "group": "toolchain",
+    "invariant": "Every instruction agrees with both disassemblers, and the corpus is held to a floor of distinct constructs",
+    "oracle": "bpftool and llvm-objdump, instruction by instruction, with the kernel verifier for accept and reject",
+    "shortcuts": 0,
+    "src": 0,
+    "test": 4988,
+    "tests": "105 passed, 0 failed",
+    "todo": 2
   },
   "cc": {
     "blurb": "C compiler for x86-64",
@@ -37,6 +63,32 @@
     "test": 2361,
     "tests": "434 passed, 0 failed (2 suites)",
     "todo": 5
+  },
+  "certlint": {
+    "blurb": "X.509 chain validator and CA/Browser Forum linter",
+    "commits": 46,
+    "done": 54,
+    "group": "supply chain",
+    "invariant": "Every parsed field and chain decision matches at least one reference, and refusals are counted apart from disagreements",
+    "oracle": "OpenSSL and GnuTLS, which disagree about seven certificates, each disagreement recorded rather than averaged",
+    "shortcuts": 0,
+    "src": 0,
+    "test": 4254,
+    "tests": "24 passed, 0 failed",
+    "todo": 3
+  },
+  "classv": {
+    "blurb": "JVM class file reader and bytecode verifier model",
+    "commits": 31,
+    "done": 36,
+    "group": "toolchain",
+    "invariant": "Agreement with the real verifier is on which instruction was rejected, not only on the verdict",
+    "oracle": "the JVM's own verifier on accept and reject, and javap on the disassembly",
+    "shortcuts": 0,
+    "src": 0,
+    "test": 2915,
+    "tests": "106469 passed, 0 failed",
+    "todo": 2
   },
   "cmark": {
     "blurb": "CommonMark parser and HTML renderer",
@@ -53,13 +105,13 @@
   },
   "commitq": {
     "blurb": "Multi-repo commit gate and GUI",
-    "commits": 32,
+    "commits": 33,
     "done": 8,
     "group": "supply chain",
     "invariant": "No commit is ever created with a date other than now",
     "oracle": "Throwaway repos in a temp directory",
     "shortcuts": 0,
-    "src": 1485,
+    "src": 1495,
     "test": 1108,
     "tests": "173 passed, 0 failed",
     "todo": 9
@@ -89,6 +141,19 @@
     "test": 1113,
     "tests": "80 passed, 0 failed, 0 skipped",
     "todo": 4
+  },
+  "cpdetect": {
+    "blurb": "Exact change point detection for telemetry",
+    "commits": 14,
+    "done": 22,
+    "group": "observability",
+    "invariant": "The dynamic programme equals the enumerated minimum, PELT equals unpruned optimal partitioning, and recovery is reported beside false positives",
+    "oracle": "brute force enumeration, which is the answer rather than a second opinion, and scipy in another language",
+    "shortcuts": 0,
+    "src": 0,
+    "test": 367,
+    "tests": "270 passed, 0 failed",
+    "todo": 9
   },
   "dbginfo": {
     "blurb": "DWARF debug-info parser",
@@ -128,6 +193,19 @@
     "test": 1234,
     "tests": "43 passed, 0 failed",
     "todo": 2
+  },
+  "extv": {
+    "blurb": "ext2, ext3 and ext4 reader and consistency checker",
+    "commits": 35,
+    "done": 45,
+    "group": "systems",
+    "invariant": "Clean images are called clean and corrupt ones refused, across block sizes and feature flags that are counted",
+    "oracle": "dumpe2fs and debugfs field by field, and e2fsck in both directions",
+    "shortcuts": 0,
+    "src": 0,
+    "test": 3465,
+    "tests": "692 passed, 0 failed",
+    "todo": 4
   },
   "gitobj": {
     "blurb": "git object database reader and writer",
@@ -181,6 +259,19 @@
     "tests": "101 passed, 0 failed, 0 skipped",
     "todo": 8
   },
+  "jarv": {
+    "blurb": "JAR signature verifier written from scratch",
+    "commits": 41,
+    "done": 56,
+    "group": "supply chain",
+    "invariant": "Every entry is reported as signed, unsigned or tampered, and an entry absent from the manifest is never silently covered",
+    "oracle": "jarsigner, on acceptance and on rejection, with openssl reading the PKCS#7 independently",
+    "shortcuts": 0,
+    "src": 0,
+    "test": 4299,
+    "tests": "14996 passed, 0 failed",
+    "todo": 0
+  },
   "jsonc": {
     "blurb": "Strict RFC 8259 JSON parser",
     "commits": 27,
@@ -218,6 +309,32 @@
     "src": 1373,
     "test": 1010,
     "tests": "2104 passed, 0 failed",
+    "todo": 3
+  },
+  "ociv": {
+    "blurb": "OCI image verifier and layer analyser",
+    "commits": 40,
+    "done": 44,
+    "group": "supply chain",
+    "invariant": "Every digest is checked, and a file a later layer deleted is still reported in the layer that carries it",
+    "oracle": "skopeo for manifests and digests, GNU tar for what extraction actually does",
+    "shortcuts": 0,
+    "src": 0,
+    "test": 4536,
+    "tests": "574 passed, 0 failed",
+    "todo": 2
+  },
+  "pcapd": {
+    "blurb": "pcapng reader and TCP stream reassembler",
+    "commits": 31,
+    "done": 48,
+    "group": "observability",
+    "invariant": "Streams match tshark byte for byte, and the overlapping-segment policy is stated rather than silently chosen",
+    "oracle": "tshark per field and per reassembled byte, with tcpdump as a second decoder",
+    "shortcuts": 0,
+    "src": 0,
+    "test": 2878,
+    "tests": "219 passed, 0 failed",
     "todo": 3
   },
   "pngc": {
@@ -313,16 +430,16 @@
   },
   "slab": {
     "blurb": "LD_PRELOAD malloc replacement",
-    "commits": 30,
-    "done": 23,
+    "commits": 36,
+    "done": 28,
     "group": "systems",
     "invariant": "Two live allocations never overlap; every pointer aligned",
     "oracle": "Real programs must produce identical output",
-    "shortcuts": 8,
-    "src": 1341,
-    "test": 2660,
-    "tests": "60 passed, 0 failed, 0 skipped",
-    "todo": 7
+    "shortcuts": 6,
+    "src": 1710,
+    "test": 3336,
+    "tests": "76 passed, 0 failed, 0 skipped",
+    "todo": 2
   },
   "sockv": {
     "blurb": "netlink socket enumerator",

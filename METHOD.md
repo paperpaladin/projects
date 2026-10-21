@@ -155,15 +155,24 @@ runs only the new one's suite.
    code comments. Use `...` for an ellipsis, `->` for an arrow, and straight
    quotes.
 
-   This rule is about prose, not about bytes. Nine files hold non-ASCII on
+   This rule is about prose, not about bytes. Ten files hold non-ASCII on
    purpose and a sweep must leave them alone. The list is from a sweep, not
    from memory, because the version here used to say six while describing a
    set that was already nine: it named `commitq.py` alone where `README.md`
    and `serve.py` carry the same glyphs.
 
+   The command below has been wrong twice in the same way. It once covered
+   only five extensions while the collection had grown Rust, Go, Java and R,
+   so anything non-ASCII in those languages was invisible to it, and it did
+   not prune `target/`, `__pycache__` or the editor and agent worktrees kept
+   under a dot directory at the root. Re-run it rather than trusting the
+   list; the list is a record of one run, not a rule.
+
        find . -path ./notally-molly -prune -o -type f \
          \( -name '*.c' -o -name '*.h' -o -name '*.py' -o -name '*.sh' \
-            -o -name '*.md' \) -print | grep -v '/scratch/\|/\.git/\|/hist/' \
+            -o -name '*.md' -o -name '*.rs' -o -name '*.go' \
+            -o -name '*.java' -o -name '*.R' \) -print \
+         | grep -v '/scratch/\|/\.git/\|/hist/\|/target/\|__pycache__\|/worktrees/' \
          | xargs env LC_ALL=C grep -lP '[^\x00-\x7F]'
 
    `tarx/t/run.sh`, `sqlr/t/oracle.py` and `gitobj/t/run.sh` carry non-ASCII
@@ -173,8 +182,11 @@ runs only the new one's suite.
    middot, which are UI glyphs. `bpec/bpec.c`, `bpec/t/encode_cmp.py` and
    `bpec/t/split_cmp.py` hold the byte-level alphabet's own notation, where
    U+0120 is literally how that encoding writes a space, plus corpus strings
-   in several scripts. Replacing those does not tidy anything, it deletes the
-   test. A blanket sweep over user-facing strings is already recorded as a
+   in several scripts. `certlint/t/mkodd.py` is the tenth, holding `Cafe` with
+   an acute accent as BMPString and UniversalString test data, which is there
+   because a DirectoryString that is not ASCII is exactly the case X.509
+   encoders get wrong. Replacing any of those does not tidy anything, it
+   deletes the test. A blanket sweep over user-facing strings is already recorded as a
    mistake once: see the stash on `notally-molly`, which downgraded typographic
    apostrophes and ellipses in thirty languages of Android UI text, where the
    ellipsis character is correct and `...` is wrong.
@@ -697,6 +709,35 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   and it is worth a specific habit: for every line that says a check passed,
   find the branch that would print something else, and if there is no such
   branch the line is decoration.
+- A test fixture for a secret-detector is a secret as far as the next scan is
+  concerned. The tests proving the credential check works were written with
+  real credential-shaped literals in them, committed, and promptly failed the
+  check they existed to verify. Exempting the file by path was the obvious
+  repair and the wrong one: that scan reads objects rather than the working
+  tree precisely so a secret committed and later deleted is still found, and a
+  path exemption does not survive the file being renamed or the bytes living
+  in an unreachable blob. Assemble the string at run time instead, as
+  `"ghp_" + "0" * 36`, so the check sees identical bytes and no blob contains
+  them. `jarv` reached the same answer independently for a regex that had to
+  contain a PEM header, writing it as `r"-----" + "BEGIN PRIVATE KEY-----"`.
+- Removing a file does not remove its blob, and the gate knows that even when
+  you forget. After untracking anything that should never have been committed,
+  run `git reflog expire --expire=now --all` then `git gc --prune=now`, and
+  re-run the audit rather than trusting the working tree. A clean `git status`
+  says nothing about what a clone will carry.
+- `grep` over `cat-file --batch-all-objects` is a looser instrument than the
+  audit and will tell you there is a problem when there is not. Searching
+  `jarv` for `BEGIN .*PRIVATE KEY` found four hits that were a split literal
+  in its own source; the audit's pattern requires the dashes and the words
+  contiguously and correctly ignored them. When a hand-rolled scan and the
+  gate disagree, read what actually matched before believing either.
+- A URL-scoped credential helper beats a generic one, whatever order they are
+  set in. `~/.gitconfig` here scopes its helper to `https://github.com`, so
+  overriding `credential.helper` alone leaves the scoped entry in charge and
+  every push dies with "could not read Username for https://github.com" while
+  `gh auth git-credential` works perfectly when run by hand. Override
+  `credential.https://github.com.helper`, and set it to the empty string first
+  to clear the inherited list, or the broken helper is simply tried first.
 
 ## State
 
