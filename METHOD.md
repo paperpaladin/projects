@@ -738,6 +738,26 @@ including the ones that were in the harness. Multi-paragraph is normal here.
   `gh auth git-credential` works perfectly when run by hand. Override
   `credential.https://github.com.helper`, and set it to the empty string first
   to clear the inherited list, or the broken helper is simply tried first.
+- Do not commit in a repository an agent is still working in. It reads as
+  helpful tidying and it is not: `cq c` stages the whole tree, so the commit
+  captures whatever half-finished state the working tree happens to be in,
+  under a message describing something else. In `yamlc` this committed a
+  README holding two template tokens, `MUTANT_SUMMARY` and
+  `MUTATION_RESULTS_PLACEHOLDER`, under a message saying the README had been
+  brought up to what the suite measures. The agent reported the mystery
+  commit in its own summary, having not made it. Check for recent file
+  writes before committing into any repository that is not yours:
+  `find REPO -newermt '-10 minutes' -type f -not -path '*/.git/*'`.
+  A quiet agent is not necessarily a finished one.
+- A token meaning "paste the number here later" survives because the number
+  takes an hour to produce. Both instances in this collection were mutation
+  results, and one of them reached GitHub. The existing placeholder check
+  looks for a runnable command with a blank in it, which is a different
+  shape entirely, so a second check now looks for an underscore-joined
+  shouting identifier containing one of PLACEHOLDER, SUMMARY, TODO, TBD,
+  FIXME, XXX or INSERT, outside code spans. It has to be narrow:
+  `SOURCE_DATE_EPOCH` and `GIT_CONFIG_COUNT` appear in prose here and are
+  not defects, and both are in its tests.
 
 ## State
 

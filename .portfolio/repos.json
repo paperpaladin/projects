@@ -326,8 +326,8 @@
   },
   "pcapd": {
     "blurb": "pcapng reader and TCP stream reassembler",
-    "commits": 31,
-    "done": 48,
+    "commits": 32,
+    "done": 50,
     "group": "observability",
     "invariant": "Streams match tshark byte for byte, and the overlapping-segment policy is stated rather than silently chosen",
     "oracle": "tshark per field and per reassembled byte, with tcpdump as a second decoder",
@@ -651,7 +651,7 @@
   },
   "yamlc": {
     "blurb": "YAML 1.2 parser and parser-divergence tool",
-    "commits": 45,
+    "commits": 47,
     "done": 62,
     "group": "formats",
     "invariant": "Every JSON document parses identically, and each disagreement with PyYAML is classified rather than averaged away",

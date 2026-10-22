@@ -915,10 +915,52 @@ def check_pdf_fonts():
     return check(label, font_problems(r.stdout))
 
 
+# A template token left in a finished document. The existing placeholder
+# check looks for a runnable command with a blank in it, which is a
+# different thing: these sit in prose and in table cells, where no command
+# is involved.
+#
+# Both instances were a mutation-results line. pcapd committed and
+# PUBLISHED "MUTATION_RESULTS_PLACEHOLDER" where its numbers belong, and
+# yamlc committed "| mutants | MUTANT_SUMMARY |". The shape is always the
+# same: a writer leaves a token meaning "run the sweep and paste the
+# answer", the sweep takes an hour, and the token ships.
+#
+# Deliberately narrow. A SHOUTING_IDENTIFIER is ordinary in code and in
+# prose about code, so this wants an underscore-joined run of at least two
+# capitalised words AND one of the words that mean "not written yet".
+TEMPLATE_TOKEN = re.compile(
+    r"\b[A-Z][A-Z0-9]*(?:_[A-Z][A-Z0-9]*)+\b")
+TEMPLATE_WORDS = ("PLACEHOLDER", "SUMMARY", "TODO", "TBD", "FIXME", "XXX",
+                  "INSERT", "FILLME", "RESULTS_HERE")
+
+
+def check_template_tokens():
+    bad = []
+    for repo in repos():
+        for rel in tracked(repo):
+            if not rel.lower().endswith(".md"):
+                continue
+            text = read_text(repo / rel)
+            if text is None:
+                continue
+            for n, line in enumerate(text.split("\n"), 1):
+                if line.lstrip().startswith(("    ", "\t")) or "`" in line:
+                    continue          # code, where such a name is normal
+                for m in TEMPLATE_TOKEN.finditer(line):
+                    tok = m.group(0)
+                    if any(w in tok for w in TEMPLATE_WORDS):
+                        bad.append("%s/%s:%d: %s"
+                                   % (name_of(repo), rel, n, tok))
+    return check("no document carries a template token where a number "
+                 "belongs", bad)
+
+
 CHECKS = [
     check_objects,
     check_readme,
     check_readme_written,
+    check_template_tokens,
     check_license,
     check_readme_counts,
     check_repos_json_keys,

@@ -596,5 +596,41 @@ check("a real README is accepted",
       readme_ok("# tool\n\n" + ("This reads a thing and checks it against "
                                  "another thing. " * 12)), True)
 
+# The template-token check. Both real instances were a mutation-results
+# line left for a sweep that takes an hour, so the token shipped. The
+# check has to be narrow: a shouting identifier is ordinary in prose about
+# code, and only the ones that mean "not written yet" are a defect.
+
+def doc_ok(text):
+    """True if audit's template-token check would accept this markdown."""
+    with tempfile.TemporaryDirectory() as d:
+        r = Path(d)
+        subprocess.run(["git", "init", "-q", str(r)], check=True)
+        (r / "README.md").write_text(text)
+        subprocess.run(["git", "-C", str(r), "add", "README.md"], check=True)
+        before = audit.failed
+        saved, audit.ROOT = audit.ROOT, r
+        try:
+            audit.check_template_tokens()
+        finally:
+            audit.ROOT = saved
+        return audit.failed == before
+
+
+check("a left-behind results placeholder is caught",
+      doc_ok("# t\n\nMUTATION_RESULTS_PLACEHOLDER\n"), False)
+check("a placeholder in a table cell is caught",
+      doc_ok("# t\n\n| mutants | MUTANT_SUMMARY |\n"), False)
+check("a TODO token is caught",
+      doc_ok("# t\n\nCOVERAGE_TODO\n"), False)
+
+# And the things that must not be caught, which is the harder half.
+check("an ordinary constant name in prose is left alone",
+      doc_ok("# t\n\nThe reader honours SOURCE_DATE_EPOCH when set.\n"), True)
+check("a shouting name inside backticks is left alone",
+      doc_ok("# t\n\nSet `BUILD_SUMMARY` to change it.\n"), True)
+check("an environment variable with no stub word is left alone",
+      doc_ok("# t\n\nGIT_CONFIG_COUNT selects how many are read.\n"), True)
+
 print("\n%d passed, %d failed" % (passed, failed))
 sys.exit(1 if failed else 0)
