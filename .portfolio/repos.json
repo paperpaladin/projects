@@ -79,7 +79,7 @@
   },
   "classv": {
     "blurb": "JVM class file reader and bytecode verifier model",
-    "commits": 31,
+    "commits": 32,
     "done": 36,
     "group": "toolchain",
     "invariant": "Agreement with the real verifier is on which instruction was rejected, not only on the verdict",
@@ -480,6 +480,19 @@
     "tests": "56 passed, 0 failed",
     "todo": 10
   },
+  "sshkeyv": {
+    "blurb": "OpenSSH key and certificate validator",
+    "commits": 44,
+    "done": 64,
+    "group": "supply chain",
+    "invariant": "Every field matches ssh-keygen, a corrupted signature is refused, and over- and under-refusals are counted apart",
+    "oracle": "ssh-keygen -l and -L field by field, with openssl for the signature maths",
+    "shortcuts": 1,
+    "src": 0,
+    "test": 6328,
+    "tests": "46 passed, 0 failed",
+    "todo": 1
+  },
   "tarx": {
     "blurb": "tar reader and writer",
     "commits": 27,
@@ -634,6 +647,19 @@
     "src": 2260,
     "test": 941,
     "tests": "219 passed, 0 failed",
+    "todo": 8
+  },
+  "yamlc": {
+    "blurb": "YAML 1.2 parser and parser-divergence tool",
+    "commits": 45,
+    "done": 62,
+    "group": "formats",
+    "invariant": "Every JSON document parses identically, and each disagreement with PyYAML is classified rather than averaged away",
+    "oracle": "Python's json, which is exact because YAML 1.2 is a strict superset of JSON, and PyYAML for where 1.1 and 1.2 part ways",
+    "shortcuts": 0,
+    "src": 0,
+    "test": 3446,
+    "tests": "634 passed, 0 failed",
     "todo": 8
   },
   "zipc": {

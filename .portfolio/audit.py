@@ -706,13 +706,16 @@ SECRET = re.compile(
     r"gh[pousr]_[A-Za-z0-9]{16,}"                 # GitHub tokens
     r"|github_pat_[A-Za-z0-9_]{20,}"
     r"|AKIA[0-9A-Z]{16}"                          # AWS key id
-    # BEGIN and END both. The pattern matched only BEGIN, so sshkeyv
-    # carried "-----END OPENSSH PRIVATE KEY-----" in its working tree and
-    # in nineteen objects while this check reported nothing. A footer on
-    # its own is not a key, but it is just as reliable a sign that key
-    # material is being written somewhere nearby, and it costs one word
-    # to look for.
-    r"|-----(BEGIN|END) [A-Z ]*PRIVATE KEY-----"
+    # BEGIN only, and that is deliberate after trying the alternative.
+    # Widening this to (BEGIN|END) was done because sshkeyv carried an
+    # END footer the check could not see. It caught nothing real and
+    # immediately produced a false positive: certlint writes
+    # "-----BEGIN CERTIFICATE-----\nQUJD\n-----END PRIVATE KEY-----" as a
+    # fixture, because rejecting mismatched armour is a thing it has to
+    # do. Repositories whose subject is parsing PEM will always contain
+    # footers, and a footer without a body is not key material. Real key
+    # material carries a BEGIN, which this already finds.
+    r"|-----BEGIN [A-Z ]*PRIVATE KEY-----"
     r"|xox[baprs]-[A-Za-z0-9-]{10,}")             # Slack
 
 
